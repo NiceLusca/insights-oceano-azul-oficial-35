@@ -14,6 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Separator } from "@/components/ui/separator";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const idealMetrics = {
   salesPageConversion: 0.4,
@@ -24,6 +25,11 @@ const idealMetrics = {
 };
 
 const formSchema = z.object({
+  // Traffic metrics
+  totalClicks: z.number().min(0),
+  salesPageVisits: z.number().min(0),
+  checkoutVisits: z.number().min(0),
+  
   // Sales numbers
   mainProductSales: z.number().min(0),
   comboSales: z.number().min(0),
@@ -38,14 +44,28 @@ const formSchema = z.object({
   
   // Goals
   targetROI: z.number().min(1),
-  monthlyRevenue: z.number().optional(),
-  adSpend: z.number().optional(),
+  monthlyRevenue: z.number().min(0).optional(),
+  adSpend: z.number().min(0).optional(),
 });
+
+const formatCurrency = (value: number) => {
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
+};
+
+const formatPercentage = (value: number) => {
+  return `${(value * 100).toFixed(1)}%`;
+};
 
 const Index = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      totalClicks: 0,
+      salesPageVisits: 0,
+      checkoutVisits: 0,
       mainProductSales: 0,
       comboSales: 0,
       orderBumpSales: 0,
@@ -55,6 +75,7 @@ const Index = () => {
       orderBumpPrice: 0,
       upsellPrice: 0,
       targetROI: 1.5,
+      monthlyRevenue: 0,
     },
   });
 
@@ -62,17 +83,29 @@ const Index = () => {
     totalRevenue: number;
     currentROI?: number;
     maxCPC?: number;
+    salesPageConversion: number;
+    checkoutConversion: number;
+    finalConversion: number;
+    monthlyGoalProgress?: number;
     messages: Array<{ type: "success" | "warning" | "error"; message: string }>;
   }>({
     totalRevenue: 0,
+    salesPageConversion: 0,
+    checkoutConversion: 0,
+    finalConversion: 0,
     messages: [],
   });
 
   const calculateMetrics = (values: z.infer<typeof formSchema>) => {
-    const totalSales = values.mainProductSales + values.comboSales;
     const messages = [];
     
-    // Calculate actual rates
+    // Calculate conversion rates
+    const salesPageConversion = values.salesPageVisits > 0 ? values.checkoutVisits / values.salesPageVisits : 0;
+    const checkoutConversion = values.checkoutVisits > 0 ? (values.mainProductSales + values.comboSales) / values.checkoutVisits : 0;
+    const finalConversion = values.totalClicks > 0 ? (values.mainProductSales + values.comboSales) / values.totalClicks : 0;
+    
+    // Calculate actual rates for upsells
+    const totalSales = values.mainProductSales + values.comboSales;
     const comboRate = totalSales > 0 ? values.comboSales / totalSales : 0;
     const orderBumpRate = totalSales > 0 ? values.orderBumpSales / totalSales : 0;
     const upsellRate = totalSales > 0 ? values.upsellSales / totalSales : 0;
@@ -84,40 +117,43 @@ const Index = () => {
       values.orderBumpSales * values.orderBumpPrice +
       values.upsellSales * values.upsellPrice;
 
+    // Calculate monthly goal progress if monthly revenue target is set
+    const monthlyGoalProgress = values.monthlyRevenue ? totalRevenue / values.monthlyRevenue : undefined;
+
     // Compare rates with ideal metrics
+    if (salesPageConversion < idealMetrics.salesPageConversion) {
+      messages.push({
+        type: "error",
+        message: "❌ Sua taxa de conversão da página de vendas está abaixo do ideal (40%). Revise sua página de vendas."
+      });
+    } else {
+      messages.push({
+        type: "success",
+        message: "✅ Sua taxa de conversão da página de vendas está ótima!"
+      });
+    }
+
+    if (checkoutConversion < idealMetrics.checkoutConversion) {
+      messages.push({
+        type: "error",
+        message: "❌ Sua taxa de conversão do checkout está abaixo do ideal (40%). Revise seu processo de checkout."
+      });
+    } else {
+      messages.push({
+        type: "success",
+        message: "✅ Sua taxa de conversão do checkout está excelente!"
+      });
+    }
+
     if (comboRate < idealMetrics.comboRate) {
       messages.push({
         type: "error",
-        message: "❌ Sua taxa de combo está abaixo do ideal (25%). Considere revisar sua oferta ou copy de venda."
+        message: "❌ Sua taxa de combo está abaixo do ideal (25%). Considere revisar sua oferta."
       });
     } else {
       messages.push({
         type: "success",
-        message: "✅ Sua taxa de combo está dentro ou acima do ideal. Excelente!"
-      });
-    }
-
-    if (orderBumpRate < idealMetrics.orderBumpRate) {
-      messages.push({
-        type: "warning",
-        message: "⚠️ Sua taxa de Order Bump está abaixo do ideal (30%). Teste diferentes ofertas complementares."
-      });
-    } else {
-      messages.push({
-        type: "success",
-        message: "✅ Sua taxa de Order Bump está ótima! Continue com o bom trabalho."
-      });
-    }
-
-    if (upsellRate < idealMetrics.upsellRate) {
-      messages.push({
-        type: "error",
-        message: "❌ Sua taxa de Upsell está abaixo do ideal (10%). Revise sua estratégia de vendas incrementais."
-      });
-    } else {
-      messages.push({
-        type: "success",
-        message: "✅ Sua taxa de Upsell está dentro ou acima do ideal. Parabéns!"
+        message: "✅ Sua taxa de combo está dentro ou acima do ideal. Parabéns!"
       });
     }
 
@@ -125,14 +161,17 @@ const Index = () => {
     let currentROI, maxCPC;
     if (values.adSpend && values.adSpend > 0) {
       currentROI = totalRevenue / values.adSpend;
-      // Assuming 1000 clicks per campaign for CPC calculation
-      maxCPC = (totalRevenue / values.targetROI) / 1000;
+      maxCPC = (totalRevenue / values.targetROI) / values.totalClicks;
     }
 
     setDiagnostics({
       totalRevenue,
       currentROI,
       maxCPC,
+      salesPageConversion,
+      checkoutConversion,
+      finalConversion,
+      monthlyGoalProgress,
       messages
     });
   };
@@ -154,9 +193,22 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
       <div className="max-w-4xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold text-blue-900 text-center">
-          Diagnóstico de Funil de Vendas
-        </h1>
+        {/* Header with Logo */}
+        <div className="text-center space-y-4">
+          <div className="w-32 mx-auto">
+            <AspectRatio ratio={1}>
+              <img
+                src="/lovable-uploads/2da50e89-1402-421c-8c73-60efe5119215.png"
+                alt="Oceano Azul Logo"
+                className="w-full h-full object-contain"
+              />
+            </AspectRatio>
+          </div>
+          <h1 className="text-3xl font-bold text-blue-900">
+            Diagnóstico de Funil de Vendas
+          </h1>
+          <p className="text-blue-600">Oceano Azul</p>
+        </div>
 
         {/* Bloco 1 - Métricas Ideais */}
         <Card className="p-6 bg-blue-50/50">
@@ -190,7 +242,51 @@ const Index = () => {
           <h2 className="text-xl font-semibold text-blue-800 mb-4">✍️ Seus Números</h2>
           <Form {...form}>
             <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Métricas de Tráfego */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="font-medium text-blue-700">Métricas de Tráfego</h3>
+                  <FormField
+                    control={form.control}
+                    name="totalClicks"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Total de Cliques</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="salesPageVisits"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Visitas na Página de Vendas</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="checkoutVisits"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Visitas no Checkout</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 {/* Vendas */}
                 <div className="space-y-4">
                   <h3 className="font-medium text-blue-700">Vendas (unidades)</h3>
@@ -247,8 +343,10 @@ const Index = () => {
                     )}
                   />
                 </div>
+              </div>
 
-                {/* Preços */}
+              {/* Preços e Objetivos */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <h3 className="font-medium text-blue-700">Preços (R$)</h3>
                   <FormField
@@ -258,7 +356,13 @@ const Index = () => {
                       <FormItem>
                         <FormLabel>Produto Principal</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={e => field.onChange(Number(e.target.value))}
+                            placeholder="R$ 0,00"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -271,7 +375,13 @@ const Index = () => {
                       <FormItem>
                         <FormLabel>Combo</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={e => field.onChange(Number(e.target.value))}
+                            placeholder="R$ 0,00"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -284,7 +394,13 @@ const Index = () => {
                       <FormItem>
                         <FormLabel>Order Bump</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={e => field.onChange(Number(e.target.value))}
+                            placeholder="R$ 0,00"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -297,56 +413,80 @@ const Index = () => {
                       <FormItem>
                         <FormLabel>Upsell (média)</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={e => field.onChange(Number(e.target.value))}
+                            placeholder="R$ 0,00"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-              </div>
 
-              {/* Objetivos */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-                <FormField
-                  control={form.control}
-                  name="targetROI"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>ROI Desejado</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.1" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="monthlyRevenue"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Meta de Faturamento Mensal (R$)</FormLabel>
-                      <FormControl>
-                        <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="adSpend"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Gasto em Anúncios (R$)</FormLabel>
-                      <FormControl>
-                        <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Objetivos */}
+                <div className="space-y-4">
+                  <h3 className="font-medium text-blue-700">Objetivos</h3>
+                  <FormField
+                    control={form.control}
+                    name="targetROI"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ROI Desejado</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            {...field}
+                            onChange={e => field.onChange(Number(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="monthlyRevenue"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Meta de Faturamento Mensal</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={e => field.onChange(Number(e.target.value))}
+                            placeholder="R$ 0,00"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="adSpend"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Gasto em Anúncios</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            {...field}
+                            onChange={e => field.onChange(Number(e.target.value))}
+                            placeholder="R$ 0,00"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
             </form>
           </Form>
@@ -360,25 +500,49 @@ const Index = () => {
             <div className="p-4 bg-white rounded-lg shadow-sm">
               <p className="text-sm text-blue-600">Faturamento Total</p>
               <p className="text-2xl font-bold">
-                R$ {diagnostics.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                {formatCurrency(diagnostics.totalRevenue)}
               </p>
             </div>
-            {diagnostics.currentROI && (
+
+            {diagnostics.monthlyGoalProgress !== undefined && (
               <div className="p-4 bg-white rounded-lg shadow-sm">
-                <p className="text-sm text-blue-600">ROI Atual</p>
+                <p className="text-sm text-blue-600">Progresso da Meta Mensal</p>
                 <p className="text-2xl font-bold">
-                  {diagnostics.currentROI.toFixed(2)}x
+                  {formatPercentage(diagnostics.monthlyGoalProgress)}
                 </p>
               </div>
             )}
+
             {diagnostics.maxCPC && (
               <div className="p-4 bg-white rounded-lg shadow-sm">
                 <p className="text-sm text-blue-600">CPC Máximo Recomendado</p>
                 <p className="text-2xl font-bold">
-                  R$ {diagnostics.maxCPC.toFixed(2)}
+                  {formatCurrency(diagnostics.maxCPC)}
                 </p>
               </div>
             )}
+          </div>
+
+          {/* Taxas de Conversão */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="p-4 bg-white rounded-lg shadow-sm">
+              <p className="text-sm text-blue-600">Conversão da Página de Vendas</p>
+              <p className="text-2xl font-bold">
+                {formatPercentage(diagnostics.salesPageConversion)}
+              </p>
+            </div>
+            <div className="p-4 bg-white rounded-lg shadow-sm">
+              <p className="text-sm text-blue-600">Conversão do Checkout</p>
+              <p className="text-2xl font-bold">
+                {formatPercentage(diagnostics.checkoutConversion)}
+              </p>
+            </div>
+            <div className="p-4 bg-white rounded-lg shadow-sm">
+              <p className="text-sm text-blue-600">Taxa de Conversão Final</p>
+              <p className="text-2xl font-bold">
+                {formatPercentage(diagnostics.finalConversion)}
+              </p>
+            </div>
           </div>
 
           <Separator className="my-6" />
