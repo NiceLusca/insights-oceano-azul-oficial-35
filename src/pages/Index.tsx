@@ -12,11 +12,13 @@ import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema"
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart3, FileText, History as HistoryIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loadingUserData, setLoadingUserData] = useState(true);
   const [activeTab, setActiveTab] = useState("form");
+  const navigate = useNavigate();
   
   const form = useForm({
     resolver: zodResolver(formSchema),
