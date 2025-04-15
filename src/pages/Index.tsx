@@ -253,6 +253,12 @@ const Index = () => {
     calculateMetrics(values);
   };
 
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, onChange: (...event: any[]) => void) => {
+    const value = e.target.value.replace(/[^0-9.,]/g, '').replace(',', '.');
+    const numValue = value ? parseFloat(value) : 0;
+    onChange(numValue);
+  };
+
   useEffect(() => {
     const subscription = form.watch((value) => {
       if (Object.values(value).every((v) => v !== undefined)) {
@@ -362,13 +368,11 @@ const Index = () => {
                           <FormLabel>Produto Principal</FormLabel>
                           <FormControl>
                             <Input
-                              type="number"
-                              step="0.01"
-                              {...field}
-                              onChange={e => field.onChange(Number(e.target.value))}
-                              placeholder="R$ 0,00"
+                              type="text"
                               className="text-right"
-                              value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
+                              placeholder="R$ 0,00"
+                              value={field.value > 0 ? formatCurrency(field.value) : ''}
+                              onChange={(e) => handlePriceChange(e, field.onChange)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -383,13 +387,11 @@ const Index = () => {
                           <FormLabel>Combo</FormLabel>
                           <FormControl>
                             <Input
-                              type="number"
-                              step="0.01"
-                              {...field}
-                              onChange={e => field.onChange(Number(e.target.value))}
-                              placeholder="R$ 0,00"
+                              type="text"
                               className="text-right"
-                              value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
+                              placeholder="R$ 0,00"
+                              value={field.value > 0 ? formatCurrency(field.value) : ''}
+                              onChange={(e) => handlePriceChange(e, field.onChange)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -404,13 +406,11 @@ const Index = () => {
                           <FormLabel>Order Bump</FormLabel>
                           <FormControl>
                             <Input
-                              type="number"
-                              step="0.01"
-                              {...field}
-                              onChange={e => field.onChange(Number(e.target.value))}
-                              placeholder="R$ 0,00"
+                              type="text"
                               className="text-right"
-                              value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
+                              placeholder="R$ 0,00"
+                              value={field.value > 0 ? formatCurrency(field.value) : ''}
+                              onChange={(e) => handlePriceChange(e, field.onChange)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -426,13 +426,11 @@ const Index = () => {
                             <FormLabel>Upsell (média)</FormLabel>
                             <FormControl>
                               <Input
-                                type="number"
-                                step="0.01"
-                                {...field}
-                                onChange={e => field.onChange(Number(e.target.value))}
-                                placeholder="R$ 0,00"
+                                type="text"
                                 className="text-right"
-                                value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
+                                placeholder="R$ 0,00"
+                                value={field.value > 0 ? formatCurrency(field.value) : ''}
+                                onChange={(e) => handlePriceChange(e, field.onChange)}
                               />
                             </FormControl>
                             <FormMessage />
@@ -472,12 +470,11 @@ const Index = () => {
                           <FormLabel>Meta de Faturamento Mensal</FormLabel>
                           <FormControl>
                             <Input
-                              type="number"
-                              step="0.01"
-                              {...field}
-                              onChange={e => field.onChange(Number(e.target.value))}
-                              placeholder="R$ 0,00"
+                              type="text"
                               className="text-right"
+                              placeholder="R$ 0,00"
+                              value={field.value > 0 ? formatCurrency(field.value) : ''}
+                              onChange={(e) => handlePriceChange(e, field.onChange)}
                             />
                           </FormControl>
                           <FormMessage />
@@ -492,12 +489,11 @@ const Index = () => {
                           <FormLabel>Gasto em Anúncios</FormLabel>
                           <FormControl>
                             <Input
-                              type="number"
-                              step="0.01"
-                              {...field}
-                              onChange={e => field.onChange(Number(e.target.value))}
-                              placeholder="R$ 0,00"
+                              type="text"
                               className="text-right"
+                              placeholder="R$ 0,00"
+                              value={field.value > 0 ? formatCurrency(field.value) : ''}
+                              onChange={(e) => handlePriceChange(e, field.onChange)}
                             />
                           </FormControl>
                           <FormMessage />
