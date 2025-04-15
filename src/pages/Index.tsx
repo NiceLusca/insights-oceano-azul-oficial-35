@@ -76,6 +76,7 @@ const Index = () => {
       upsellPrice: 0,
       targetROI: 1.5,
       monthlyRevenue: 0,
+      adSpend: 0,
     },
   });
 
@@ -87,6 +88,7 @@ const Index = () => {
     checkoutConversion: number;
     finalConversion: number;
     monthlyGoalProgress?: number;
+    adSpend?: number;
     messages: Array<{ type: "success" | "warning" | "error"; message: string }>;
   }>({
     totalRevenue: 0,
@@ -178,6 +180,7 @@ const Index = () => {
       checkoutConversion,
       finalConversion,
       monthlyGoalProgress,
+      adSpend: values.adSpend,
       messages
     });
   };
@@ -592,7 +595,7 @@ const Index = () => {
                 <div className="p-4 bg-white rounded-lg shadow-sm">
                   <p className="text-sm text-blue-600">CPC Atual</p>
                   <p className="text-2xl font-bold">
-                    {formatCurrency(diagnostics.adSpend && diagnostics.adSpend > 0 ? diagnostics.adSpend / form.getValues().totalClicks : 0)}
+                    {formatCurrency(form.getValues().totalClicks > 0 && diagnostics.adSpend ? diagnostics.adSpend / form.getValues().totalClicks : 0)}
                   </p>
                 </div>
               )}

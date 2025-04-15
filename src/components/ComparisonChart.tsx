@@ -1,5 +1,5 @@
 
-import { ResponsiveBar } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Card } from "./ui/card";
 import {
   ChartContainer,
@@ -8,7 +8,7 @@ import {
 } from "./ui/chart";
 import { Info } from "lucide-react";
 import {
-  Tooltip,
+  Tooltip as UITooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
@@ -36,29 +36,34 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Comparação de Métricas</h3>
       <div className="h-[300px] w-full">
-        <ChartContainer config={chartConfig}>
-          <ResponsiveBar
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
             data={actualData}
-            keys={["actual", "ideal"]}
-            indexBy="name"
             margin={{ top: 20, right: 20, bottom: 40, left: 40 }}
-            padding={0.3}
-            groupMode="grouped"
-            valueScale={{ type: "linear" }}
-            colors={({ id }) => chartConfig[id as keyof typeof chartConfig].color}
-            axisBottom={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: -45,
-            }}
-            axisLeft={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              format: (value) => `${value}%`,
-            }}
-          />
-        </ChartContainer>
+            barGap={4}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="name" 
+              tickSize={5}
+              tickPadding={5}
+              tickMargin={10}
+              angle={-45}
+              textAnchor="end"
+            />
+            <YAxis 
+              tickSize={5}
+              tickPadding={5}
+              tickFormatter={(value) => `${value}%`}
+            />
+            <Tooltip 
+              formatter={(value) => [`${value}%`, ""]}
+              labelFormatter={(label) => `${label}`}
+            />
+            <Bar dataKey="actual" name="Atual" fill={chartConfig.actual.color} barSize={20} />
+            <Bar dataKey="ideal" name="Ideal" fill={chartConfig.ideal.color} barSize={20} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </Card>
   );
