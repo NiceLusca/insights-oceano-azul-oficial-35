@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormContainer } from "@/components/FormContainer";
@@ -199,7 +200,7 @@ export const FormAnalyzer = ({ form, isAuthenticated, activeTab, onTabChange }: 
         <FormContainer 
           form={form} 
           onSubmit={onSubmit} 
-          formSchema={form.formState.defaultValues} 
+          formSchema={form.getValues()} // Pass the current form values instead of the schema object
           onAnalyze={() => onTabChange("results")} 
         />
       </TabsContent>

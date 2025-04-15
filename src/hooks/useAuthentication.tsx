@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,16 +30,26 @@ export const useAuthentication = () => {
         setSession(session);
         setUser(session?.user ?? null);
         setIsAuthenticated(!!session);
+        
+        return () => {
+          if (subscription) {
+            subscription.unsubscribe();
+          }
+        };
       } catch (error) {
         console.error("Erro ao verificar autenticação:", error);
       } finally {
         setLoading(false);
       }
-      
-      return () => subscription.unsubscribe();
     };
     
-    checkAuth();
+    const unsubscribe = checkAuth();
+    return () => {
+      // Execute the cleanup function returned by checkAuth
+      if (typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {

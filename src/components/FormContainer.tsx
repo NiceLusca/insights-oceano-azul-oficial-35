@@ -17,11 +17,12 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import * as z from "zod";
+import { FormValues } from "@/schemas/formSchema";
 
 interface FormContainerProps {
   form: UseFormReturn<any>;
   onSubmit: (values: any) => void;
-  formSchema: z.ZodObject<any>;
+  formSchema: FormValues; // Updated type to FormValues instead of zod schema
   onAnalyze?: () => void;
 }
 
