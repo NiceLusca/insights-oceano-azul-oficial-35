@@ -26,9 +26,9 @@ import {
 const idealMetrics = {
   salesPageConversion: 0.4,
   checkoutConversion: 0.4,
-  comboRate: 0.25,
+  comboRate: 0.35,
   orderBumpRate: 0.3,
-  upsellRate: 0.1,
+  upsellRate: 0.05,
 };
 
 const formSchema = z.object({
@@ -106,6 +106,7 @@ const Index = () => {
     const totalSales = values.mainProductSales + values.comboSales;
     const orderBumpRate = totalSales > 0 ? values.orderBumpSales / totalSales : 0;
     const upsellRate = totalSales > 0 ? values.upsellSales / totalSales : 0;
+    const finalConversion = values.totalClicks > 0 ? ((values.mainProductSales + values.comboSales) / values.totalClicks) * 100 : 0;
 
     const totalRevenue = 
       values.mainProductSales * values.mainProductPrice +
@@ -141,13 +142,25 @@ const Index = () => {
 
     if (comboRate < idealMetrics.comboRate) {
       messages.push({
-        type: "error",
-        message: "❌ Sua taxa de combo está abaixo do ideal (25%). Considere revisar sua oferta."
+        type: "warning",
+        message: "⚠️ Sua taxa de combo está abaixo do ideal (35%). Considere revisar sua oferta de combo."
       });
     } else {
       messages.push({
         type: "success",
         message: "✅ Sua taxa de combo está dentro ou acima do ideal. Parabéns!"
+      });
+    }
+
+    if (upsellRate < idealMetrics.upsellRate) {
+      messages.push({
+        type: "warning",
+        message: "⚠️ Sua taxa de upsell está abaixo do ideal (5%). Considere melhorar sua estratégia de upsell."
+      });
+    } else {
+      messages.push({
+        type: "success",
+        message: "✅ Sua taxa de upsell está dentro ou acima do ideal!"
       });
     }
 
@@ -173,7 +186,8 @@ const Index = () => {
     const salesPageConversion = values.salesPageVisits > 0 ? (values.checkoutVisits / values.salesPageVisits) * 100 : 0;
     const checkoutConversion = values.checkoutVisits > 0 ? ((values.mainProductSales + values.comboSales) / values.checkoutVisits) * 100 : 0;
     const comboRate = (values.mainProductSales + values.comboSales) > 0 ? (values.comboSales / (values.mainProductSales + values.comboSales)) * 100 : 0;
-    
+    const upsellRate = (values.mainProductSales + values.comboSales) > 0 ? (values.upsellSales / (values.mainProductSales + values.comboSales)) * 100 : 0;
+
     return [
       {
         name: "Página de Vendas",
@@ -189,6 +203,11 @@ const Index = () => {
         name: "Taxa Combo",
         actual: Number(comboRate.toFixed(1)),
         ideal: idealMetrics.comboRate * 100,
+      },
+      {
+        name: "Taxa Upsell",
+        actual: Number(upsellRate.toFixed(1)),
+        ideal: idealMetrics.upsellRate * 100,
       },
     ];
   };
@@ -240,7 +259,7 @@ const Index = () => {
             </div>
             <div>
               <p className="text-sm text-blue-600">Taxa de Combo</p>
-              <p className="font-semibold">25%</p>
+              <p className="font-semibold">35%</p>
             </div>
             <div>
               <p className="text-sm text-blue-600">Taxa de Order Bump</p>
@@ -248,7 +267,7 @@ const Index = () => {
             </div>
             <div>
               <p className="text-sm text-blue-600">Taxa de Upsell</p>
-              <p className="font-semibold">10%</p>
+              <p className="font-semibold">5%</p>
             </div>
           </div>
         </Card>
