@@ -1,9 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import { format } from "date-fns";
 import { toast } from "sonner";
-import { formatCurrency, formatPercentage } from "@/utils/formatters";
+import { exportToPdf } from "@/utils/pdfExport";
 
 interface PdfExportButtonProps {
   formData: any;
@@ -16,10 +15,8 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
     try {
       toast.promise(
         new Promise(async (resolve) => {
-          // Simulamos o processamento de exportação
-          setTimeout(() => {
-            resolve(true);
-          }, 1500);
+          const result = exportToPdf(formData, diagnostics, comparisonData);
+          resolve(result);
         }),
         {
           loading: 'Gerando PDF...',
@@ -29,6 +26,7 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
       );
     } catch (error) {
       console.error("Erro ao exportar PDF:", error);
+      toast.error("Erro ao exportar o relatório.");
     }
   };
 

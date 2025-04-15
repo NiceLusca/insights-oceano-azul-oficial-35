@@ -62,14 +62,15 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   });
   
   // Diagnósticos
-  const startY = doc.lastAutoTable?.finalY || 130;
+  // Get the finalY position from the previous autoTable
+  const tableHeight = (doc as any).lastAutoTable?.finalY || 130;
   doc.setFontSize(14);
-  doc.text("Diagnóstico", 15, startY + 10);
+  doc.text("Diagnóstico", 15, tableHeight + 10);
   
   const diagnosisRows = diagnostics.messages.map((msg: any) => [msg.message]);
   
   autoTable(doc, {
-    startY: startY + 15,
+    startY: tableHeight + 15,
     head: [["Insights e Recomendações"]],
     body: diagnosisRows,
     theme: "grid",
@@ -77,7 +78,8 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   });
   
   // Comparação com métricas ideais
-  const comparisonStartY = doc.lastAutoTable?.finalY || 200;
+  // Get the finalY position from the previous autoTable
+  const comparisonStartY = (doc as any).lastAutoTable?.finalY || 200;
   doc.setFontSize(14);
   doc.text("Comparação com Métricas Ideais", 15, comparisonStartY + 10);
   
