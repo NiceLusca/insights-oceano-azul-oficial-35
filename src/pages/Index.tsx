@@ -10,10 +10,13 @@ import { ResultContainer } from "@/components/ResultContainer";
 import { QuoteCard } from "@/components/QuoteCard";
 import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema";
 import { supabase } from "@/integrations/supabase/client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BarChart3, FileText, History as HistoryIcon } from "lucide-react";
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loadingUserData, setLoadingUserData] = useState(true);
+  const [activeTab, setActiveTab] = useState("form");
   
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -44,6 +47,9 @@ const Index = () => {
       
       // Limpa o localStorage após carregar
       localStorage.removeItem("selectedAnalysis");
+      
+      // Muda para a guia de resultados
+      setActiveTab("results");
     }
   }, [form]);
 
@@ -99,6 +105,9 @@ const Index = () => {
   const onSubmit = (values: FormValues) => {
     const metrics = calculateMetrics(values);
     setDiagnostics(metrics);
+    
+    // Muda para a guia de resultados
+    setActiveTab("results");
     
     // Se estiver autenticado, salva os últimos dados do usuário
     if (isAuthenticated) {
@@ -177,11 +186,40 @@ const Index = () => {
       {loadingUserData ? (
         <div className="text-center py-8">Carregando dados...</div>
       ) : (
-        <>
-          <FormContainer form={form} onSubmit={onSubmit} formSchema={formSchema} />
-          <ResultContainer formData={form.getValues()} diagnostics={diagnostics} />
-          <QuoteCard />
-        </>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid grid-cols-3 mb-4 w-full">
+            <TabsTrigger value="form" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              <span>Formulário</span>
+            </TabsTrigger>
+            <TabsTrigger value="results" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              <span>Resultados</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="history" 
+              className="flex items-center gap-2"
+              onClick={() => navigate("/history")}
+            >
+              <HistoryIcon className="h-4 w-4" />
+              <span>Histórico</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="form" className="space-y-6">
+            <FormContainer 
+              form={form} 
+              onSubmit={onSubmit} 
+              formSchema={formSchema} 
+              onAnalyze={() => setActiveTab("results")} 
+            />
+          </TabsContent>
+          
+          <TabsContent value="results" className="space-y-6">
+            <ResultContainer formData={form.getValues()} diagnostics={diagnostics} />
+            <QuoteCard />
+          </TabsContent>
+        </Tabs>
       )}
     </MainLayout>
   );

@@ -5,6 +5,8 @@ import { ComparisonChart } from "@/components/ComparisonChart";
 import { PdfExportButton } from "@/components/PdfExportButton";
 import { SaveHistoryButton } from "@/components/SaveHistoryButton";
 import { getComparisonData } from "@/utils/metricsHelpers";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface ResultContainerProps {
   formData: any;
@@ -12,6 +14,8 @@ interface ResultContainerProps {
 }
 
 export const ResultContainer = ({ formData, diagnostics }: ResultContainerProps) => {
+  const navigate = useNavigate();
+  
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

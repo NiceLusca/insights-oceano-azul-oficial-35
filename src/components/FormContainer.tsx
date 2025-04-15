@@ -9,6 +9,7 @@ import { GoalsInvestmentsSection } from "@/components/GoalsInvestmentsSection";
 import { TrafficMetricsSection } from "@/components/TrafficMetricsSection";
 import { SalesSection } from "@/components/SalesSection";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
   FormField,
@@ -21,16 +22,31 @@ interface FormContainerProps {
   form: UseFormReturn<any>;
   onSubmit: (values: any) => void;
   formSchema: z.ZodObject<any>;
+  onAnalyze?: () => void;
 }
 
-export const FormContainer = ({ form, onSubmit, formSchema }: FormContainerProps) => {
+export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormContainerProps) => {
   const hasUpsell = form.watch("hasUpsell");
+
+  const handleSubmitAndAnalyze = (e: React.FormEvent) => {
+    e.preventDefault();
+    const isValid = form.formState.isValid;
+    
+    if (!isValid) {
+      form.trigger();
+      return;
+    }
+    
+    const values = form.getValues();
+    onSubmit(values);
+    if (onAnalyze) onAnalyze();
+  };
 
   return (
     <Card className="p-6">
       <h2 className="text-xl font-semibold text-blue-800 mb-4">✍️ Seus Números</h2>
       <Form {...form}>
-        <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form className="space-y-6">
           <div className="flex items-center space-x-2 my-4">
             <FormField
               control={form.control}
@@ -63,6 +79,14 @@ export const FormContainer = ({ form, onSubmit, formSchema }: FormContainerProps
             <TrafficMetricsSection form={form} />
             <SalesSection form={form} hasUpsell={hasUpsell} />
           </div>
+          
+          <Button 
+            type="button" 
+            className="w-full mt-4" 
+            onClick={handleSubmitAndAnalyze}
+          >
+            Analisar Resultados
+          </Button>
         </form>
       </Form>
     </Card>

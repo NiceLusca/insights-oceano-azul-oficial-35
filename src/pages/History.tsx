@@ -18,6 +18,7 @@ import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft, Clock, Loader2 } from "lucide-react";
 
 interface Analysis {
   id: string;
@@ -74,18 +75,38 @@ const History = () => {
     <MainLayout>
       <Card className="p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-blue-800">
-            📊 Histórico de Análises
+          <h2 className="text-xl font-semibold text-blue-800 flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            Histórico de Análises
           </h2>
-          <Button onClick={() => navigate("/")}>Voltar</Button>
+          <Button 
+            onClick={() => navigate("/")} 
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar
+          </Button>
         </div>
 
         {loading ? (
-          <p className="text-center py-8">Carregando histórico...</p>
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin mr-2" />
+            <p>Carregando histórico...</p>
+          </div>
         ) : analyses.length === 0 ? (
-          <p className="text-center py-8">
-            Você ainda não tem análises salvas. Faça sua primeira análise e salve-a.
-          </p>
+          <div className="text-center py-8 bg-muted rounded-md p-6">
+            <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+            <p className="text-lg font-medium mb-2">
+              Você ainda não tem análises salvas
+            </p>
+            <p className="text-muted-foreground mb-4">
+              Faça sua primeira análise e clique em "Salvar no Histórico".
+            </p>
+            <Button onClick={() => navigate("/")}>
+              Criar Nova Análise
+            </Button>
+          </div>
         ) : (
           <Table>
             <TableCaption>Lista de análises salvas</TableCaption>
@@ -100,17 +121,21 @@ const History = () => {
             </TableHeader>
             <TableBody>
               {analyses.map((analysis) => (
-                <TableRow key={analysis.id}>
+                <TableRow key={analysis.id} className="hover:bg-muted/50 cursor-pointer">
                   <TableCell>
                     {format(new Date(analysis.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="font-medium">
                     {formatCurrency(analysis.diagnostics.totalRevenue || 0)}
                   </TableCell>
                   <TableCell>{analysis.form_data.salesPageVisits || 0}</TableCell>
                   <TableCell>{analysis.form_data.checkoutVisits || 0}</TableCell>
                   <TableCell>
-                    <Button variant="outline" onClick={() => loadAnalysis(analysis)}>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => loadAnalysis(analysis)}
+                      className="hover:bg-blue-50"
+                    >
                       Carregar
                     </Button>
                   </TableCell>
