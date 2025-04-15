@@ -8,7 +8,7 @@ import { IdealMetricsCard } from "@/components/IdealMetricsCard";
 import { FormContainer } from "@/components/FormContainer";
 import { ResultContainer } from "@/components/ResultContainer";
 import { QuoteCard } from "@/components/QuoteCard";
-import { formSchema, defaultFormValues } from "@/schemas/formSchema";
+import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -34,7 +34,7 @@ const Index = () => {
     
     if (selectedAnalysis) {
       const analysis = JSON.parse(selectedAnalysis);
-      form.reset(analysis.form_data);
+      form.reset(analysis.form_data as FormValues);
       setDiagnostics(analysis.diagnostics);
       
       // Limpa o localStorage após carregar
@@ -60,8 +60,8 @@ const Index = () => {
             .maybeSingle();
           
           if (data) {
-            form.reset(data.form_data);
-            const metrics = calculateMetrics(data.form_data);
+            form.reset(data.form_data as FormValues);
+            const metrics = calculateMetrics(data.form_data as FormValues);
             setDiagnostics(metrics);
           }
         } else {
@@ -86,7 +86,7 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  const onSubmit = (values: any) => {
+  const onSubmit = (values: FormValues) => {
     const metrics = calculateMetrics(values);
     setDiagnostics(metrics);
     
@@ -96,7 +96,7 @@ const Index = () => {
     }
   };
 
-  const saveUserLastAnalysis = async (values: any) => {
+  const saveUserLastAnalysis = async (values: FormValues) => {
     try {
       const { data: session } = await supabase.auth.getSession();
       
@@ -135,13 +135,13 @@ const Index = () => {
   useEffect(() => {
     const subscription = form.watch((value) => {
       if (Object.values(value).every((v) => v !== undefined)) {
-        const metrics = calculateMetrics(value as any);
+        const metrics = calculateMetrics(value as FormValues);
         setDiagnostics(metrics);
         
         // Se estiver autenticado, salva os últimos dados do usuário (debounced)
         if (isAuthenticated) {
           const timeoutId = setTimeout(() => {
-            saveUserLastAnalysis(value);
+            saveUserLastAnalysis(value as FormValues);
           }, 2000);
           
           return () => clearTimeout(timeoutId);
