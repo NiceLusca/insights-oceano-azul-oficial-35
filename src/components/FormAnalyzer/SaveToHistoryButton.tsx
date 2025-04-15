@@ -25,8 +25,8 @@ export const SaveToHistoryButton = ({
   const saveToHistory = async () => {
     if (!isAuthenticated) {
       toast({
-        title: "Login required",
-        description: "Please login to save to history",
+        title: "Login necessário",
+        description: "Por favor, faça login para salvar no histórico",
         variant: "destructive",
       });
       navigate("/auth");
@@ -39,7 +39,7 @@ export const SaveToHistoryButton = ({
       const { data: session } = await supabase.auth.getSession();
       
       if (!session.session) {
-        throw new Error("No active session found");
+        throw new Error("Nenhuma sessão ativa encontrada");
       }
       
       // Prepare data for Supabase (convert Date to string)
@@ -60,14 +60,14 @@ export const SaveToHistoryButton = ({
       if (error) throw error;
       
       toast({
-        title: "Analysis saved successfully!",
-        description: "You can view your analysis history by clicking on the 'History' tab",
+        title: "Análise salva com sucesso!",
+        description: "Você pode ver seu histórico de análises clicando na aba 'Histórico'",
       });
     } catch (error: any) {
-      console.error("Error saving analysis:", error);
+      console.error("Erro ao salvar análise:", error);
       toast({
-        title: "Error saving analysis",
-        description: error.message || "An unexpected error occurred",
+        title: "Erro ao salvar análise",
+        description: error.message || "Ocorreu um erro inesperado",
         variant: "destructive",
       });
     } finally {
@@ -87,7 +87,7 @@ export const SaveToHistoryButton = ({
         ) : (
           <Save className="h-4 w-4" />
         )}
-        {saving ? "Saving..." : "Save to History"}
+        {saving ? "Salvando..." : "Salvar no Histórico"}
       </Button>
     </div>
   );

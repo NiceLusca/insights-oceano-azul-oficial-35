@@ -21,8 +21,8 @@ const Auth = () => {
     
     if (!email || !password) {
       toast({
-        title: "Missing information",
-        description: "Please enter both email and password",
+        title: "Informação incompleta",
+        description: "Por favor, informe email e senha",
         variant: "destructive",
       });
       return;
@@ -36,7 +36,7 @@ const Auth = () => {
         
         if (result.success) {
           toast({
-            title: "Registration successful!",
+            title: "Cadastro realizado com sucesso!",
             description: result.message,
           });
           
@@ -54,7 +54,7 @@ const Auth = () => {
       }
     } catch (error: any) {
       toast({
-        title: "Error in process",
+        title: "Erro no processo",
         description: error.message,
         variant: "destructive",
       });
@@ -68,7 +68,7 @@ const Auth = () => {
       <div className="flex justify-center items-center min-h-[70vh]">
         <Card className="w-full max-w-md p-8 shadow-lg">
           <h2 className="text-2xl font-bold text-center mb-6 text-blue-800">
-            {isSignUp ? "Create Account" : "Login"}
+            {isSignUp ? "Criar Conta" : "Entrar"}
           </h2>
           <form onSubmit={handleAuth} className="space-y-4">
             <div>
@@ -87,7 +87,7 @@ const Auth = () => {
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-1">
-                Password
+                Senha
               </label>
               <Input
                 id="password"
@@ -103,10 +103,10 @@ const Auth = () => {
               {loading ? (
                 <span className="flex items-center justify-center">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
+                  Processando...
                 </span>
               ) : (
-                isSignUp ? "Register" : "Login"
+                isSignUp ? "Cadastrar" : "Entrar"
               )}
             </Button>
           </form>
@@ -117,7 +117,7 @@ const Auth = () => {
               className="p-0 text-blue-600"
               disabled={loading}
             >
-              {isSignUp ? "Already have an account? Log in" : "Don't have an account? Register"}
+              {isSignUp ? "Já tem uma conta? Faça login" : "Não tem uma conta? Cadastre-se"}
             </Button>
           </div>
         </Card>

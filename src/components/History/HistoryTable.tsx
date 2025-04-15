@@ -33,13 +33,13 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
           resolve(result);
         }),
         {
-          loading: 'Generating PDF...',
-          success: 'Report exported successfully!',
-          error: 'Error exporting report.',
+          loading: 'Gerando PDF...',
+          success: 'Relatório exportado com sucesso!',
+          error: 'Erro ao exportar relatório.',
         }
       );
     } catch (error) {
-      console.error("Error exporting PDF:", error);
+      console.error("Erro ao exportar PDF:", error);
     }
   };
   
@@ -65,7 +65,7 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
     
     const data = [
       {
-        name: "Sales Page",
+        name: "Página de Vendas",
         actual: Number(salesPageConversion.toFixed(1)),
         ideal: 40,
       },
@@ -75,7 +75,7 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
         ideal: 40,
       },
       {
-        name: "Combo Rate",
+        name: "Taxa de Combo",
         actual: Number(comboRate.toFixed(1)),
         ideal: 35,
       },
@@ -88,7 +88,7 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
     
     if (formData.hasUpsell) {
       data.push({
-        name: "Upsell Rate",
+        name: "Taxa de Upsell",
         actual: Number(upsellRate.toFixed(1)),
         ideal: 5,
       });
@@ -102,10 +102,10 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Revenue</TableHead>
+            <TableHead>Data</TableHead>
+            <TableHead className="text-right">Faturamento</TableHead>
             <TableHead className="text-right">ROI</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -133,7 +133,7 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
                       onClick={() => onLoadAnalysis(analysis)}
                     >
                       <Eye className="h-3.5 w-3.5" />
-                      <span>View</span>
+                      <span>Visualizar</span>
                     </Button>
                     <Button
                       size="sm"
