@@ -1,32 +1,24 @@
 
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Card } from "@/components/ui/card";
+import { ReactNode } from "react";
+import { AuthButton } from "./AuthButton";
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="text-center space-y-4">
-          <div className="w-32 mx-auto">
-            <AspectRatio ratio={1}>
-              <img
-                src="/lovable-uploads/2da50e89-1402-421c-8c73-60efe5119215.png"
-                alt="Oceano Azul Logo"
-                className="w-full h-full object-contain"
-              />
-            </AspectRatio>
-          </div>
-          <h1 className="text-3xl font-bold text-blue-900">
-            Diagnóstico de Funil de Vendas
-          </h1>
-          <p className="text-blue-600">Oceano Azul</p>
-        </div>
-        {children}
-      </div>
+    <div className="container mx-auto px-4 py-8 space-y-6 max-w-6xl">
+      <header className="flex justify-between items-center">
+        <h1 className="text-2xl md:text-3xl font-bold text-blue-800">
+          Funil Diagnóstico
+        </h1>
+        <AuthButton />
+      </header>
+      <main className="space-y-6">{children}</main>
+      <footer className="text-center text-sm text-gray-600 pt-8">
+        © {new Date().getFullYear()} Funil Diagnóstico - Oceano Azul
+      </footer>
     </div>
   );
 };
