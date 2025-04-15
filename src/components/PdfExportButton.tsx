@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { FilePdf } from "lucide-react";
+import { FileText } from "lucide-react";
 import { toast } from "sonner";
 import { exportToPdf } from "@/utils/pdfExport";
 
@@ -41,7 +41,7 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
         className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-6 h-auto"
         size="lg"
       >
-        <FilePdf className="mr-2 h-5 w-5" />
+        <FileText className="mr-2 h-5 w-5" />
         Exportar Relatório PDF
       </Button>
     </div>
