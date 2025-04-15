@@ -18,7 +18,9 @@ import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Clock, Loader2 } from "lucide-react";
+import { ArrowLeft, Clock, Loader2, Search, Calendar } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 interface Analysis {
   id: string;
@@ -71,6 +73,39 @@ const History = () => {
     navigate("/");
   };
 
+  // Função para formatar o período de análise
+  const formatPeriod = (formData: any) => {
+    if (!formData.startDate && !formData.endDate) {
+      return "Período não especificado";
+    }
+    
+    let periodText = "";
+    
+    if (formData.startDate) {
+      periodText += format(new Date(formData.startDate), "dd/MM/yyyy", { locale: ptBR });
+    }
+    
+    periodText += " a ";
+    
+    if (formData.endDate) {
+      periodText += format(new Date(formData.endDate), "dd/MM/yyyy", { locale: ptBR });
+    } else {
+      periodText += "atual";
+    }
+    
+    return periodText;
+  };
+
+  // Função para calcular e formatar o ROI
+  const calculateROI = (diagnostics: any) => {
+    if (!diagnostics.adSpend || diagnostics.adSpend <= 0) {
+      return "N/A";
+    }
+    
+    const roi = diagnostics.totalRevenue / diagnostics.adSpend;
+    return `${roi.toFixed(2)}x`;
+  };
+
   return (
     <MainLayout>
       <Card className="p-6">
@@ -108,41 +143,75 @@ const History = () => {
             </Button>
           </div>
         ) : (
-          <Table>
-            <TableCaption>Lista de análises salvas</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data</TableHead>
-                <TableHead>Receita Total</TableHead>
-                <TableHead>Visitas na Página</TableHead>
-                <TableHead>Visitas no Checkout</TableHead>
-                <TableHead>Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {analyses.map((analysis) => (
-                <TableRow key={analysis.id} className="hover:bg-muted/50 cursor-pointer">
-                  <TableCell>
-                    {format(new Date(analysis.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {formatCurrency(analysis.diagnostics.totalRevenue || 0)}
-                  </TableCell>
-                  <TableCell>{analysis.form_data.salesPageVisits || 0}</TableCell>
-                  <TableCell>{analysis.form_data.checkoutVisits || 0}</TableCell>
-                  <TableCell>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => loadAnalysis(analysis)}
-                      className="hover:bg-blue-50"
-                    >
-                      Carregar
-                    </Button>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableCaption>Lista de análises salvas</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Data da Análise</TableHead>
+                  <TableHead>Período Analisado</TableHead>
+                  <TableHead>Faturamento Total</TableHead>
+                  <TableHead>Valor Gasto</TableHead>
+                  <TableHead>ROI</TableHead>
+                  <TableHead>Visitas na Página</TableHead>
+                  <TableHead>Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {analyses.map((analysis) => (
+                  <TableRow key={analysis.id} className="hover:bg-muted/50">
+                    <TableCell>
+                      {format(new Date(analysis.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                    </TableCell>
+                    <TableCell className="max-w-[200px]">
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
+                        <span className="truncate">{formatPeriod(analysis.form_data)}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {formatCurrency(analysis.diagnostics.totalRevenue || 0)}
+                    </TableCell>
+                    <TableCell>
+                      {analysis.form_data.adSpend ? formatCurrency(analysis.form_data.adSpend) : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={calculateROI(analysis.diagnostics) !== "N/A" && 
+                                parseFloat(calculateROI(analysis.diagnostics)) >= 1.5 ? 
+                                "success" : "outline"}
+                        className={calculateROI(analysis.diagnostics) !== "N/A" && 
+                                  parseFloat(calculateROI(analysis.diagnostics)) >= 1.5 ? 
+                                  "bg-green-100 text-green-800 hover:bg-green-200" : ""}
+                      >
+                        {calculateROI(analysis.diagnostics)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{analysis.form_data.salesPageVisits || 0}</TableCell>
+                    <TableCell>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              onClick={() => loadAnalysis(analysis)}
+                              className="hover:bg-blue-50 flex items-center gap-1"
+                            >
+                              <Search className="h-4 w-4" />
+                              <span>Analisar</span>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Carregar esta análise para visualização</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </Card>
     </MainLayout>
