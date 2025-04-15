@@ -34,7 +34,12 @@ const Index = () => {
     
     if (selectedAnalysis) {
       const analysis = JSON.parse(selectedAnalysis);
-      form.reset(analysis.form_data as FormValues);
+      // Converter datas de string para objeto Date
+      const formData = analysis.form_data as FormValues;
+      if (formData.startDate) formData.startDate = new Date(formData.startDate);
+      if (formData.endDate) formData.endDate = new Date(formData.endDate);
+      
+      form.reset(formData);
       setDiagnostics(analysis.diagnostics);
       
       // Limpa o localStorage após carregar
@@ -60,8 +65,13 @@ const Index = () => {
             .maybeSingle();
           
           if (data) {
-            form.reset(data.form_data as FormValues);
-            const metrics = calculateMetrics(data.form_data as FormValues);
+            // Converter datas de string para objeto Date
+            const formData = data.form_data as any;
+            if (formData.startDate) formData.startDate = new Date(formData.startDate);
+            if (formData.endDate) formData.endDate = new Date(formData.endDate);
+            
+            form.reset(formData as FormValues);
+            const metrics = calculateMetrics(formData as FormValues);
             setDiagnostics(metrics);
           }
         } else {
@@ -102,6 +112,13 @@ const Index = () => {
       
       if (!session.session) return;
       
+      // Preparar dados para envio ao Supabase (converter Date para string)
+      const formDataForDb = {
+        ...values,
+        startDate: values.startDate ? values.startDate.toISOString() : null,
+        endDate: values.endDate ? values.endDate.toISOString() : null
+      };
+      
       // Verificar se já existe um registro para o usuário
       const { data } = await supabase
         .from("user_last_analysis")
@@ -114,7 +131,7 @@ const Index = () => {
         await supabase
           .from("user_last_analysis")
           .update({
-            form_data: values,
+            form_data: formDataForDb,
             updated_at: new Date().toISOString(),
           })
           .eq("user_id", session.session.user.id);
@@ -124,7 +141,7 @@ const Index = () => {
           .from("user_last_analysis")
           .insert({
             user_id: session.session.user.id,
-            form_data: values,
+            form_data: formDataForDb,
           });
       }
     } catch (error) {

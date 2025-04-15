@@ -3,9 +3,10 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { FormValues } from "@/schemas/formSchema";
 
 interface SaveHistoryButtonProps {
-  formData: any;
+  formData: FormValues;
   diagnostics: any;
   disabled?: boolean;
 }
@@ -29,11 +30,18 @@ export const SaveHistoryButton = ({ formData, diagnostics, disabled }: SaveHisto
         return;
       }
       
+      // Preparar dados para envio ao Supabase (converter Date para string)
+      const formDataForDb = {
+        ...formData,
+        startDate: formData.startDate ? formData.startDate.toISOString() : null,
+        endDate: formData.endDate ? formData.endDate.toISOString() : null
+      };
+      
       const { error } = await supabase
         .from("user_analyses")
         .insert({
           user_id: session.session.user.id,
-          form_data: formData,
+          form_data: formDataForDb,
           diagnostics: diagnostics,
         });
       

@@ -65,6 +65,7 @@ const History = () => {
   }, [navigate, toast]);
 
   const loadAnalysis = (analysis: Analysis) => {
+    // Não precisamos converter as datas aqui porque faremos isso no Index.tsx
     localStorage.setItem("selectedAnalysis", JSON.stringify(analysis));
     navigate("/");
   };
