@@ -23,8 +23,6 @@ import { SalesSection } from "@/components/SalesSection";
 import { DateRangeSelector } from "@/components/DateRangeSelector";
 import { PdfExportButton } from "@/components/PdfExportButton";
 import { calculateMetrics, getComparisonData, idealMetrics } from "@/utils/metricsHelpers";
-import { exportToPdf } from "@/utils/pdfExport";
-import { toast } from "sonner";
 
 const formSchema = z.object({
   totalClicks: z.number().min(0),
@@ -94,29 +92,6 @@ const Index = () => {
   }, [form.watch]);
 
   const hasUpsell = form.watch("hasUpsell");
-  
-  const handleExportPDF = () => {
-    try {
-      toast.promise(
-        new Promise(async (resolve) => {
-          const result = exportToPdf(
-            form.getValues(), 
-            diagnostics, 
-            getComparisonData(form.getValues())
-          );
-          resolve(result);
-        }),
-        {
-          loading: 'Gerando PDF...',
-          success: 'Relatório exportado com sucesso!',
-          error: 'Erro ao exportar o relatório.',
-        }
-      );
-    } catch (error) {
-      console.error("Erro ao exportar PDF:", error);
-      toast.error("Erro ao exportar o relatório.");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
@@ -192,29 +167,7 @@ const Index = () => {
                 />
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <DateRangeSelector form={form} />
-                <div className="flex flex-col h-full justify-between">
-                  <div>
-                    <h3 className="font-medium text-blue-700 mb-3">Exportar Análise</h3>
-                    <p className="text-sm text-gray-500 mb-4">
-                      Exporte um relatório completo com todas as métricas, diagnósticos e recomendações para seu funil de vendas.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleExportPDF}
-                    className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center justify-center"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Exportar PDF
-                  </button>
-                </div>
-              </div>
+              <DateRangeSelector form={form} />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <PriceSection form={form} formSchema={formSchema} hasUpsell={hasUpsell} />
@@ -233,6 +186,14 @@ const Index = () => {
           <DiagnosticSection diagnostics={diagnostics} />
           <ComparisonChart actualData={getComparisonData(form.getValues())} />
         </div>
+
+        <Card className="p-6">
+          <PdfExportButton 
+            formData={form.getValues()} 
+            diagnostics={diagnostics} 
+            comparisonData={getComparisonData(form.getValues())}
+          />
+        </Card>
 
         <Card className="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
           <p className="text-xl text-center font-medium">

@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { UseFormReturn } from "react-hook-form";
-import { handlePriceChange } from "@/utils/formatters";
+import { handlePriceChange, formatPriceDisplay } from "@/utils/formatters";
 import { z } from "zod";
 
 interface PriceSectionProps {
@@ -54,7 +54,7 @@ export const PriceSection = ({ form, formSchema, hasUpsell }: PriceSectionProps)
                   type="text"
                   className="text-right"
                   placeholder="R$ 0,00"
-                  value={field.value === 0 ? '' : `R$ ${field.value.toString().replace('.', ',')}`}
+                  value={formatPriceDisplay(field.value)}
                   onChange={(e) => handlePriceChange(e, field.onChange)}
                 />
               </FormControl>
@@ -73,7 +73,7 @@ export const PriceSection = ({ form, formSchema, hasUpsell }: PriceSectionProps)
                   type="text"
                   className="text-right"
                   placeholder="R$ 0,00"
-                  value={field.value === 0 ? '' : `R$ ${field.value.toString().replace('.', ',')}`}
+                  value={formatPriceDisplay(field.value)}
                   onChange={(e) => handlePriceChange(e, field.onChange)}
                 />
               </FormControl>
@@ -92,7 +92,7 @@ export const PriceSection = ({ form, formSchema, hasUpsell }: PriceSectionProps)
                   type="text"
                   className="text-right"
                   placeholder="R$ 0,00"
-                  value={field.value === 0 ? '' : `R$ ${field.value.toString().replace('.', ',')}`}
+                  value={formatPriceDisplay(field.value)}
                   onChange={(e) => handlePriceChange(e, field.onChange)}
                 />
               </FormControl>
@@ -112,7 +112,7 @@ export const PriceSection = ({ form, formSchema, hasUpsell }: PriceSectionProps)
                     type="text"
                     className="text-right"
                     placeholder="R$ 0,00"
-                    value={field.value === 0 ? '' : `R$ ${field.value.toString().replace('.', ',')}`}
+                    value={formatPriceDisplay(field.value)}
                     onChange={(e) => handlePriceChange(e, field.onChange)}
                   />
                 </FormControl>

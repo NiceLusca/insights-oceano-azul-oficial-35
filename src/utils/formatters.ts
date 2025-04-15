@@ -25,4 +25,12 @@ export const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, onChan
   
   // Chama a função onChange com o valor numérico
   onChange(numValue);
+  
+  // Retorna o valor numérico para uso na função
+  return numValue;
+};
+
+export const formatPriceDisplay = (value: number) => {
+  if (value === 0) return '';
+  return `R$ ${value.toString().replace('.', ',')}`;
 };

@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { FileDown } from "lucide-react";
+import { FilePdf } from "lucide-react";
 import { toast } from "sonner";
 import { exportToPdf } from "@/utils/pdfExport";
 
@@ -31,12 +31,19 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
   };
 
   return (
-    <Button
-      onClick={handleExportPDF}
-      className="bg-blue-600 hover:bg-blue-700 text-white w-full"
-    >
-      <FileDown className="mr-2 h-4 w-4" />
-      Exportar Análise (PDF)
-    </Button>
+    <div className="text-center">
+      <h3 className="text-lg font-medium text-blue-800 mb-3">Exportar Análise Completa</h3>
+      <p className="text-gray-600 mb-4">
+        Exporte um relatório detalhado com todas as métricas, diagnósticos e recomendações para seu funil de vendas.
+      </p>
+      <Button
+        onClick={handleExportPDF}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-6 h-auto"
+        size="lg"
+      >
+        <FilePdf className="mr-2 h-5 w-5" />
+        Exportar Relatório PDF
+      </Button>
+    </div>
   );
 };

@@ -28,8 +28,8 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   
   // Período da análise (se disponível)
   if (data.startDate && data.endDate) {
-    const startDate = format(data.startDate, "dd/MM/yyyy");
-    const endDate = format(data.endDate, "dd/MM/yyyy");
+    const startDate = format(new Date(data.startDate), "dd/MM/yyyy");
+    const endDate = format(new Date(data.endDate), "dd/MM/yyyy");
     doc.text(`Período da análise: ${startDate} a ${endDate}`, 15, 55);
   }
   
