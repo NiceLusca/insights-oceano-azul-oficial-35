@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import {
@@ -22,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const idealMetrics = {
   salesPageConversion: 0.4,
@@ -46,6 +48,7 @@ const formSchema = z.object({
   targetROI: z.number().min(1),
   monthlyRevenue: z.number().min(0).optional(),
   adSpend: z.number().min(0).optional(),
+  hasUpsell: z.boolean().default(false),
 });
 
 const formatCurrency = (value: number) => {
@@ -77,6 +80,7 @@ const Index = () => {
       targetROI: 1.5,
       monthlyRevenue: 0,
       adSpend: 0,
+      hasUpsell: false,
     },
   });
 
@@ -103,22 +107,25 @@ const Index = () => {
     
     const salesPageConversion = values.salesPageVisits > 0 ? (values.checkoutVisits / values.salesPageVisits) * 100 : 0;
     const checkoutConversion = values.checkoutVisits > 0 ? ((values.mainProductSales + values.comboSales) / values.checkoutVisits) * 100 : 0;
-    const comboRate = (values.mainProductSales + values.comboSales) > 0 ? (values.comboSales / (values.mainProductSales + values.comboSales)) * 100 : 0;
     
+    // Correto cálculo da taxa de combo: vendas de combo dividido pelo total de vendas (principal + combo)
     const totalSales = values.mainProductSales + values.comboSales;
-    const orderBumpRate = totalSales > 0 ? values.orderBumpSales / totalSales : 0;
-    const upsellRate = totalSales > 0 ? values.upsellSales / totalSales : 0;
+    const comboRate = totalSales > 0 ? (values.comboSales / totalSales) * 100 : 0;
+    
+    const orderBumpRate = totalSales > 0 ? (values.orderBumpSales / totalSales) * 100 : 0;
+    const upsellRate = totalSales > 0 ? (values.upsellSales / totalSales) * 100 : 0;
     const finalConversion = values.totalClicks > 0 ? ((values.mainProductSales + values.comboSales) / values.totalClicks) * 100 : 0;
 
+    // Cálculo da receita total (considerando upsell apenas se habilitado)
     const totalRevenue = 
       values.mainProductSales * values.mainProductPrice +
       values.comboSales * values.comboPrice +
       values.orderBumpSales * values.orderBumpPrice +
-      values.upsellSales * values.upsellPrice;
+      (values.hasUpsell ? values.upsellSales * values.upsellPrice : 0);
 
     const monthlyGoalProgress = values.monthlyRevenue ? totalRevenue / values.monthlyRevenue : undefined;
 
-    if (salesPageConversion < idealMetrics.salesPageConversion) {
+    if (salesPageConversion < idealMetrics.salesPageConversion * 100) {
       messages.push({
         type: "error",
         message: "❌ Sua taxa de conversão da página de vendas está abaixo do ideal (40%). Revise sua página de vendas."
@@ -130,7 +137,7 @@ const Index = () => {
       });
     }
 
-    if (checkoutConversion < idealMetrics.checkoutConversion) {
+    if (checkoutConversion < idealMetrics.checkoutConversion * 100) {
       messages.push({
         type: "error",
         message: "❌ Sua taxa de conversão do checkout está abaixo do ideal (40%). Revise seu processo de checkout."
@@ -142,7 +149,7 @@ const Index = () => {
       });
     }
 
-    if (comboRate < idealMetrics.comboRate) {
+    if (comboRate < idealMetrics.comboRate * 100) {
       messages.push({
         type: "warning",
         message: "⚠️ Sua taxa de combo está abaixo do ideal (35%). Considere revisar sua oferta de combo."
@@ -154,12 +161,12 @@ const Index = () => {
       });
     }
 
-    if (upsellRate < idealMetrics.upsellRate) {
+    if (values.hasUpsell && upsellRate < idealMetrics.upsellRate * 100) {
       messages.push({
         type: "warning",
         message: "⚠️ Sua taxa de upsell está abaixo do ideal (5%). Considere melhorar sua estratégia de upsell."
       });
-    } else {
+    } else if (values.hasUpsell) {
       messages.push({
         type: "success",
         message: "✅ Sua taxa de upsell está dentro ou acima do ideal!"
@@ -188,10 +195,14 @@ const Index = () => {
   const getComparisonData = (values: z.infer<typeof formSchema>) => {
     const salesPageConversion = values.salesPageVisits > 0 ? (values.checkoutVisits / values.salesPageVisits) * 100 : 0;
     const checkoutConversion = values.checkoutVisits > 0 ? ((values.mainProductSales + values.comboSales) / values.checkoutVisits) * 100 : 0;
-    const comboRate = (values.mainProductSales + values.comboSales) > 0 ? (values.comboSales / (values.mainProductSales + values.comboSales)) * 100 : 0;
-    const upsellRate = (values.mainProductSales + values.comboSales) > 0 ? (values.upsellSales / (values.mainProductSales + values.comboSales)) * 100 : 0;
+    
+    // Correto cálculo da taxa de combo
+    const totalSales = values.mainProductSales + values.comboSales;
+    const comboRate = totalSales > 0 ? (values.comboSales / totalSales) * 100 : 0;
+    
+    const upsellRate = totalSales > 0 ? (values.upsellSales / totalSales) * 100 : 0;
 
-    return [
+    const data = [
       {
         name: "Página de Vendas",
         actual: Number(salesPageConversion.toFixed(1)),
@@ -207,12 +218,18 @@ const Index = () => {
         actual: Number(comboRate.toFixed(1)),
         ideal: idealMetrics.comboRate * 100,
       },
-      {
+    ];
+    
+    // Adiciona upsell apenas se habilitado
+    if (values.hasUpsell) {
+      data.push({
         name: "Taxa Upsell",
         actual: Number(upsellRate.toFixed(1)),
         ideal: idealMetrics.upsellRate * 100,
-      },
-    ];
+      });
+    }
+    
+    return data;
   };
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -227,6 +244,8 @@ const Index = () => {
     });
     return () => subscription.unsubscribe();
   }, [form.watch]);
+
+  const hasUpsell = form.watch("hasUpsell");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
@@ -268,10 +287,12 @@ const Index = () => {
               <p className="text-sm text-blue-600">Taxa de Order Bump</p>
               <p className="font-semibold">30%</p>
             </div>
-            <div>
-              <p className="text-sm text-blue-600">Taxa de Upsell</p>
-              <p className="font-semibold">5%</p>
-            </div>
+            {hasUpsell && (
+              <div>
+                <p className="text-sm text-blue-600">Taxa de Upsell</p>
+                <p className="font-semibold">5%</p>
+              </div>
+            )}
           </div>
         </Card>
 
@@ -279,122 +300,32 @@ const Index = () => {
           <h2 className="text-xl font-semibold text-blue-800 mb-4">✍️ Seus Números</h2>
           <Form {...form}>
             <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h3 className="font-medium text-blue-700 flex items-center gap-2">
-                    Métricas de Tráfego
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="h-4 w-4" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Métricas para análise do seu funil de vendas</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </h3>
-                  <FormField
-                    control={form.control}
-                    name="totalClicks"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Total de Cliques</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="salesPageVisits"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Visitas na Página de Vendas</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="checkoutVisits"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Visitas no Checkout</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="font-medium text-blue-700">Vendas (unidades)</h3>
-                  <FormField
-                    control={form.control}
-                    name="mainProductSales"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Produto Principal</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="comboSales"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Combo</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="orderBumpSales"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Order Bump</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="upsellSales"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Upsell</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+              {/* Opção de Upsell */}
+              <div className="flex items-center space-x-2 my-4">
+                <FormField
+                  control={form.control}
+                  name="hasUpsell"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center space-x-2">
+                      <FormControl>
+                        <Checkbox 
+                          checked={field.value} 
+                          onCheckedChange={field.onChange} 
+                          id="hasUpsell"
+                        />
+                      </FormControl>
+                      <FormLabel htmlFor="hasUpsell" className="cursor-pointer font-medium">
+                        Você tem Upsell?
+                      </FormLabel>
+                    </FormItem>
+                  )}
+                />
               </div>
-
+              
+              {/* Preços primeiro */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h3 className="font-medium text-blue-700 flex items-center gap-2">
+                <Card className="p-4 shadow-sm">
+                  <h3 className="font-medium text-blue-700 mb-3 flex items-center gap-2">
                     Preços
                     <TooltipProvider>
                       <Tooltip>
@@ -407,143 +338,274 @@ const Index = () => {
                       </Tooltip>
                     </TooltipProvider>
                   </h3>
-                  <FormField
-                    control={form.control}
-                    name="mainProductPrice"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Produto Principal</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={e => field.onChange(Number(e.target.value))}
-                            placeholder="R$ 0,00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="mainProductPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Produto Principal</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={e => field.onChange(Number(e.target.value))}
+                              placeholder="R$ 0,00"
+                              className="text-right"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="comboPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Combo</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={e => field.onChange(Number(e.target.value))}
+                              placeholder="R$ 0,00"
+                              className="text-right"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="orderBumpPrice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Order Bump</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={e => field.onChange(Number(e.target.value))}
+                              placeholder="R$ 0,00"
+                              className="text-right"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {hasUpsell && (
+                      <FormField
+                        control={form.control}
+                        name="upsellPrice"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Upsell (média)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                {...field}
+                                onChange={e => field.onChange(Number(e.target.value))}
+                                placeholder="R$ 0,00"
+                                className="text-right"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="comboPrice"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Combo</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={e => field.onChange(Number(e.target.value))}
-                            placeholder="R$ 0,00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="orderBumpPrice"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Order Bump</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={e => field.onChange(Number(e.target.value))}
-                            placeholder="R$ 0,00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="upsellPrice"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Upsell (média)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={e => field.onChange(Number(e.target.value))}
-                            placeholder="R$ 0,00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                  </div>
+                </Card>
 
-                <div className="space-y-4">
-                  <h3 className="font-medium text-blue-700">Objetivos e Investimentos</h3>
-                  <FormField
-                    control={form.control}
-                    name="targetROI"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>ROI Desejado</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.1"
-                            {...field}
-                            onChange={e => field.onChange(Number(e.target.value))}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                <Card className="p-4 shadow-sm">
+                  <h3 className="font-medium text-blue-700 mb-3">Objetivos e Investimentos</h3>
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="targetROI"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ROI Desejado</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.1"
+                              {...field}
+                              onChange={e => field.onChange(Number(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="monthlyRevenue"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Meta de Faturamento Mensal</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={e => field.onChange(Number(e.target.value))}
+                              placeholder="R$ 0,00"
+                              className="text-right"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="adSpend"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Gasto em Anúncios</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              {...field}
+                              onChange={e => field.onChange(Number(e.target.value))}
+                              placeholder="R$ 0,00"
+                              className="text-right"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="p-4 shadow-sm">
+                  <h3 className="font-medium text-blue-700 flex items-center gap-2 mb-3">
+                    Métricas de Tráfego
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Métricas para análise do seu funil de vendas</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </h3>
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="totalClicks"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Total de Cliques</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="salesPageVisits"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Visitas na Página de Vendas</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="checkoutVisits"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Visitas no Checkout</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </Card>
+
+                <Card className="p-4 shadow-sm">
+                  <h3 className="font-medium text-blue-700 mb-3">Vendas (unidades)</h3>
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="mainProductSales"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Produto Principal</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="comboSales"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Combo</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="orderBumpSales"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Order Bump</FormLabel>
+                          <FormControl>
+                            <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {hasUpsell && (
+                      <FormField
+                        control={form.control}
+                        name="upsellSales"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Upsell</FormLabel>
+                            <FormControl>
+                              <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="monthlyRevenue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Meta de Faturamento Mensal</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={e => field.onChange(Number(e.target.value))}
-                            placeholder="R$ 0,00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="adSpend"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Gasto em Anúncios</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            {...field}
-                            onChange={e => field.onChange(Number(e.target.value))}
-                            placeholder="R$ 0,00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                  </div>
+                </Card>
               </div>
             </form>
           </Form>
