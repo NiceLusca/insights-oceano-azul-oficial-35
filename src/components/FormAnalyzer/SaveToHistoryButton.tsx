@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { FormValues } from "@/schemas/formSchema";
 import { Save, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SaveToHistoryButtonProps {
   formData: FormValues;
@@ -19,14 +20,16 @@ export const SaveToHistoryButton = ({
 }: SaveToHistoryButtonProps) => {
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const saveToHistory = async () => {
     if (!isAuthenticated) {
       toast({
-        title: "É necessário fazer login",
-        description: "Faça login para salvar seu histórico",
+        title: "Login required",
+        description: "Please login to save to history",
         variant: "destructive",
       });
+      navigate("/auth");
       return;
     }
     
@@ -35,9 +38,11 @@ export const SaveToHistoryButton = ({
     try {
       const { data: session } = await supabase.auth.getSession();
       
-      if (!session.session) return;
+      if (!session.session) {
+        throw new Error("No active session found");
+      }
       
-      // Preparar dados para envio ao Supabase (converter Date para string)
+      // Prepare data for Supabase (convert Date to string)
       const formDataForDb = {
         ...formData,
         startDate: formData.startDate ? formData.startDate.toISOString() : null,
@@ -55,13 +60,14 @@ export const SaveToHistoryButton = ({
       if (error) throw error;
       
       toast({
-        title: "Análise salva com sucesso!",
-        description: "Você pode ver seu histórico de análises clicando na guia 'Histórico'",
+        title: "Analysis saved successfully!",
+        description: "You can view your analysis history by clicking on the 'History' tab",
       });
     } catch (error: any) {
+      console.error("Error saving analysis:", error);
       toast({
-        title: "Erro ao salvar análise",
-        description: error.message,
+        title: "Error saving analysis",
+        description: error.message || "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
@@ -73,7 +79,7 @@ export const SaveToHistoryButton = ({
     <div className="flex justify-end mt-6">
       <Button 
         onClick={saveToHistory}
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition-colors"
         disabled={saving}
       >
         {saving ? (
@@ -81,7 +87,7 @@ export const SaveToHistoryButton = ({
         ) : (
           <Save className="h-4 w-4" />
         )}
-        {saving ? "Salvando..." : "Salvar no Histórico"}
+        {saving ? "Saving..." : "Save to History"}
       </Button>
     </div>
   );

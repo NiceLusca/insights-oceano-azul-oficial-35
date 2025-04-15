@@ -12,50 +12,34 @@ export const useAuthentication = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      setLoading(true);
-      
+    // Set up auth state listener FIRST to avoid missing auth events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        setIsAuthenticated(!!currentSession);
+      }
+    );
+    
+    // THEN check for existing session
+    const initializeAuth = async () => {
       try {
-        // Set up auth state listener FIRST
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          (event, session) => {
-            setSession(session);
-            setUser(session?.user ?? null);
-            setIsAuthenticated(!!session);
-          }
-        );
-        
-        // THEN check for existing session
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        setSession(session);
-        setUser(session?.user ?? null);
-        setIsAuthenticated(!!session);
-        
-        return () => {
-          if (subscription) {
-            subscription.unsubscribe();
-          }
-        };
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        setIsAuthenticated(!!currentSession);
       } catch (error) {
-        console.error("Erro ao verificar autenticação:", error);
+        console.error("Error checking authentication:", error);
       } finally {
         setLoading(false);
       }
     };
     
-    const cleanup = checkAuth();
+    initializeAuth();
+    
+    // Cleanup subscription when component unmounts
     return () => {
-      // Execute the cleanup function returned by checkAuth
-      if (cleanup instanceof Promise) {
-        cleanup.then(cleanupFn => {
-          if (typeof cleanupFn === 'function') {
-            cleanupFn();
-          }
-        }).catch(error => {
-          console.error("Error cleaning up auth:", error);
-        });
-      }
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -71,17 +55,16 @@ export const useAuthentication = () => {
       navigate("/");
       return { success: true };
     } catch (error: any) {
-      console.error("Erro ao fazer login:", error);
+      console.error("Error logging in:", error);
       return { 
         success: false, 
-        error: error.message || "Erro ao fazer login" 
+        error: error.message || "Error logging in" 
       };
     }
   };
 
   const signUp = async (email: string, password: string) => {
     try {
-      // Using signUp with autoconfirm disabled
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -95,12 +78,12 @@ export const useAuthentication = () => {
       
       if (error) throw error;
       
-      return { success: true, message: "Cadastro realizado com sucesso!" };
+      return { success: true, message: "Registration successful!" };
     } catch (error: any) {
-      console.error("Erro ao cadastrar:", error);
+      console.error("Error registering:", error);
       return { 
         success: false, 
-        error: error.message || "Erro ao cadastrar" 
+        error: error.message || "Error registering" 
       };
     }
   };
@@ -110,7 +93,7 @@ export const useAuthentication = () => {
       await supabase.auth.signOut();
       navigate("/");
     } catch (error) {
-      console.error("Erro ao fazer logout:", error);
+      console.error("Error logging out:", error);
     }
   };
 

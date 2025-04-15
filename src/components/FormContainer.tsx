@@ -1,7 +1,6 @@
 
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { DateRangeSelector } from "@/components/DateRangeSelector";
 import { PriceSection } from "@/components/PriceSection";
@@ -16,13 +15,13 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import * as z from "zod";
 import { FormValues } from "@/schemas/formSchema";
+import { BarChart3 } from "lucide-react";
 
 interface FormContainerProps {
   form: UseFormReturn<any>;
   onSubmit: (values: any) => void;
-  formSchema: FormValues; // This is now FormValues type
+  formSchema: FormValues;
   onAnalyze?: () => void;
 }
 
@@ -44,8 +43,10 @@ export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormCon
   };
 
   return (
-    <Card className="p-6">
-      <h2 className="text-xl font-semibold text-blue-800 mb-4">✍️ Seus Números</h2>
+    <Card className="p-6 shadow-md">
+      <h2 className="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+        <span className="mr-2">✍️</span> Your Numbers
+      </h2>
       <Form {...form}>
         <form className="space-y-6">
           <div className="flex items-center space-x-2 my-4">
@@ -62,7 +63,7 @@ export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormCon
                     />
                   </FormControl>
                   <FormLabel htmlFor="hasUpsell" className="cursor-pointer font-medium">
-                    Você tem Upsell?
+                    Do you have Upsell?
                   </FormLabel>
                 </FormItem>
               )}
@@ -83,10 +84,11 @@ export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormCon
           
           <Button 
             type="button" 
-            className="w-full mt-4" 
+            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 transition-colors flex items-center justify-center gap-2" 
             onClick={handleSubmitAndAnalyze}
           >
-            Analisar Resultados
+            <BarChart3 className="h-4 w-4" />
+            Analyze Results
           </Button>
         </form>
       </Form>
