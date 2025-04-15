@@ -91,16 +91,31 @@ export const calculateMetrics = (values: any) => {
     });
   }
 
-  let currentROI, maxCPC;
+  let currentROI, maxCPC, currentCPC;
   if (values.adSpend && values.adSpend > 0) {
     currentROI = totalRevenue / values.adSpend;
     maxCPC = (totalRevenue / values.targetROI) / values.totalClicks;
+    currentCPC = values.totalClicks > 0 ? values.adSpend / values.totalClicks : 0;
+    
+    // Adicionar análise de CPC
+    if (currentCPC > maxCPC) {
+      messages.push({
+        type: "error",
+        message: `❌ Seu CPC atual (R$ ${currentCPC.toFixed(2)}) está acima do ideal. O CPC máximo recomendado é R$ ${maxCPC.toFixed(2)}.`
+      });
+    } else {
+      messages.push({
+        type: "success",
+        message: `✅ Seu CPC atual (R$ ${currentCPC.toFixed(2)}) está dentro do limite recomendado (máximo: R$ ${maxCPC.toFixed(2)}).`
+      });
+    }
   }
 
   return {
     totalRevenue,
     currentROI,
     maxCPC,
+    currentCPC,
     salesPageConversion,
     checkoutConversion,
     finalConversion,

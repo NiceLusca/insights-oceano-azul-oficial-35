@@ -43,6 +43,7 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     ["Conversão da Página de Vendas", `${diagnostics.salesPageConversion.toFixed(1)}%`],
     ["Conversão do Checkout", `${diagnostics.checkoutConversion.toFixed(1)}%`],
     ["Conversão Final", `${diagnostics.finalConversion.toFixed(1)}%`],
+    ["Taxa de Order Bump", `${diagnostics.orderBumpRate ? diagnostics.orderBumpRate.toFixed(1) : 0}%`],
   ];
   
   if (diagnostics.currentROI) {
@@ -51,6 +52,10 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   
   if (diagnostics.maxCPC) {
     metrics.push(["CPC Máximo Recomendado", formatCurrency(diagnostics.maxCPC)]);
+  }
+  
+  if (diagnostics.currentCPC) {
+    metrics.push(["CPC Atual", formatCurrency(diagnostics.currentCPC)]);
   }
   
   autoTable(doc, {
@@ -62,7 +67,6 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   });
   
   // Diagnósticos
-  // Get the finalY position from the previous autoTable
   const tableHeight = (doc as any).lastAutoTable?.finalY || 130;
   doc.setFontSize(14);
   doc.text("Diagnóstico", 15, tableHeight + 10);
@@ -78,7 +82,6 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   });
   
   // Comparação com métricas ideais
-  // Get the finalY position from the previous autoTable
   const comparisonStartY = (doc as any).lastAutoTable?.finalY || 200;
   doc.setFontSize(14);
   doc.text("Comparação com Métricas Ideais", 15, comparisonStartY + 10);

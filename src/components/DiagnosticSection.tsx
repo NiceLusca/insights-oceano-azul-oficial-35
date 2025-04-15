@@ -14,6 +14,7 @@ interface DiagnosticSectionProps {
     totalRevenue: number;
     currentROI?: number;
     maxCPC?: number;
+    currentCPC?: number;
     salesPageConversion: number;
     checkoutConversion: number;
     finalConversion: number;
@@ -29,7 +30,7 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
     <Card className="p-6 bg-gradient-to-br from-blue-50 to-white">
       <h2 className="text-xl font-semibold text-blue-800 mb-4">📊 Diagnóstico</h2>
       
-      <div className="grid grid-cols-1 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="p-4 bg-white rounded-lg shadow-sm">
           <p className="text-sm text-blue-600">Faturamento Total</p>
           <p className="text-2xl font-bold">
@@ -67,11 +68,11 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
           </div>
         )}
 
-        {diagnostics.currentROI && (
+        {diagnostics.currentCPC && (
           <div className="p-4 bg-white rounded-lg shadow-sm">
             <p className="text-sm text-blue-600">CPC Atual</p>
-            <p className="text-2xl font-bold">
-              {formatCurrency(diagnostics.adSpend && diagnostics.adSpend > 0 ? diagnostics.adSpend / (diagnostics.totalRevenue / diagnostics.currentROI) : 0)}
+            <p className={`text-2xl font-bold ${diagnostics.currentCPC > (diagnostics.maxCPC || 0) ? 'text-red-500' : 'text-green-500'}`}>
+              {formatCurrency(diagnostics.currentCPC)}
             </p>
           </div>
         )}
@@ -87,7 +88,7 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
 
         <div className="p-4 bg-white rounded-lg shadow-sm">
           <p className="text-sm text-blue-600">Taxa de Order Bump</p>
-          <p className="text-2xl font-bold flex items-center gap-2">
+          <p className={`text-2xl font-bold flex items-center gap-2 ${diagnostics.orderBumpRate && diagnostics.orderBumpRate < 30 ? 'text-amber-500' : 'text-green-500'}`}>
             {diagnostics.orderBumpRate ? `${diagnostics.orderBumpRate.toFixed(1)}%` : "0.0%"}
             <TooltipProvider>
               <Tooltip>
