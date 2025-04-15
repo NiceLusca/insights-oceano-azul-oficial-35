@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import {
@@ -15,6 +14,14 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Separator } from "@/components/ui/separator";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ComparisonChart } from "@/components/ComparisonChart";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const idealMetrics = {
   salesPageConversion: 0.4,
@@ -25,24 +32,17 @@ const idealMetrics = {
 };
 
 const formSchema = z.object({
-  // Traffic metrics
   totalClicks: z.number().min(0),
   salesPageVisits: z.number().min(0),
   checkoutVisits: z.number().min(0),
-  
-  // Sales numbers
   mainProductSales: z.number().min(0),
   comboSales: z.number().min(0),
   orderBumpSales: z.number().min(0),
   upsellSales: z.number().min(0),
-  
-  // Prices
   mainProductPrice: z.number().min(0),
   comboPrice: z.number().min(0),
   orderBumpPrice: z.number().min(0),
   upsellPrice: z.number().min(0),
-  
-  // Goals
   targetROI: z.number().min(1),
   monthlyRevenue: z.number().min(0).optional(),
   adSpend: z.number().min(0).optional(),
@@ -99,28 +99,22 @@ const Index = () => {
   const calculateMetrics = (values: z.infer<typeof formSchema>) => {
     const messages = [];
     
-    // Calculate conversion rates
-    const salesPageConversion = values.salesPageVisits > 0 ? values.checkoutVisits / values.salesPageVisits : 0;
-    const checkoutConversion = values.checkoutVisits > 0 ? (values.mainProductSales + values.comboSales) / values.checkoutVisits : 0;
-    const finalConversion = values.totalClicks > 0 ? (values.mainProductSales + values.comboSales) / values.totalClicks : 0;
+    const salesPageConversion = values.salesPageVisits > 0 ? (values.checkoutVisits / values.salesPageVisits) * 100 : 0;
+    const checkoutConversion = values.checkoutVisits > 0 ? ((values.mainProductSales + values.comboSales) / values.checkoutVisits) * 100 : 0;
+    const comboRate = (values.mainProductSales + values.comboSales) > 0 ? (values.comboSales / (values.mainProductSales + values.comboSales)) * 100 : 0;
     
-    // Calculate actual rates for upsells
     const totalSales = values.mainProductSales + values.comboSales;
-    const comboRate = totalSales > 0 ? values.comboSales / totalSales : 0;
     const orderBumpRate = totalSales > 0 ? values.orderBumpSales / totalSales : 0;
     const upsellRate = totalSales > 0 ? values.upsellSales / totalSales : 0;
 
-    // Calculate total revenue
     const totalRevenue = 
       values.mainProductSales * values.mainProductPrice +
       values.comboSales * values.comboPrice +
       values.orderBumpSales * values.orderBumpPrice +
       values.upsellSales * values.upsellPrice;
 
-    // Calculate monthly goal progress if monthly revenue target is set
     const monthlyGoalProgress = values.monthlyRevenue ? totalRevenue / values.monthlyRevenue : undefined;
 
-    // Compare rates with ideal metrics
     if (salesPageConversion < idealMetrics.salesPageConversion) {
       messages.push({
         type: "error",
@@ -157,7 +151,6 @@ const Index = () => {
       });
     }
 
-    // Calculate ROI and max CPC if ad spend is provided
     let currentROI, maxCPC;
     if (values.adSpend && values.adSpend > 0) {
       currentROI = totalRevenue / values.adSpend;
@@ -176,11 +169,34 @@ const Index = () => {
     });
   };
 
+  const getComparisonData = (values: z.infer<typeof formSchema>) => {
+    const salesPageConversion = values.salesPageVisits > 0 ? (values.checkoutVisits / values.salesPageVisits) * 100 : 0;
+    const checkoutConversion = values.checkoutVisits > 0 ? ((values.mainProductSales + values.comboSales) / values.checkoutVisits) * 100 : 0;
+    const comboRate = (values.mainProductSales + values.comboSales) > 0 ? (values.comboSales / (values.mainProductSales + values.comboSales)) * 100 : 0;
+    
+    return [
+      {
+        name: "Página de Vendas",
+        actual: Number(salesPageConversion.toFixed(1)),
+        ideal: idealMetrics.salesPageConversion * 100,
+      },
+      {
+        name: "Checkout",
+        actual: Number(checkoutConversion.toFixed(1)),
+        ideal: idealMetrics.checkoutConversion * 100,
+      },
+      {
+        name: "Taxa Combo",
+        actual: Number(comboRate.toFixed(1)),
+        ideal: idealMetrics.comboRate * 100,
+      },
+    ];
+  };
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     calculateMetrics(values);
   };
 
-  // Watch form values for real-time updates
   useEffect(() => {
     const subscription = form.watch((value) => {
       if (Object.values(value).every((v) => v !== undefined)) {
@@ -193,7 +209,6 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-6">
       <div className="max-w-4xl mx-auto space-y-8">
-        {/* Header with Logo */}
         <div className="text-center space-y-4">
           <div className="w-32 mx-auto">
             <AspectRatio ratio={1}>
@@ -210,9 +225,10 @@ const Index = () => {
           <p className="text-blue-600">Oceano Azul</p>
         </div>
 
-        {/* Bloco 1 - Métricas Ideais */}
         <Card className="p-6 bg-blue-50/50">
-          <h2 className="text-xl font-semibold text-blue-800 mb-4">🔵 Métricas Ideais</h2>
+          <h2 className="text-xl font-semibold text-blue-800 mb-4">
+            🔵 Métricas Ideais
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div>
               <p className="text-sm text-blue-600">Conversão da Página de Vendas</p>
@@ -237,15 +253,25 @@ const Index = () => {
           </div>
         </Card>
 
-        {/* Bloco 2 - Input do Usuário */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold text-blue-800 mb-4">✍️ Seus Números</h2>
           <Form {...form}>
             <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Métricas de Tráfego */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="font-medium text-blue-700">Métricas de Tráfego</h3>
+                  <h3 className="font-medium text-blue-700 flex items-center gap-2">
+                    Métricas de Tráfego
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Métricas para análise do seu funil de vendas</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </h3>
                   <FormField
                     control={form.control}
                     name="totalClicks"
@@ -287,7 +313,6 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Vendas */}
                 <div className="space-y-4">
                   <h3 className="font-medium text-blue-700">Vendas (unidades)</h3>
                   <FormField
@@ -345,10 +370,21 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Preços e Objetivos */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h3 className="font-medium text-blue-700">Preços (R$)</h3>
+                  <h3 className="font-medium text-blue-700 flex items-center gap-2">
+                    Preços
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Para Upsell, use a média entre Upsell e Downsell.<br/>Ex: Upsell R$97 + Downsell R$67 = R$82 (média)</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </h3>
                   <FormField
                     control={form.control}
                     name="mainProductPrice"
@@ -427,9 +463,8 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Objetivos */}
                 <div className="space-y-4">
-                  <h3 className="font-medium text-blue-700">Objetivos</h3>
+                  <h3 className="font-medium text-blue-700">Objetivos e Investimentos</h3>
                   <FormField
                     control={form.control}
                     name="targetROI"
@@ -492,81 +527,79 @@ const Index = () => {
           </Form>
         </Card>
 
-        {/* Bloco 3 - Resultados */}
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-white">
-          <h2 className="text-xl font-semibold text-blue-800 mb-4">📊 Diagnóstico</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="p-4 bg-white rounded-lg shadow-sm">
-              <p className="text-sm text-blue-600">Faturamento Total</p>
-              <p className="text-2xl font-bold">
-                {formatCurrency(diagnostics.totalRevenue)}
-              </p>
-            </div>
-
-            {diagnostics.monthlyGoalProgress !== undefined && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-white">
+            <h2 className="text-xl font-semibold text-blue-800 mb-4">📊 Diagnóstico</h2>
+            
+            <div className="grid grid-cols-1 gap-4 mb-6">
               <div className="p-4 bg-white rounded-lg shadow-sm">
-                <p className="text-sm text-blue-600">Progresso da Meta Mensal</p>
+                <p className="text-sm text-blue-600">Faturamento Total</p>
                 <p className="text-2xl font-bold">
-                  {formatPercentage(diagnostics.monthlyGoalProgress)}
+                  {formatCurrency(diagnostics.totalRevenue)}
                 </p>
               </div>
-            )}
 
-            {diagnostics.maxCPC && (
-              <div className="p-4 bg-white rounded-lg shadow-sm">
-                <p className="text-sm text-blue-600">CPC Máximo Recomendado</p>
-                <p className="text-2xl font-bold">
-                  {formatCurrency(diagnostics.maxCPC)}
-                </p>
-              </div>
-            )}
-          </div>
+              {diagnostics.monthlyGoalProgress !== undefined && (
+                <div className="p-4 bg-white rounded-lg shadow-sm">
+                  <p className="text-sm text-blue-600">Progresso da Meta Mensal</p>
+                  <p className="text-2xl font-bold">
+                    {formatPercentage(diagnostics.monthlyGoalProgress)}
+                  </p>
+                </div>
+              )}
 
-          {/* Taxas de Conversão */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="p-4 bg-white rounded-lg shadow-sm">
-              <p className="text-sm text-blue-600">Conversão da Página de Vendas</p>
-              <p className="text-2xl font-bold">
-                {formatPercentage(diagnostics.salesPageConversion)}
-              </p>
+              {diagnostics.maxCPC && (
+                <div className="p-4 bg-white rounded-lg shadow-sm">
+                  <p className="text-sm text-blue-600 flex items-center gap-2">
+                    CPC Máximo Recomendado
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Valor máximo que você pode pagar por clique mantendo seu ROI desejado</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(diagnostics.maxCPC)}
+                  </p>
+                </div>
+              )}
+
+              {diagnostics.currentROI && (
+                <div className="p-4 bg-white rounded-lg shadow-sm">
+                  <p className="text-sm text-blue-600">CPC Atual</p>
+                  <p className="text-2xl font-bold">
+                    {formatCurrency(diagnostics.adSpend && diagnostics.adSpend > 0 ? diagnostics.adSpend / form.getValues().totalClicks : 0)}
+                  </p>
+                </div>
+              )}
             </div>
-            <div className="p-4 bg-white rounded-lg shadow-sm">
-              <p className="text-sm text-blue-600">Conversão do Checkout</p>
-              <p className="text-2xl font-bold">
-                {formatPercentage(diagnostics.checkoutConversion)}
-              </p>
+
+            <div className="space-y-3">
+              {diagnostics.messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`p-4 rounded-lg ${
+                    msg.type === "success"
+                      ? "bg-green-50 text-green-700"
+                      : msg.type === "warning"
+                      ? "bg-yellow-50 text-yellow-700"
+                      : "bg-red-50 text-red-700"
+                  }`}
+                >
+                  {msg.message}
+                </div>
+              ))}
             </div>
-            <div className="p-4 bg-white rounded-lg shadow-sm">
-              <p className="text-sm text-blue-600">Taxa de Conversão Final</p>
-              <p className="text-2xl font-bold">
-                {formatPercentage(diagnostics.finalConversion)}
-              </p>
-            </div>
-          </div>
+          </Card>
 
-          <Separator className="my-6" />
+          <ComparisonChart actualData={getComparisonData(form.getValues())} />
+        </div>
 
-          {/* Mensagens de Diagnóstico */}
-          <div className="space-y-3">
-            {diagnostics.messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`p-4 rounded-lg ${
-                  msg.type === "success"
-                    ? "bg-green-50 text-green-700"
-                    : msg.type === "warning"
-                    ? "bg-yellow-50 text-yellow-700"
-                    : "bg-red-50 text-red-700"
-                }`}
-              >
-                {msg.message}
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Bloco 4 - Mensagem Final */}
         <Card className="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
           <p className="text-xl text-center font-medium">
             "Você agora tem clareza de onde ajustar. Otimização constante é o caminho do Oceano Azul. Continue testando, melhorando e crescendo!"
