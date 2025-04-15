@@ -11,8 +11,12 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="container mx-auto px-4 py-8 space-y-6 max-w-6xl">
       <header className="flex justify-between items-center">
         <div className="flex items-center">
-          <div className="bg-[#0EA5E9] p-2 rounded-md mr-3">
-            <h1 className="text-lg font-bold text-white">OA</h1>
+          <div className="mr-3">
+            <img 
+              src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png" 
+              alt="Oceano Azul Logo" 
+              className="h-12 w-auto"
+            />
           </div>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-blue-800">

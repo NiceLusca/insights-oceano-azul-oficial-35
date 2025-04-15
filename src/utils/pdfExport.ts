@@ -8,7 +8,7 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   const doc = new jsPDF();
   
   // Adiciona o logo
-  const imgData = "/lovable-uploads/2da50e89-1402-421c-8c73-60efe5119215.png";
+  const imgData = "/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png";
   doc.addImage(imgData, "PNG", 15, 10, 30, 30);
   
   // Título

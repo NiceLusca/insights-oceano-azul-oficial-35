@@ -61,15 +61,6 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
     return `${roi.toFixed(2)}x`;
   };
 
-  const calculateConversionRate = (diagnostics: any) => {
-    if (!diagnostics.finalConversion) {
-      return "N/A";
-    }
-    
-    const conversionRate = diagnostics.finalConversion * 100;
-    return `${conversionRate.toFixed(2)}%`;
-  };
-
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -81,7 +72,6 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
             <TableHead>Faturamento Total</TableHead>
             <TableHead>Valor Gasto</TableHead>
             <TableHead>ROI</TableHead>
-            <TableHead>Taxa de Conversão</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
@@ -114,14 +104,6 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
                 >
                   {calculateROI(analysis.diagnostics)}
                 </Badge>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center">
-                  <Percent className="h-4 w-4 mr-1 text-blue-500" />
-                  <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                    {calculateConversionRate(analysis.diagnostics)}
-                  </Badge>
-                </div>
               </TableCell>
               <TableCell>
                 <TooltipProvider>
