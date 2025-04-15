@@ -11,15 +11,18 @@ export const formatPercentage = (value: number) => {
 };
 
 export const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, onChange: (...event: any[]) => void) => {
-  // Remove non-numeric characters except periods and commas
+  // Remove qualquer caractere que não seja número, ponto ou vírgula
   let value = e.target.value.replace(/[^0-9.,]/g, '');
   
-  // Replace comma with period for calculation
-  value = value.replace(',', '.');
+  // Remove o "R$ " se existir
+  value = value.replace("R$ ", "");
   
-  // Parse to number or default to 0
-  const numValue = value ? parseFloat(value) : 0;
+  // Converte vírgula para ponto para cálculos internos
+  const numericValue = value.replace(',', '.');
   
-  // Call the onChange function with the numeric value
+  // Se for um número válido, use-o; caso contrário, use 0
+  const numValue = isNaN(parseFloat(numericValue)) ? 0 : parseFloat(numericValue);
+  
+  // Chama a função onChange com o valor numérico
   onChange(numValue);
 };
