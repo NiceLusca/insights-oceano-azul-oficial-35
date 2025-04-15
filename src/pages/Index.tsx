@@ -93,6 +93,7 @@ const Index = () => {
     finalConversion: number;
     monthlyGoalProgress?: number;
     adSpend?: number;
+    orderBumpRate?: number;
     messages: Array<{ type: "success" | "warning" | "error"; message: string }>;
   }>({
     totalRevenue: 0,
@@ -112,6 +113,7 @@ const Index = () => {
     const totalSales = values.mainProductSales + values.comboSales;
     const comboRate = totalSales > 0 ? (values.comboSales / totalSales) * 100 : 0;
     
+    // Cálculo da taxa de order bump conforme solicitado (30% do total de vendas)
     const orderBumpRate = totalSales > 0 ? (values.orderBumpSales / totalSales) * 100 : 0;
     const upsellRate = totalSales > 0 ? (values.upsellSales / totalSales) * 100 : 0;
     const finalConversion = values.totalClicks > 0 ? ((values.mainProductSales + values.comboSales) / values.totalClicks) * 100 : 0;
@@ -160,6 +162,20 @@ const Index = () => {
         message: "✅ Sua taxa de combo está dentro ou acima do ideal. Parabéns!"
       });
     }
+    
+    // Análise específica de order bump conforme solicitado
+    if (orderBumpRate < idealMetrics.orderBumpRate * 100) {
+      const faltaOrderBumps = Math.ceil((idealMetrics.orderBumpRate * totalSales) - values.orderBumpSales);
+      messages.push({
+        type: "warning",
+        message: `⚠️ Sua taxa de order bump está abaixo do ideal (30%). Você está vendendo apenas ${orderBumpRate.toFixed(1)}% quando deveria vender 30%. Faltam aproximadamente ${faltaOrderBumps} order bumps para atingir o ideal.`
+      });
+    } else {
+      messages.push({
+        type: "success",
+        message: "✅ Sua taxa de order bump está dentro ou acima do ideal. Parabéns!"
+      });
+    }
 
     if (values.hasUpsell && upsellRate < idealMetrics.upsellRate * 100) {
       messages.push({
@@ -188,6 +204,7 @@ const Index = () => {
       finalConversion,
       monthlyGoalProgress,
       adSpend: values.adSpend,
+      orderBumpRate,
       messages
     });
   };
@@ -199,6 +216,9 @@ const Index = () => {
     // Correto cálculo da taxa de combo
     const totalSales = values.mainProductSales + values.comboSales;
     const comboRate = totalSales > 0 ? (values.comboSales / totalSales) * 100 : 0;
+    
+    // Cálculo da taxa de order bump (30% do total de vendas)
+    const orderBumpRate = totalSales > 0 ? (values.orderBumpSales / totalSales) * 100 : 0;
     
     const upsellRate = totalSales > 0 ? (values.upsellSales / totalSales) * 100 : 0;
 
@@ -217,6 +237,11 @@ const Index = () => {
         name: "Taxa Combo",
         actual: Number(comboRate.toFixed(1)),
         ideal: idealMetrics.comboRate * 100,
+      },
+      {
+        name: "Order Bump",
+        actual: Number(orderBumpRate.toFixed(1)),
+        ideal: idealMetrics.orderBumpRate * 100,
       },
     ];
     
@@ -661,6 +686,32 @@ const Index = () => {
                   </p>
                 </div>
               )}
+              
+              {diagnostics.currentROI && (
+                <div className="p-4 bg-white rounded-lg shadow-sm">
+                  <p className="text-sm text-blue-600">ROI Atual</p>
+                  <p className="text-2xl font-bold">
+                    {diagnostics.currentROI.toFixed(2)}x
+                  </p>
+                </div>
+              )}
+
+              <div className="p-4 bg-white rounded-lg shadow-sm">
+                <p className="text-sm text-blue-600">Taxa de Order Bump</p>
+                <p className="text-2xl font-bold flex items-center gap-2">
+                  {diagnostics.orderBumpRate ? `${diagnostics.orderBumpRate.toFixed(1)}%` : "0.0%"}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-4 w-4" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Ideal: 30% das vendas totais devem incluir order bump</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </p>
+              </div>
             </div>
 
             <div className="space-y-3">

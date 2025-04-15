@@ -7,6 +7,7 @@ interface ComparisonChartProps {
     name: string;
     actual: number;
     ideal: number;
+    isMoney?: boolean;
   }[];
 }
 
@@ -23,20 +24,21 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Comparação de Métricas</h3>
-      <div className="h-[300px] w-full">
+      <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={actualData}
-            margin={{ top: 20, right: 20, bottom: 40, left: 40 }}
+            margin={{ top: 20, right: 20, bottom: 80, left: 40 }}
             barGap={8}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="name" 
               tickSize={5}
-              tickMargin={10}
+              tickMargin={20}
               angle={-45}
               textAnchor="end"
+              height={60}
             />
             <YAxis 
               tickSize={5}
@@ -45,10 +47,13 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
             <Tooltip 
               formatter={(value) => [`${value}%`, ""]}
               labelFormatter={(label) => `${label}`}
+              contentStyle={{ padding: '8px', borderRadius: '6px' }}
             />
             <Legend 
-              wrapperStyle={{ paddingTop: 20 }}
+              wrapperStyle={{ paddingTop: 30 }}
               align="center"
+              verticalAlign="bottom"
+              layout="horizontal"
             />
             <Bar dataKey="actual" name="Atual" fill={chartConfig.actual.color} barSize={20} />
             <Bar dataKey="ideal" name="Ideal" fill={chartConfig.ideal.color} barSize={20} />
