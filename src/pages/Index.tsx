@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import {
@@ -109,16 +108,13 @@ const Index = () => {
     const salesPageConversion = values.salesPageVisits > 0 ? (values.checkoutVisits / values.salesPageVisits) * 100 : 0;
     const checkoutConversion = values.checkoutVisits > 0 ? ((values.mainProductSales + values.comboSales) / values.checkoutVisits) * 100 : 0;
     
-    // Correto cálculo da taxa de combo: vendas de combo dividido pelo total de vendas (principal + combo)
     const totalSales = values.mainProductSales + values.comboSales;
     const comboRate = totalSales > 0 ? (values.comboSales / totalSales) * 100 : 0;
     
-    // Cálculo da taxa de order bump conforme solicitado (30% do total de vendas)
     const orderBumpRate = totalSales > 0 ? (values.orderBumpSales / totalSales) * 100 : 0;
     const upsellRate = totalSales > 0 ? (values.upsellSales / totalSales) * 100 : 0;
     const finalConversion = values.totalClicks > 0 ? ((values.mainProductSales + values.comboSales) / values.totalClicks) * 100 : 0;
 
-    // Cálculo da receita total (considerando upsell apenas se habilitado)
     const totalRevenue = 
       values.mainProductSales * values.mainProductPrice +
       values.comboSales * values.comboPrice +
@@ -163,7 +159,6 @@ const Index = () => {
       });
     }
     
-    // Análise específica de order bump conforme solicitado
     if (orderBumpRate < idealMetrics.orderBumpRate * 100) {
       const faltaOrderBumps = Math.ceil((idealMetrics.orderBumpRate * totalSales) - values.orderBumpSales);
       messages.push({
@@ -213,11 +208,9 @@ const Index = () => {
     const salesPageConversion = values.salesPageVisits > 0 ? (values.checkoutVisits / values.salesPageVisits) * 100 : 0;
     const checkoutConversion = values.checkoutVisits > 0 ? ((values.mainProductSales + values.comboSales) / values.checkoutVisits) * 100 : 0;
     
-    // Correto cálculo da taxa de combo
     const totalSales = values.mainProductSales + values.comboSales;
     const comboRate = totalSales > 0 ? (values.comboSales / totalSales) * 100 : 0;
     
-    // Cálculo da taxa de order bump (30% do total de vendas)
     const orderBumpRate = totalSales > 0 ? (values.orderBumpSales / totalSales) * 100 : 0;
     
     const upsellRate = totalSales > 0 ? (values.upsellSales / totalSales) * 100 : 0;
@@ -245,7 +238,6 @@ const Index = () => {
       },
     ];
     
-    // Adiciona upsell apenas se habilitado
     if (values.hasUpsell) {
       data.push({
         name: "Taxa Upsell",
@@ -325,7 +317,6 @@ const Index = () => {
           <h2 className="text-xl font-semibold text-blue-800 mb-4">✍️ Seus Números</h2>
           <Form {...form}>
             <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Opção de Upsell */}
               <div className="flex items-center space-x-2 my-4">
                 <FormField
                   control={form.control}
@@ -347,7 +338,6 @@ const Index = () => {
                 />
               </div>
               
-              {/* Preços primeiro */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="p-4 shadow-sm">
                   <h3 className="font-medium text-blue-700 mb-3 flex items-center gap-2">
@@ -378,6 +368,7 @@ const Index = () => {
                               onChange={e => field.onChange(Number(e.target.value))}
                               placeholder="R$ 0,00"
                               className="text-right"
+                              value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -398,6 +389,7 @@ const Index = () => {
                               onChange={e => field.onChange(Number(e.target.value))}
                               placeholder="R$ 0,00"
                               className="text-right"
+                              value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -418,6 +410,7 @@ const Index = () => {
                               onChange={e => field.onChange(Number(e.target.value))}
                               placeholder="R$ 0,00"
                               className="text-right"
+                              value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
                             />
                           </FormControl>
                           <FormMessage />
@@ -439,6 +432,7 @@ const Index = () => {
                                 onChange={e => field.onChange(Number(e.target.value))}
                                 placeholder="R$ 0,00"
                                 className="text-right"
+                                value={field.value > 0 ? formatCurrency(field.value).replace('R$', '') : ''}
                               />
                             </FormControl>
                             <FormMessage />
