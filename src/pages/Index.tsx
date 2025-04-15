@@ -7,7 +7,7 @@ import { IdealMetricsCard } from "@/components/IdealMetricsCard";
 import { QuoteCard } from "@/components/QuoteCard";
 import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema";
 import { supabase } from "@/integrations/supabase/client";
-import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart3, FileText, History as HistoryIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -93,33 +93,35 @@ const Index = () => {
         </div>
       ) : (
         <>
-          <TabsList className="grid grid-cols-3 mb-4 w-full">
-            <TabsTrigger value="form" className="flex items-center gap-2" onClick={() => setActiveTab("form")}>
-              <FileText className="h-4 w-4" />
-              <span>Formulário</span>
-            </TabsTrigger>
-            <TabsTrigger value="results" className="flex items-center gap-2" onClick={() => setActiveTab("results")}>
-              <BarChart3 className="h-4 w-4" />
-              <span>Resultados</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="history" 
-              className="flex items-center gap-2"
-              onClick={() => navigate("/history")}
-            >
-              <HistoryIcon className="h-4 w-4" />
-              <span>Histórico</span>
-            </TabsTrigger>
-          </TabsList>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-3 mb-4 w-full">
+              <TabsTrigger value="form" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                <span>Formulário</span>
+              </TabsTrigger>
+              <TabsTrigger value="results" className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                <span>Resultados</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="history" 
+                className="flex items-center gap-2"
+                onClick={() => navigate("/history")}
+              >
+                <HistoryIcon className="h-4 w-4" />
+                <span>Histórico</span>
+              </TabsTrigger>
+            </TabsList>
           
-          <FormAnalyzer 
-            form={form}
-            isAuthenticated={isAuthenticated}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
+            <FormAnalyzer 
+              form={form}
+              isAuthenticated={isAuthenticated}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
           
-          {activeTab === "results" && <QuoteCard />}
+            {activeTab === "results" && <QuoteCard />}
+          </Tabs>
         </>
       )}
     </MainLayout>

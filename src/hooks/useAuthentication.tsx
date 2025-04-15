@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,11 +44,17 @@ export const useAuthentication = () => {
       }
     };
     
-    const unsubscribe = checkAuth();
+    const cleanup = checkAuth();
     return () => {
       // Execute the cleanup function returned by checkAuth
-      if (typeof unsubscribe === 'function') {
-        unsubscribe();
+      if (cleanup instanceof Promise) {
+        cleanup.then(cleanupFn => {
+          if (typeof cleanupFn === 'function') {
+            cleanupFn();
+          }
+        }).catch(error => {
+          console.error("Error cleaning up auth:", error);
+        });
       }
     };
   }, []);

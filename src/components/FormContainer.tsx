@@ -22,7 +22,7 @@ import { FormValues } from "@/schemas/formSchema";
 interface FormContainerProps {
   form: UseFormReturn<any>;
   onSubmit: (values: any) => void;
-  formSchema: FormValues; // Updated type to FormValues instead of zod schema
+  formSchema: FormValues; // This is now FormValues type
   onAnalyze?: () => void;
 }
 
