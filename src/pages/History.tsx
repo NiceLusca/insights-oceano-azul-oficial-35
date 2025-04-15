@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,7 +17,7 @@ import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Clock, Loader2, Search, Calendar } from "lucide-react";
+import { ArrowLeft, Clock, Loader2, Search, Calendar, Percent } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 
@@ -68,12 +67,10 @@ const History = () => {
   }, [navigate, toast]);
 
   const loadAnalysis = (analysis: Analysis) => {
-    // Não precisamos converter as datas aqui porque faremos isso no Index.tsx
     localStorage.setItem("selectedAnalysis", JSON.stringify(analysis));
     navigate("/");
   };
 
-  // Função para formatar o período de análise
   const formatPeriod = (formData: any) => {
     if (!formData.startDate && !formData.endDate) {
       return "Período não especificado";
@@ -96,7 +93,6 @@ const History = () => {
     return periodText;
   };
 
-  // Função para calcular e formatar o ROI
   const calculateROI = (diagnostics: any) => {
     if (!diagnostics.adSpend || diagnostics.adSpend <= 0) {
       return "N/A";
@@ -104,6 +100,15 @@ const History = () => {
     
     const roi = diagnostics.totalRevenue / diagnostics.adSpend;
     return `${roi.toFixed(2)}x`;
+  };
+
+  const calculateConversionRate = (diagnostics: any) => {
+    if (!diagnostics.finalConversion) {
+      return "N/A";
+    }
+    
+    const conversionRate = diagnostics.finalConversion * 100;
+    return `${conversionRate.toFixed(2)}%`;
   };
 
   return (
@@ -153,7 +158,7 @@ const History = () => {
                   <TableHead>Faturamento Total</TableHead>
                   <TableHead>Valor Gasto</TableHead>
                   <TableHead>ROI</TableHead>
-                  <TableHead>Visitas na Página</TableHead>
+                  <TableHead>Taxa de Conversão</TableHead>
                   <TableHead>Ações</TableHead>
                 </TableRow>
               </TableHeader>
@@ -187,7 +192,14 @@ const History = () => {
                         {calculateROI(analysis.diagnostics)}
                       </Badge>
                     </TableCell>
-                    <TableCell>{analysis.form_data.salesPageVisits || 0}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        <Percent className="h-4 w-4 mr-1 text-blue-500" />
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                          {calculateConversionRate(analysis.diagnostics)}
+                        </Badge>
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <TooltipProvider>
                         <Tooltip>

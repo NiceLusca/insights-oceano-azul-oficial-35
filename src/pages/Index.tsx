@@ -12,12 +12,13 @@ import { BarChart3, FileText, History as HistoryIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormAnalyzer } from "@/components/FormAnalyzer";
+import { useAuthentication } from "@/hooks/useAuthentication";
 
 const Index = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loadingUserData, setLoadingUserData] = useState(true);
   const [activeTab, setActiveTab] = useState("form");
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthentication();
   
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -47,15 +48,11 @@ const Index = () => {
 
   // Verifica autenticação e carrega últimos dados do usuário
   useEffect(() => {
-    const checkAuth = async () => {
+    const loadUserData = async () => {
       setLoadingUserData(true);
       
       try {
-        const { data: session } = await supabase.auth.getSession();
-        
-        if (session.session) {
-          setIsAuthenticated(true);
-          
+        if (isAuthenticated) {
           // Busca os últimos dados do usuário
           const { data } = await supabase
             .from("user_last_analysis")
@@ -70,27 +67,16 @@ const Index = () => {
             
             form.reset(formData as FormValues);
           }
-        } else {
-          setIsAuthenticated(false);
         }
       } catch (error) {
-        console.error("Erro ao verificar autenticação:", error);
+        console.error("Erro ao carregar dados do usuário:", error);
       } finally {
         setLoadingUserData(false);
       }
     };
     
-    checkAuth();
-    
-    // Configurar listener para mudanças na autenticação
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setIsAuthenticated(!!session);
-      }
-    );
-    
-    return () => subscription.unsubscribe();
-  }, [form]);
+    loadUserData();
+  }, [form, isAuthenticated]);
 
   const hasUpsell = form.watch("hasUpsell");
 

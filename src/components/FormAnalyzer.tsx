@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormContainer } from "@/components/FormContainer";
@@ -200,7 +199,7 @@ export const FormAnalyzer = ({ form, isAuthenticated, activeTab, onTabChange }: 
         <FormContainer 
           form={form} 
           onSubmit={onSubmit} 
-          formSchema={form.formState.schema} 
+          formSchema={form.formState.defaultValues} 
           onAnalyze={() => onTabChange("results")} 
         />
       </TabsContent>
