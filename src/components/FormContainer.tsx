@@ -45,7 +45,7 @@ export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormCon
   return (
     <Card className="p-6 shadow-md">
       <h2 className="text-xl font-semibold text-blue-800 mb-4 flex items-center">
-        <span className="mr-2">✍️</span> Your Numbers
+        <span className="mr-2">✍️</span> Seus Números
       </h2>
       <Form {...form}>
         <form className="space-y-6">
@@ -63,7 +63,7 @@ export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormCon
                     />
                   </FormControl>
                   <FormLabel htmlFor="hasUpsell" className="cursor-pointer font-medium">
-                    Do you have Upsell?
+                    Você tem Upsell?
                   </FormLabel>
                 </FormItem>
               )}
@@ -88,7 +88,7 @@ export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormCon
             onClick={handleSubmitAndAnalyze}
           >
             <BarChart3 className="h-4 w-4" />
-            Analyze Results
+            Analisar Resultados
           </Button>
         </form>
       </Form>
