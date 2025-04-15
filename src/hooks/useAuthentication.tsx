@@ -81,9 +81,16 @@ export const useAuthentication = () => {
 
   const signUp = async (email: string, password: string) => {
     try {
+      // Using signUp with autoconfirm disabled
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          // Data will be available in the user's session
+          data: {
+            email_confirmed: true
+          }
+        }
       });
       
       if (error) throw error;

@@ -1,12 +1,12 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { MainLayout } from "@/components/MainLayout";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthentication } from "@/hooks/useAuthentication";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +15,7 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, signUp } = useAuthentication();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,26 +23,25 @@ const Auth = () => {
     
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+        const result = await signUp(email, password);
         
-        if (error) throw error;
-        
-        toast({
-          title: "Cadastro realizado com sucesso!",
-          description: "Verifique seu email para confirmar o cadastro.",
-        });
+        if (result.success) {
+          toast({
+            title: "Cadastro realizado com sucesso!",
+            description: result.message,
+          });
+          
+          // Auto sign in after successful signup
+          await signIn(email, password);
+        } else {
+          throw new Error(result.error);
+        }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const result = await signIn(email, password);
         
-        if (error) throw error;
-        
-        navigate("/");
+        if (!result.success) {
+          throw new Error(result.error);
+        }
       }
     } catch (error: any) {
       toast({
