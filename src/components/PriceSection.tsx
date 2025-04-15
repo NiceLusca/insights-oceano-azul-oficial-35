@@ -18,11 +18,11 @@ import {
 } from "@/components/ui/tooltip";
 import { UseFormReturn } from "react-hook-form";
 import { handlePriceChange, formatPriceDisplay } from "@/utils/formatters";
-import { z } from "zod";
+import { FormValues } from "@/schemas/formSchema";
 
 interface PriceSectionProps {
   form: UseFormReturn<any>;
-  formSchema: z.ZodObject<any>;
+  formSchema: FormValues;
   hasUpsell: boolean;
 }
 
