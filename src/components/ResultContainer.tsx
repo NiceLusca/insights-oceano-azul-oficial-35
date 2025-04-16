@@ -7,7 +7,6 @@ import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButt
 import { getComparisonData } from "@/utils/metricsHelpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
-import { useTheme } from "@/hooks/useTheme";
 
 interface ResultContainerProps {
   formData: any;
@@ -24,8 +23,6 @@ export const ResultContainer = ({
   errorMessage,
   isAuthenticated
 }: ResultContainerProps) => {
-  const { theme } = useTheme();
-  
   return (
     <>
       {hasErrors && (
@@ -52,7 +49,7 @@ export const ResultContainer = ({
           />
         </div>
 
-        <Card className="p-6 bg-white dark:bg-black/80 border border-gray-200 dark:border-blue-900/20">
+        <Card className="p-6 bg-white border border-gray-200 rounded-xl">
           <PdfExportButton 
             formData={formData} 
             diagnostics={diagnostics} 

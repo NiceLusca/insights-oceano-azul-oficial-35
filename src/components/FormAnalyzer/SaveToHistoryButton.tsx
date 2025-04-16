@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { FormValues } from "@/schemas/formSchema";
 import { Save, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@/hooks/useTheme";
 
 interface SaveToHistoryButtonProps {
   formData: FormValues;
@@ -22,7 +21,6 @@ export const SaveToHistoryButton = ({
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { theme } = useTheme();
 
   const saveToHistory = async () => {
     if (!isAuthenticated) {
@@ -81,7 +79,7 @@ export const SaveToHistoryButton = ({
     <div className="flex w-full">
       <Button 
         onClick={saveToHistory}
-        className={`flex items-center gap-2 ${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'} transition-colors flex-1`}
+        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 transition-colors flex-1"
         disabled={saving}
       >
         {saving ? (
