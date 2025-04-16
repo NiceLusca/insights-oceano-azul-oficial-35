@@ -16,7 +16,7 @@ interface DiagnosticCardProps {
 
 export const DiagnosticCard = ({ title, value, valueColor, tooltip }: DiagnosticCardProps) => {
   return (
-    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+    <div className="p-4 bg-white dark:bg-gray-800/90 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
       <p className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
         {title}
         {tooltip && (

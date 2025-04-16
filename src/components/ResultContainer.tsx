@@ -42,22 +42,24 @@ export const ResultContainer = ({
         <ComparisonChart actualData={getComparisonData(formData)} />
       </div>
 
-      {/* Botão de Salvar no Histórico com destaque */}
-      <div className="mt-6 mb-4">
-        <SaveToHistoryButton 
-          formData={formData}
-          diagnostics={diagnostics}
-          isAuthenticated={isAuthenticated}
-        />
-      </div>
+      <div className="grid grid-cols-1 gap-6 mt-6">
+        {/* Botão de Salvar no Histórico com destaque */}
+        <div className="mb-2">
+          <SaveToHistoryButton 
+            formData={formData}
+            diagnostics={diagnostics}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
 
-      <Card className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-        <PdfExportButton 
-          formData={formData} 
-          diagnostics={diagnostics} 
-          comparisonData={getComparisonData(formData)}
-        />
-      </Card>
+        <Card className="p-6 bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
+          <PdfExportButton 
+            formData={formData} 
+            diagnostics={diagnostics} 
+            comparisonData={getComparisonData(formData)}
+          />
+        </Card>
+      </div>
     </>
   );
 };

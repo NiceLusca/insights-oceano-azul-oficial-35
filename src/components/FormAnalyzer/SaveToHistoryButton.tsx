@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { FormValues } from "@/schemas/formSchema";
-import { Save, Loader2, ShareIcon } from "lucide-react";
+import { Save, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -77,32 +77,11 @@ export const SaveToHistoryButton = ({
     }
   };
 
-  // Função para compartilhar análise
-  const shareAnalysis = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Análise de Conversão',
-        text: `ROI: ${diagnostics.currentROI?.toFixed(2)}x | Faturamento: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(diagnostics.totalRevenue)}`,
-        url: window.location.href,
-      }).catch(err => {
-        console.error('Erro ao compartilhar:', err);
-      });
-    } else {
-      // Fallback para navegadores que não suportam a API Web Share
-      const url = window.location.href;
-      navigator.clipboard.writeText(url);
-      toast({
-        title: "Link copiado!",
-        description: "URL da análise copiada para a área de transferência",
-      });
-    }
-  };
-
   return (
-    <div className="flex flex-col md:flex-row gap-4 w-full">
+    <div className="flex w-full">
       <Button 
         onClick={saveToHistory}
-        className={`flex items-center gap-2 ${theme === 'dark' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-green-600 hover:bg-green-700'} transition-colors flex-1`}
+        className={`flex items-center gap-2 ${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'} transition-colors flex-1`}
         disabled={saving}
       >
         {saving ? (
@@ -111,15 +90,6 @@ export const SaveToHistoryButton = ({
           <Save className="h-4 w-4" />
         )}
         {saving ? "Salvando..." : "Salvar no Histórico"}
-      </Button>
-      
-      <Button
-        onClick={shareAnalysis}
-        variant="outline"
-        className="flex items-center gap-2 flex-1"
-      >
-        <ShareIcon className="h-4 w-4" />
-        Compartilhar Análise
       </Button>
     </div>
   );

@@ -32,8 +32,8 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
 
   return (
     <div className="text-center">
-      <h3 className="text-lg font-medium text-blue-800 mb-3">Exportar Análise Completa</h3>
-      <p className="text-gray-600 mb-4">
+      <h3 className="text-lg font-medium text-blue-800 dark:text-blue-400 mb-3">Exportar Análise Completa</h3>
+      <p className="text-gray-600 dark:text-gray-300 mb-4">
         Exporte um relatório detalhado com todas as métricas, diagnósticos e recomendações para seu funil de vendas.
       </p>
       <Button

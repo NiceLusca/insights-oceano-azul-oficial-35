@@ -7,14 +7,29 @@ import { formatCurrency, formatPercentage } from "./formatters";
 export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) => {
   const doc = new jsPDF();
   
-  // Add title
+  // Add logo
+  doc.setTextColor(0, 102, 204);
+  const svgLogo = `
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 18C3 16.3431 4.34315 15 6 15H18C19.6569 15 21 16.3431 21 18V18C21 19.6569 19.6569 21 18 21H6C4.34315 21 3 19.6569 3 18V18Z" fill="#0066CC" />
+      <path d="M6 13.5C6 12.8438 6.37967 12.253 6.9643 11.9663L16.9643 6.96634C17.6314 6.65301 18.4221 6.89568 18.8127 7.53442L18.9559 7.78318C19.318 8.37114 19.1038 9.12224 18.5299 9.50193L8.5299 16.5019C7.91093 16.9116 7.08901 16.6302 6.88586 15.9393L6.74302 15.4251C6.58362 14.9294 6.5 14.4152 6.5 13.8976L6 13.5Z" fill="#0066CC" />
+    </svg>
+  `;
+  const svgWidth = 30;
+  const svgHeight = 30;
+  
+  // Add title with logo
   doc.setTextColor(0, 51, 153);
   doc.setFontSize(22);
-  doc.text("Diagnóstico de Funil de Vendas", 15, 25);
+  doc.text("Diagnóstico de Funil de Vendas", 50, 25);
   
   doc.setTextColor(0, 102, 204);
   doc.setFontSize(16);
-  doc.text("Oceano Azul", 15, 35);
+  doc.text("Oceano Azul", 50, 35);
+  
+  // Add logo using SVG data
+  const logoDataUrl = `data:image/svg+xml;base64,${btoa(svgLogo)}`;
+  doc.addImage(logoDataUrl, 'SVG', 15, 15, svgWidth, svgHeight);
   
   // Report date
   doc.setTextColor(100, 100, 100);
