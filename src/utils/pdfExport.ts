@@ -7,33 +7,29 @@ import { formatCurrency, formatPercentage } from "./formatters";
 export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) => {
   const doc = new jsPDF();
   
-  // Adiciona o logo
-  const imgData = "/lovable-uploads/7d27fa6e-d0b6-4bbe-ab3a-cee5c3cca10f.png";
-  doc.addImage(imgData, "PNG", 15, 10, 30, 30);
-  
-  // Título
+  // Add title
   doc.setTextColor(0, 51, 153);
   doc.setFontSize(22);
-  doc.text("Diagnóstico de Funil de Vendas", 55, 25);
+  doc.text("Diagnóstico de Funil de Vendas", 15, 25);
   
   doc.setTextColor(0, 102, 204);
   doc.setFontSize(16);
-  doc.text("Oceano Azul", 55, 35);
+  doc.text("Oceano Azul", 15, 35);
   
-  // Data do relatório
+  // Report date
   doc.setTextColor(100, 100, 100);
   doc.setFontSize(10);
   const today = format(new Date(), "dd/MM/yyyy");
   doc.text(`Relatório gerado em: ${today}`, 15, 50);
   
-  // Período da análise (se disponível)
+  // Analysis period (if available)
   if (data.startDate && data.endDate) {
     const startDate = format(new Date(data.startDate), "dd/MM/yyyy");
     const endDate = format(new Date(data.endDate), "dd/MM/yyyy");
     doc.text(`Período da análise: ${startDate} a ${endDate}`, 15, 55);
   }
   
-  // Métricas principais
+  // Main metrics
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(14);
   doc.text("Métricas Principais", 15, 65);
@@ -66,7 +62,7 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     headStyles: { fillColor: [0, 102, 204] },
   });
   
-  // Diagnósticos
+  // Diagnostics
   const tableHeight = (doc as any).lastAutoTable?.finalY || 130;
   doc.setFontSize(14);
   doc.text("Diagnóstico", 15, tableHeight + 10);
@@ -81,7 +77,7 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     headStyles: { fillColor: [0, 102, 204] },
   });
   
-  // Comparação com métricas ideais
+  // Comparison with ideal metrics
   const comparisonStartY = (doc as any).lastAutoTable?.finalY || 200;
   doc.setFontSize(14);
   doc.text("Comparação com Métricas Ideais", 15, comparisonStartY + 10);
@@ -100,7 +96,7 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     headStyles: { fillColor: [0, 102, 204] },
   });
   
-  // Rodapé
+  // Footer
   const pageCount = doc.getNumberOfPages();
   doc.setFontSize(10);
   for (let i = 1; i <= pageCount; i++) {

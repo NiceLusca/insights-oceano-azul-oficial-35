@@ -51,7 +51,7 @@ export const ResultContainer = ({
         />
       </div>
 
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <PdfExportButton 
           formData={formData} 
           diagnostics={diagnostics} 

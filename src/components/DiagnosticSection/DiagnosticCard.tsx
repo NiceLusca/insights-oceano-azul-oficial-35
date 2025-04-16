@@ -16,8 +16,8 @@ interface DiagnosticCardProps {
 
 export const DiagnosticCard = ({ title, value, valueColor, tooltip }: DiagnosticCardProps) => {
   return (
-    <div className="p-4 bg-white rounded-lg shadow-sm">
-      <p className="text-sm text-blue-600 flex items-center gap-2">
+    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+      <p className="text-sm text-blue-600 dark:text-blue-400 flex items-center gap-2">
         {title}
         {tooltip && (
           <TooltipProvider>
@@ -25,14 +25,14 @@ export const DiagnosticCard = ({ title, value, valueColor, tooltip }: Diagnostic
               <TooltipTrigger>
                 <Info className="h-4 w-4" />
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
                 <p>{tooltip}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         )}
       </p>
-      <p className={`text-2xl font-bold flex items-center gap-2 ${valueColor || ''}`}>
+      <p className={`text-2xl font-bold flex items-center gap-2 ${valueColor || 'text-gray-900 dark:text-gray-100'}`}>
         {value}
       </p>
     </div>
