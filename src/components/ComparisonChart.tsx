@@ -23,7 +23,10 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
 
   return (
     <Card className="p-6 bg-blue-50/50 border border-blue-100 rounded-xl">
-      <h3 className="text-lg font-semibold mb-4 text-blue-800">Comparação de Métricas</h3>
+      <div className="flex items-center mb-6">
+        <div className="w-8 h-8 oceano-azul-logo mr-2"></div>
+        <h3 className="text-xl font-semibold text-blue-800">Comparação de Métricas</h3>
+      </div>
       <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

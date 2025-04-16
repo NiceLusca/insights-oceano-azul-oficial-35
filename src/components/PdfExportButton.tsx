@@ -32,8 +32,8 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
 
   return (
     <div className="text-center">
-      <h3 className="text-lg font-medium text-blue-800 mb-3 flex items-center justify-center">
-        <div className="w-5 h-5 oceano-azul-logo mr-2"></div>
+      <h3 className="text-lg font-medium text-blue-800 mb-4 flex items-center justify-center">
+        <div className="w-6 h-6 oceano-azul-logo mr-2"></div>
         Exportar Análise Completa
       </h3>
       <p className="text-gray-600 mb-4">
