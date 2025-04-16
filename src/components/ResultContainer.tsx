@@ -43,7 +43,7 @@ export const ResultContainer = ({
       </div>
 
       <div className="grid grid-cols-1 gap-6 mt-6">
-        {/* Botão de Salvar no Histórico com destaque */}
+        {/* Botão de Salvar no Histórico */}
         <div className="mb-2">
           <SaveToHistoryButton 
             formData={formData}
@@ -52,7 +52,7 @@ export const ResultContainer = ({
           />
         </div>
 
-        <Card className="p-6 bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
+        <Card className="p-6 bg-white dark:bg-black/80 border border-gray-200 dark:border-blue-900/20">
           <PdfExportButton 
             formData={formData} 
             diagnostics={diagnostics} 
