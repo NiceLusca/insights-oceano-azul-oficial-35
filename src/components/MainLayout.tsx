@@ -1,3 +1,4 @@
+
 import { AuthButton } from "@/components/AuthButton";
 import { MainLayoutProps } from "@/types/MainLayoutProps";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -9,11 +10,11 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         <div className="flex items-center">
           <img 
             src="/placeholder.svg" 
-            alt="Logo" 
-            className="w-8 h-8 mr-2"
+            alt="Oceano Azul Logo" 
+            className="w-10 h-10 mr-3"
           />
-          <h1 className="text-lg font-bold text-gray-900 dark:text-white">
-            Análise de Conversão
+          <h1 className="text-lg font-bold text-blue-700 dark:text-blue-400">
+            Insights Oceano Azul - Análises de Funil
           </h1>
         </div>
         <div className="flex items-center space-x-4">
@@ -29,7 +30,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       </main>
       
       <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 py-4 px-6 text-center text-sm text-gray-600 dark:text-gray-400">
-        <p>© {new Date().getFullYear()} Análise de Conversão - Todos os direitos reservados</p>
+        <p>© {new Date().getFullYear()} Oceano Azul - Todos os direitos reservados</p>
       </footer>
     </div>
   );
