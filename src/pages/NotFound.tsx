@@ -23,17 +23,17 @@ const NotFound = () => {
           <img 
             src="/lovable-uploads/7d27fa6e-d0b6-4bbe-ab3a-cee5c3cca10f.png" 
             alt="Oceano Azul Logo" 
-            className="h-20 w-auto"
+            className="h-20 w-auto dark:filter dark:brightness-125 dark:contrast-125"
           />
         </div>
-        <h1 className="text-6xl font-bold mb-4 text-blue-600 dark:text-blue-400">404</h1>
+        <h1 className="text-6xl font-bold mb-4 text-blue-600 dark:text-blue-300">404</h1>
         <p className="text-2xl text-gray-700 dark:text-gray-300 mb-6">Ops! Página não encontrada</p>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
           A página que você está procurando pode ter sido removida, renomeada ou talvez nunca tenha existido.
         </p>
         <Button 
           asChild
-          className={`${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-600 hover:bg-blue-700'} transition-colors`}
+          className="bg-blue-600 hover:bg-blue-700 transition-colors"
         >
           <a href="/" className="flex items-center justify-center gap-2">
             <Home className="h-4 w-4" />

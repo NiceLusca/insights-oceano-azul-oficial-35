@@ -71,9 +71,9 @@ const Auth = () => {
             <img 
               src="/lovable-uploads/7d27fa6e-d0b6-4bbe-ab3a-cee5c3cca10f.png" 
               alt="Oceano Azul Logo" 
-              className="h-20 w-auto mb-4"
+              className="h-20 w-auto mb-4 dark:filter dark:brightness-125 dark:contrast-125"
             />
-            <h2 className="text-2xl font-bold text-center text-blue-800 dark:text-blue-400">
+            <h2 className="text-2xl font-bold text-center text-blue-800 dark:text-blue-300">
               {isSignUp ? "Criar Conta" : "Entrar"}
             </h2>
           </div>
@@ -121,7 +121,7 @@ const Auth = () => {
             <Button
               variant="link"
               onClick={() => setIsSignUp(!isSignUp)}
-              className="p-0 text-blue-600"
+              className="p-0 text-blue-600 dark:text-blue-300"
               disabled={loading}
             >
               {isSignUp ? "Já tem uma conta? Faça login" : "Não tem uma conta? Cadastre-se"}

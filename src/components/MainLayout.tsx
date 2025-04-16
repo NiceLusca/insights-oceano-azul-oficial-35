@@ -11,9 +11,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           <img 
             src="/lovable-uploads/7d27fa6e-d0b6-4bbe-ab3a-cee5c3cca10f.png" 
             alt="Oceano Azul Logo" 
-            className="h-10 w-auto"
+            className="h-10 w-auto dark:filter dark:brightness-125 dark:contrast-125" 
           />
-          <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">
+          <h1 className="text-xl font-bold text-blue-600 dark:text-blue-300">
             Insights Oceano Azul - Análises de Funil
           </h1>
         </div>
