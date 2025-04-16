@@ -20,16 +20,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           </div>
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-blue-800">
-              Funil Diagnóstico
+              Insights Oceano Azul
             </h1>
-            <p className="text-[#0EA5E9] font-medium">Oceano Azul</p>
+            <p className="text-[#0EA5E9] font-medium">Diagnóstico de Funil</p>
           </div>
         </div>
         <AuthButton />
       </header>
       <main className="space-y-6">{children}</main>
       <footer className="text-center text-sm text-gray-600 pt-8">
-        © {new Date().getFullYear()} Funil Diagnóstico - Oceano Azul
+        © {new Date().getFullYear()} Insights Oceano Azul - Diagnóstico de Funil
       </footer>
     </div>
   );

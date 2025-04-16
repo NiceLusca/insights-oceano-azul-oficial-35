@@ -14,11 +14,11 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   // Título
   doc.setTextColor(0, 51, 153);
   doc.setFontSize(22);
-  doc.text("Diagnóstico de Funil de Vendas", 55, 25);
+  doc.text("Insights Oceano Azul", 55, 25);
   
   doc.setTextColor(0, 102, 204);
   doc.setFontSize(16);
-  doc.text("Oceano Azul", 55, 35);
+  doc.text("Diagnóstico de Funil", 55, 35);
   
   // Data do relatório
   doc.setTextColor(100, 100, 100);
@@ -107,7 +107,7 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     doc.setPage(i);
     doc.setTextColor(100, 100, 100);
     doc.text(
-      "© Oceano Azul - Otimização constante é o caminho.",
+      "© Insights Oceano Azul - Diagnóstico de Funil",
       15,
       doc.internal.pageSize.height - 10
     );
@@ -118,7 +118,7 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     );
   }
   
-  doc.save("diagnostico-funil-vendas-oceano-azul.pdf");
+  doc.save("insights-oceano-azul.pdf");
   
   return true;
 };
