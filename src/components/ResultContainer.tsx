@@ -3,23 +3,29 @@ import { Card } from "@/components/ui/card";
 import { DiagnosticSection } from "@/components/DiagnosticSection";
 import { ComparisonChart } from "@/components/ComparisonChart";
 import { PdfExportButton } from "@/components/PdfExportButton";
+import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { getComparisonData } from "@/utils/metricsHelpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 interface ResultContainerProps {
   formData: any;
   diagnostics: any;
   hasErrors?: boolean;
   errorMessage?: string;
+  isAuthenticated: boolean;
 }
 
 export const ResultContainer = ({ 
   formData, 
   diagnostics, 
   hasErrors,
-  errorMessage 
+  errorMessage,
+  isAuthenticated
 }: ResultContainerProps) => {
+  const { theme } = useTheme();
+  
   return (
     <>
       {hasErrors && (
@@ -36,7 +42,16 @@ export const ResultContainer = ({
         <ComparisonChart actualData={getComparisonData(formData)} />
       </div>
 
-      <Card className="p-6 mt-6">
+      {/* Botão de Salvar no Histórico com destaque */}
+      <div className="mt-6 mb-4">
+        <SaveToHistoryButton 
+          formData={formData}
+          diagnostics={diagnostics}
+          isAuthenticated={isAuthenticated}
+        />
+      </div>
+
+      <Card className="p-6">
         <PdfExportButton 
           formData={formData} 
           diagnostics={diagnostics} 
