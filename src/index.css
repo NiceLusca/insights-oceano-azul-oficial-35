@@ -14,11 +14,11 @@
 
 @layer components {
   .app-card {
-    @apply rounded-xl border border-blue-100 dark:border-blue-900/30 shadow-sm;
+    @apply rounded-xl border border-blue-100 shadow-sm;
   }
   
   .app-input {
-    @apply rounded-lg border border-gray-300 dark:border-gray-700;
+    @apply rounded-lg border border-gray-300;
   }
   
   .app-button {
