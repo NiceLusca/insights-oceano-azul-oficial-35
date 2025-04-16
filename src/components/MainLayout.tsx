@@ -14,7 +14,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">
                 Insights Oceano Azul
               </h1>
-              <p className="text-sm text-blue-400 dark:text-blue-300">
+              <p className="text-sm text-blue-400/70 dark:text-blue-300/70">
                 Análises de Funil
               </p>
             </div>
