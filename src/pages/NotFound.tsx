@@ -18,7 +18,7 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black transition-colors duration-300">
-      <div className="text-center p-8 max-w-md mx-auto glass-morphism rounded-2xl shadow-lg border border-gray-100 dark:border-blue-900/20">
+      <div className="text-center p-8 max-w-md mx-auto rounded-2xl shadow-lg border border-gray-100 dark:border-blue-900/20">
         <div className="flex justify-center mb-6">
           <div className="h-24 w-24 oceano-azul-logo"></div>
         </div>
@@ -29,7 +29,7 @@ const NotFound = () => {
         </p>
         <Button 
           asChild
-          className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors rounded-xl"
         >
           <a href="/" className="flex items-center justify-center gap-2">
             <Home className="h-4 w-4" />

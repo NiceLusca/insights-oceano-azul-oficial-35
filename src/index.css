@@ -5,9 +5,23 @@
 
 @layer base {
   .oceano-azul-logo {
-    background-image: url('/lovable-uploads/822675c4-1449-4d75-9526-cde8afde01de.png');
+    background-image: url('/lovable-uploads/e7398896-98f6-45e2-85e4-4496e01465ec.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+  }
+}
+
+@layer components {
+  .app-card {
+    @apply rounded-xl border border-blue-100 dark:border-blue-900/30 shadow-sm;
+  }
+  
+  .app-input {
+    @apply rounded-lg border border-gray-300 dark:border-gray-700;
+  }
+  
+  .app-button {
+    @apply rounded-lg;
   }
 }

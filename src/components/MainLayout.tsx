@@ -8,11 +8,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="min-h-screen flex flex-col bg-white dark:bg-black">
       <header className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 py-4 px-6 flex justify-between items-center shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center">
             <div className="w-12 h-12 oceano-azul-logo"></div>
-            <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">
-              Insights Oceano Azul - Análises de Funil
-            </h1>
+            <div className="flex flex-col ml-3">
+              <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                Insights Oceano Azul
+              </h1>
+              <p className="text-sm text-blue-400 dark:text-blue-300">
+                Análises de Funil
+              </p>
+            </div>
           </div>
         </div>
         <div className="flex items-center space-x-4">

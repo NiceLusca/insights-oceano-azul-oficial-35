@@ -21,7 +21,7 @@ interface DiagnosticSectionProps {
 
 export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
   return (
-    <Card className="p-6 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
+    <Card className="p-6 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl">
       <div className="flex items-center mb-4">
         <span className="w-6 h-6 oceano-azul-logo mr-2"></span>
         <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-400 flex items-center">
