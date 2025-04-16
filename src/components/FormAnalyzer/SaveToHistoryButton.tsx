@@ -76,10 +76,10 @@ export const SaveToHistoryButton = ({
   };
 
   return (
-    <div className="flex w-full">
+    <div className="flex justify-end mt-6">
       <Button 
         onClick={saveToHistory}
-        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 transition-colors flex-1"
+        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition-colors"
         disabled={saving}
       >
         {saving ? (

@@ -22,11 +22,8 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
   };
 
   return (
-    <Card className="p-6 bg-blue-50/50 border border-blue-100 rounded-xl">
-      <div className="flex items-center mb-6">
-        <div className="w-8 h-8 oceano-azul-logo mr-2"></div>
-        <h3 className="text-xl font-semibold text-blue-800">Comparação de Métricas</h3>
-      </div>
+    <Card className="p-6">
+      <h3 className="text-lg font-semibold mb-4">Comparação de Métricas</h3>
       <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -34,7 +31,7 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
             margin={{ top: 20, right: 20, bottom: 80, left: 40 }}
             barGap={8}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="name" 
               tickSize={5}
@@ -42,23 +39,15 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
               angle={-45}
               textAnchor="end"
               height={60}
-              stroke="#6B7280"
             />
             <YAxis 
               tickSize={5}
               tickFormatter={(value) => `${value}%`}
-              stroke="#6B7280"
             />
             <Tooltip 
               formatter={(value) => [`${value}%`, ""]}
               labelFormatter={(label) => `${label}`}
-              contentStyle={{ 
-                backgroundColor: "#FFFFFF", 
-                color: "#111827",
-                border: "1px solid #E5E7EB",
-                padding: '8px', 
-                borderRadius: '6px' 
-              }}
+              contentStyle={{ padding: '8px', borderRadius: '6px' }}
             />
             <Legend 
               wrapperStyle={{ paddingTop: 30 }}

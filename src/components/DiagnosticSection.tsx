@@ -21,13 +21,8 @@ interface DiagnosticSectionProps {
 
 export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
   return (
-    <Card className="p-6 bg-blue-50/50 border border-blue-100 rounded-xl">
-      <div className="flex items-center mb-6">
-        <div className="w-8 h-8 oceano-azul-logo mr-2"></div>
-        <h2 className="text-xl font-semibold text-blue-800">
-          Diagnóstico
-        </h2>
-      </div>
+    <Card className="p-6 bg-gradient-to-br from-blue-50 to-white">
+      <h2 className="text-xl font-semibold text-blue-800 mb-4">📊 Diagnóstico</h2>
       
       <MetricsGrid diagnostics={diagnostics} />
       <DiagnosticMessages messages={diagnostics.messages} />

@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { DiagnosticSection } from "@/components/DiagnosticSection";
 import { ComparisonChart } from "@/components/ComparisonChart";
 import { PdfExportButton } from "@/components/PdfExportButton";
-import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { getComparisonData } from "@/utils/metricsHelpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
@@ -13,15 +12,13 @@ interface ResultContainerProps {
   diagnostics: any;
   hasErrors?: boolean;
   errorMessage?: string;
-  isAuthenticated: boolean;
 }
 
 export const ResultContainer = ({ 
   formData, 
   diagnostics, 
   hasErrors,
-  errorMessage,
-  isAuthenticated
+  errorMessage 
 }: ResultContainerProps) => {
   return (
     <>
@@ -39,24 +36,13 @@ export const ResultContainer = ({
         <ComparisonChart actualData={getComparisonData(formData)} />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 mt-6">
-        {/* Botão de Salvar no Histórico */}
-        <div className="mb-2">
-          <SaveToHistoryButton 
-            formData={formData}
-            diagnostics={diagnostics}
-            isAuthenticated={isAuthenticated}
-          />
-        </div>
-
-        <Card className="p-6 bg-white border border-gray-200 rounded-xl">
-          <PdfExportButton 
-            formData={formData} 
-            diagnostics={diagnostics} 
-            comparisonData={getComparisonData(formData)}
-          />
-        </Card>
-      </div>
+      <Card className="p-6 mt-6">
+        <PdfExportButton 
+          formData={formData} 
+          diagnostics={diagnostics} 
+          comparisonData={getComparisonData(formData)}
+        />
+      </Card>
     </>
   );
 };

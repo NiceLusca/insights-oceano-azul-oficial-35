@@ -7,6 +7,7 @@ import { calculateMetrics } from "@/utils/metricsHelpers";
 import { FormValues } from "@/schemas/formSchema";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
 
@@ -98,6 +99,11 @@ export const FormAnalyzer = ({
           diagnostics={diagnostics} 
           hasErrors={hasFormErrors}
           errorMessage={errorMessage}
+        />
+        
+        <SaveToHistoryButton 
+          formData={form.getValues()}
+          diagnostics={diagnostics}
           isAuthenticated={isAuthenticated}
         />
       </TabsContent>

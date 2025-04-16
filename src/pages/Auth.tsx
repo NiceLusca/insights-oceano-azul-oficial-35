@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { MainLayout } from "@/components/MainLayout";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthentication } from "@/hooks/useAuthentication";
 import { Loader2 } from "lucide-react";
@@ -63,18 +64,15 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-black">
-      <div className="flex justify-center items-center min-h-screen py-10">
-        <Card className="w-full max-w-md p-8 shadow-lg bg-white dark:bg-black border border-gray-200 dark:border-gray-800">
-          <div className="flex flex-col items-center mb-6">
-            <div className="h-24 w-24 oceano-azul-logo mb-4"></div>
-            <h2 className="text-2xl font-bold text-center text-blue-800 dark:text-blue-400">
-              {isSignUp ? "Criar Conta" : "Entrar"}
-            </h2>
-          </div>
+    <MainLayout>
+      <div className="flex justify-center items-center min-h-[70vh]">
+        <Card className="w-full max-w-md p-8 shadow-lg">
+          <h2 className="text-2xl font-bold text-center mb-6 text-blue-800">
+            {isSignUp ? "Criar Conta" : "Entrar"}
+          </h2>
           <form onSubmit={handleAuth} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+              <label htmlFor="email" className="block text-sm font-medium mb-1">
                 Email
               </label>
               <Input
@@ -84,11 +82,11 @@ const Auth = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                className="focus:border-blue-500 bg-white dark:bg-black dark:text-white"
+                className="focus:border-blue-500"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+              <label htmlFor="password" className="block text-sm font-medium mb-1">
                 Senha
               </label>
               <Input
@@ -98,10 +96,10 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
-                className="focus:border-blue-500 bg-white dark:bg-black dark:text-white"
+                className="focus:border-blue-500"
               />
             </div>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600" disabled={loading}>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={loading}>
               {loading ? (
                 <span className="flex items-center justify-center">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -116,7 +114,7 @@ const Auth = () => {
             <Button
               variant="link"
               onClick={() => setIsSignUp(!isSignUp)}
-              className="p-0 text-blue-600 dark:text-blue-400"
+              className="p-0 text-blue-600"
               disabled={loading}
             >
               {isSignUp ? "Já tem uma conta? Faça login" : "Não tem uma conta? Cadastre-se"}
@@ -124,7 +122,7 @@ const Auth = () => {
           </div>
         </Card>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 

@@ -1,4 +1,5 @@
 
+import { Info } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/utils/formatters";
 import { DiagnosticCard } from "./DiagnosticCard";
 
