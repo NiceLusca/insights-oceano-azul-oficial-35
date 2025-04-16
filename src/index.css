@@ -99,6 +99,6 @@
   }
   
   .glass-morphism {
-    @apply backdrop-blur-xl bg-white/5 dark:bg-gray-800/50 border border-white/10 dark:border-white/5 shadow-lg;
+    @apply backdrop-blur-xl bg-white/5 dark:bg-gray-900/50 border border-white/10 dark:border-white/5 shadow-lg;
   }
 }

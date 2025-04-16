@@ -67,9 +67,16 @@ const Auth = () => {
     <MainLayout>
       <div className="flex justify-center items-center min-h-[70vh]">
         <Card className="w-full max-w-md p-8 shadow-lg">
-          <h2 className="text-2xl font-bold text-center mb-6 text-blue-800">
-            {isSignUp ? "Criar Conta" : "Entrar"}
-          </h2>
+          <div className="flex flex-col items-center mb-6">
+            <img 
+              src="/lovable-uploads/7d27fa6e-d0b6-4bbe-ab3a-cee5c3cca10f.png" 
+              alt="Oceano Azul Logo" 
+              className="h-20 w-auto mb-4"
+            />
+            <h2 className="text-2xl font-bold text-center text-blue-800 dark:text-blue-400">
+              {isSignUp ? "Criar Conta" : "Entrar"}
+            </h2>
+          </div>
           <form onSubmit={handleAuth} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1">
