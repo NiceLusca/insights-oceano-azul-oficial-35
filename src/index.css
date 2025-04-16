@@ -1,4 +1,8 @@
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @layer base {
   .oceano-azul-logo {
     background-image: url('/lovable-uploads/822675c4-1449-4d75-9526-cde8afde01de.png');
