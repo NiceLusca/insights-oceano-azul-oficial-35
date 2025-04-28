@@ -3,19 +3,22 @@ import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { toast } from "sonner";
 import { exportToPdf } from "@/utils/pdf";
+import { getComparisonData } from "@/utils/metricsHelpers";
 
 interface PdfExportButtonProps {
   formData: any;
   diagnostics: any;
-  comparisonData: any;
 }
 
-export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfExportButtonProps) => {
+export const PdfExportButton = ({ formData, diagnostics }: PdfExportButtonProps) => {
   const handleExportPDF = async () => {
     try {
       toast.promise(
         new Promise(async (resolve, reject) => {
           try {
+            // Gerar dados de comparação com métricas ideais
+            const comparisonData = getComparisonData(formData);
+            
             const result = exportToPdf(formData, diagnostics, comparisonData);
             resolve(result);
           } catch (error) {

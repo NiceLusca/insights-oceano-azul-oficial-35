@@ -1,24 +1,28 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MainLayout } from "@/components/MainLayout";
-import { IdealMetricsCard } from "@/components/IdealMetricsCard";
+import { CompactIdealMetrics } from "@/components/CompactIdealMetrics";
 import { QuoteCard } from "@/components/QuoteCard";
 import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema";
 import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { FileText, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormAnalyzer } from "@/components/FormAnalyzer";
 import { useAuthentication } from "@/hooks/useAuthentication";
-import { calculateMetrics } from "@/utils/metricsHelpers";
+import { calculateMetrics, getComparisonData } from "@/utils/metricsHelpers";
 import { toast } from "sonner";
+import { TrendVisualization } from "@/components/TrendVisualization";
+import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
 
 const Index = () => {
   const [loadingUserData, setLoadingUserData] = useState(true);
   const [activeTab, setActiveTab] = useState("form");
   const [diagnosticsData, setDiagnosticsData] = useState(null);
+  const [comparisonData, setComparisonData] = useState([]);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthentication();
   
@@ -46,6 +50,9 @@ const Index = () => {
           const calculatedMetrics = calculateMetrics(formData);
           setDiagnosticsData(calculatedMetrics);
         }
+        
+        const compData = getComparisonData(formData);
+        setComparisonData(compData);
         
         localStorage.removeItem("selectedAnalysis");
         
@@ -89,10 +96,20 @@ const Index = () => {
   }, [form, isAuthenticated]);
 
   const hasUpsell = form.watch("hasUpsell");
+  
+  // Quando os dados do formulário mudam e temos diagnostics, atualizamos os dados de comparação
+  useEffect(() => {
+    if (diagnosticsData) {
+      const formData = form.getValues();
+      const compData = getComparisonData(formData);
+      setComparisonData(compData);
+    }
+  }, [diagnosticsData, form]);
 
   return (
     <MainLayout>
-      <IdealMetricsCard hasUpsell={hasUpsell} />
+      <CompactIdealMetrics hasUpsell={hasUpsell} />
+      
       {loadingUserData ? (
         <div className="space-y-4 p-8 bg-white rounded-lg shadow-sm border">
           <div className="flex items-center space-x-2">
@@ -129,7 +146,19 @@ const Index = () => {
               initialDiagnostics={diagnosticsData}
             />
           
-            {activeTab === "results" && <QuoteCard />}
+            {activeTab === "results" && diagnosticsData && (
+              <div className="space-y-6 mt-6">
+                <TrendVisualization 
+                  formData={form.getValues()} 
+                  diagnostics={diagnosticsData}
+                />
+                <AdvancedFinanceMetrics 
+                  formData={form.getValues()} 
+                  diagnostics={diagnosticsData}
+                />
+                <QuoteCard />
+              </div>
+            )}
           </Tabs>
         </>
       )}
