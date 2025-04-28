@@ -1,5 +1,5 @@
 
-import { InfoCircle, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
+import { TrendingUp, TrendingDown, AlertCircle, Info } from "lucide-react";
 import { formatCurrency, formatPercentage } from "@/utils/formatters";
 import { DiagnosticCard } from "./DiagnosticCard";
 import { cn } from "@/lib/utils";
