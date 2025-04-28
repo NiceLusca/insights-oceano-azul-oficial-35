@@ -5,17 +5,29 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
+import { IdealMetricsCompact } from "@/components/IdealMetricsCompact";
+import { useToast } from "@/hooks/use-toast";
 
 const Financas = () => {
   const location = useLocation();
   const [formData, setFormData] = useState<any>(null);
   const [diagnostics, setDiagnostics] = useState<any>(null);
+  const { toast } = useToast();
   
   useEffect(() => {
     // Get data from location state or localStorage
     if (location.state?.formData && location.state?.diagnostics) {
       setFormData(location.state.formData);
       setDiagnostics(location.state.diagnostics);
+      
+      // Store in localStorage for persistence
+      localStorage.setItem("currentFormData", JSON.stringify(location.state.formData));
+      localStorage.setItem("currentDiagnostics", JSON.stringify(location.state.diagnostics));
+      
+      toast({
+        title: "Dados carregados",
+        description: "Métricas financeiras prontas para visualização",
+      });
     } else {
       // Try to get from localStorage
       const savedFormData = localStorage.getItem("currentFormData");
@@ -26,7 +38,7 @@ const Financas = () => {
         setDiagnostics(JSON.parse(savedDiagnostics));
       }
     }
-  }, [location]);
+  }, [location, toast]);
 
   if (!formData || !diagnostics) {
     return (
@@ -54,6 +66,7 @@ const Financas = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+        className="space-y-6"
       >
         <motion.h1 
           className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-6"
@@ -63,6 +76,8 @@ const Financas = () => {
         >
           Métricas Financeiras
         </motion.h1>
+        
+        <IdealMetricsCompact hasUpsell={formData.hasUpsell} />
         
         <AdvancedFinanceMetrics 
           formData={formData}

@@ -23,7 +23,7 @@ export function FunnelDashboard({ formData, diagnostics }: FunnelDashboardProps)
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="overflow-hidden border-blue-200 dark:border-blue-800 shadow-sm">
+      <Card className="overflow-hidden border-blue-200 dark:border-blue-800 shadow-sm bg-white dark:bg-gray-800">
         <div className="bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-700 dark:to-blue-500 h-1.5"></div>
         <CardContent className="p-4 md:p-6">
           <motion.h2 
@@ -42,7 +42,7 @@ export function FunnelDashboard({ formData, diagnostics }: FunnelDashboardProps)
           </motion.h2>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 mb-6 bg-gray-100 dark:bg-gray-800/50 p-1 rounded-xl">
+            <TabsList className="grid grid-cols-3 mb-6 bg-gray-100 dark:bg-gray-700/50 p-1 rounded-xl">
               <TabsTrigger 
                 value="overview"
                 className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 data-[state=active]:text-blue-700 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-sm"
@@ -72,19 +72,19 @@ export function FunnelDashboard({ formData, diagnostics }: FunnelDashboardProps)
                 transition={{ duration: 0.3 }}
               >
                 {activeTab === "overview" && (
-                  <TabsContent value="overview" className="space-y-6">
+                  <TabsContent value="overview" className="space-y-6 mt-0">
                     <FunnelOverview formData={formData} diagnostics={diagnostics} />
                   </TabsContent>
                 )}
                 
                 {activeTab === "issues" && (
-                  <TabsContent value="issues" className="space-y-4">
+                  <TabsContent value="issues" className="space-y-4 mt-0">
                     <FunnelIssues formData={formData} diagnostics={diagnostics} />
                   </TabsContent>
                 )}
                 
                 {activeTab === "actions" && (
-                  <TabsContent value="actions" className="space-y-4">
+                  <TabsContent value="actions" className="space-y-4 mt-0">
                     <FunnelActions formData={formData} diagnostics={diagnostics} />
                   </TabsContent>
                 )}

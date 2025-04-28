@@ -12,6 +12,8 @@ import { Card } from "@/components/ui/card";
 import { useAuthentication } from "@/hooks/useAuthentication";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
+import { IdealMetricsCompact } from "@/components/IdealMetricsCompact";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -19,6 +21,7 @@ const Dashboard = () => {
   const [formData, setFormData] = useState<any>(null);
   const [diagnostics, setDiagnostics] = useState<any>(null);
   const [comparisonData, setComparisonData] = useState([]);
+  const { toast } = useToast();
   
   useEffect(() => {
     // Get data from location state or localStorage
@@ -26,6 +29,15 @@ const Dashboard = () => {
       setFormData(location.state.formData);
       setDiagnostics(location.state.diagnostics);
       setComparisonData(getComparisonData(location.state.formData));
+      
+      // Store in localStorage for persistence
+      localStorage.setItem("currentFormData", JSON.stringify(location.state.formData));
+      localStorage.setItem("currentDiagnostics", JSON.stringify(location.state.diagnostics));
+      
+      toast({
+        title: "Dados carregados",
+        description: "Dashboard atualizado com seus dados",
+      });
     } else {
       // Try to get from localStorage
       const savedFormData = localStorage.getItem("currentFormData");
@@ -40,7 +52,7 @@ const Dashboard = () => {
         setComparisonData(getComparisonData(parsedFormData));
       }
     }
-  }, [location]);
+  }, [location, toast]);
 
   if (!formData || !diagnostics) {
     return (
@@ -68,6 +80,7 @@ const Dashboard = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+        className="space-y-6"
       >
         <motion.h1 
           className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-6"
@@ -77,6 +90,8 @@ const Dashboard = () => {
         >
           Dashboard Inteligente
         </motion.h1>
+        
+        <IdealMetricsCompact hasUpsell={formData.hasUpsell} />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <motion.div
@@ -95,31 +110,37 @@ const Dashboard = () => {
           </motion.div>
         </div>
         
-        <Card className="p-6 mt-6 border border-blue-100 dark:border-blue-900 rounded-xl shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="flex-1">
-              <h3 className="text-xl font-medium text-blue-800 dark:text-blue-300 mb-3">Exportar e Salvar Análise</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4 md:mb-0">
-                Exporte um relatório detalhado em PDF ou salve esta análise no seu histórico para consultas futuras.
-              </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <Card className="p-6 mt-6 border border-blue-100 dark:border-blue-900 rounded-xl shadow-sm bg-white dark:bg-gray-800">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div className="flex-1">
+                <h3 className="text-xl font-medium text-blue-800 dark:text-blue-300 mb-3">Exportar e Salvar Análise</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 md:mb-0">
+                  Exporte um relatório detalhado em PDF ou salve esta análise no seu histórico para consultas futuras.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <SaveHistoryButton 
+                    formData={formData}
+                    diagnostics={diagnostics}
+                    disabled={!isAuthenticated}
+                  />
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <PdfExportButton 
+                    formData={formData}
+                    diagnostics={diagnostics}
+                  />
+                </motion.div>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <SaveHistoryButton 
-                  formData={formData}
-                  diagnostics={diagnostics}
-                  disabled={!isAuthenticated}
-                />
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <PdfExportButton 
-                  formData={formData}
-                  diagnostics={diagnostics}
-                />
-              </motion.div>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </motion.div>
       </motion.div>
     </MainLayout>
   );

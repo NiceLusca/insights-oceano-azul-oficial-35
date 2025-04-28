@@ -19,7 +19,7 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <motion.div
-      className="flex flex-col items-center justify-center p-6 sm:p-12 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
+      className="flex flex-col items-center justify-center p-6 sm:p-12 bg-gray-50/80 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -75,7 +75,7 @@ export function EmptyState({
             onClick={onAction}
             variant="default"
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 shadow-md"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:from-blue-500 dark:to-blue-600 shadow-md"
           >
             {actionLabel}
           </Button>
