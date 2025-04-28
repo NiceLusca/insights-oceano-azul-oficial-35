@@ -88,7 +88,6 @@ export const ResultContainer = ({
             <PdfExportButton 
               formData={formData}
               diagnostics={diagnostics}
-              comparisonData={comparisonData}
             />
           </div>
         </div>

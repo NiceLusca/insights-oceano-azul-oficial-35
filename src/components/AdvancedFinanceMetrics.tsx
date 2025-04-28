@@ -58,13 +58,13 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
   // Definir cores para status de métricas
   const getROIStatus = (roi: number) => {
     if (roi >= 1.5) return "success";
-    if (roi >= 1) return "warning";
+    if (roi >= 1) return "secondary";
     return "destructive";
   };
   
   const getLtvCacStatus = (ratio: number) => {
     if (ratio >= 3) return "success";
-    if (ratio >= 1.5) return "warning";
+    if (ratio >= 1.5) return "secondary";
     return "destructive";
   };
 
