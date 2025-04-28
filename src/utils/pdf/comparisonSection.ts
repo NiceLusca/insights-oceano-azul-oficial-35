@@ -7,10 +7,12 @@ import { COLORS, SPACING, PdfComparisonItem } from "./types";
  * Cria a seção de comparação com métricas ideais
  */
 export const createComparisonSection = (doc: jsPDF, comparisonData: PdfComparisonItem[], startY: number): number => {
-  // Título da seção
+  // Título da seção com fonte menor e mais discreto
   doc.setFont("helvetica", "bold");
+  doc.setFontSize(12); // Reduzindo o tamanho da fonte do título
   doc.text("Comparação com Métricas Ideais", SPACING.marginX, startY);
   doc.setFont("helvetica", "normal");
+  doc.setFontSize(10); // Voltando para tamanho padrão
   
   // Preparar dados para a tabela de comparação
   const tableData = comparisonData.map((item: any) => {
@@ -26,24 +28,28 @@ export const createComparisonSection = (doc: jsPDF, comparisonData: PdfCompariso
     ];
   });
   
-  // Renderizar tabela de comparação
+  // Renderizar tabela de comparação com tamanho reduzido
   autoTable(doc, {
-    startY: startY + 5,
+    startY: startY + 4, // Reduzir espaço entre título e tabela
     head: [["Métrica", "Seu Valor", "Valor Ideal", "Status"]],
     body: tableData,
     theme: "grid",
     headStyles: {
       fillColor: COLORS.primary,
-      textColor: [255, 255, 255]
+      textColor: [255, 255, 255],
+      fontSize: 9 // Reduzindo tamanho da fonte do cabeçalho
+    },
+    bodyStyles: {
+      fontSize: 8 // Reduzindo tamanho da fonte do corpo da tabela
     },
     alternateRowStyles: {
       fillColor: COLORS.secondary
     },
     columnStyles: {
-      3: { 
-        halign: 'center',
-        cellWidth: 30
-      }
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 35, halign: 'center' },
+      2: { cellWidth: 35, halign: 'center' },
+      3: { cellWidth: 25, halign: 'center' }
     },
     margin: { left: SPACING.marginX, right: SPACING.marginX },
     didDrawCell: (data) => {
@@ -62,7 +68,7 @@ export const createComparisonSection = (doc: jsPDF, comparisonData: PdfCompariso
         // Calcular posição central da célula e desenhar o texto
         const textPos = {
           x: cell.x + cell.width / 2,
-          y: cell.y + cell.height / 2 + 3
+          y: cell.y + cell.height / 2 + 2
         };
         
         // Limpar qualquer texto pré-existente na célula (isso evita a duplicação)
@@ -79,5 +85,5 @@ export const createComparisonSection = (doc: jsPDF, comparisonData: PdfCompariso
   });
   
   // Retornar posição Y após a tabela
-  return (doc as any).lastAutoTable?.finalY + SPACING.sectionSpacing || startY + 80;
+  return (doc as any).lastAutoTable?.finalY + SPACING.sectionSpacing || startY + 60;
 };
