@@ -1,16 +1,14 @@
 
-import type { Config } from "tailwindcss"
-import { fontFamily } from "tailwindcss/defaultTheme"
+import { type Config } from "tailwindcss";
 
-const config = {
+export default {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -20,10 +18,6 @@ const config = {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ['Inter', 'system-ui', ...fontFamily.sans],
-        display: ['Poppins', ...fontFamily.sans],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -58,6 +52,10 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(142, 72%, 29%)",
+          foreground: "hsl(142, 72%, 96%)",
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -83,15 +81,23 @@ const config = {
             transform: "translateY(0)"
           }
         },
+        "pulse-subtle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.7" }
+        },
+        "slide-in-right": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
+        "pulse-subtle": "pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "slide-in-right": "slide-in-right 0.3s ease-out",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
-
-export default config
+} satisfies Config;

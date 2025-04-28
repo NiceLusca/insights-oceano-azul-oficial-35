@@ -1,97 +1,65 @@
 
-import { Card } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
 import { UseFormReturn } from "react-hook-form";
-import { DateRangeSelector } from "@/components/DateRangeSelector";
-import { PriceSection } from "@/components/PriceSection";
-import { GoalsInvestmentsSection } from "@/components/GoalsInvestmentsSection";
-import { TrafficMetricsSection } from "@/components/TrafficMetricsSection";
-import { SalesSection } from "@/components/SalesSection";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { FormValues } from "@/schemas/formSchema";
-import { BarChart3 } from "lucide-react";
+import { FormInputFields } from "@/components/FormInputFields";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 interface FormContainerProps {
   form: UseFormReturn<any>;
   onSubmit: (values: any) => void;
-  formSchema: FormValues;
-  onAnalyze?: () => void;
+  formSchema: any;
+  onAnalyze: () => void;
 }
 
-export const FormContainer = ({ form, onSubmit, formSchema, onAnalyze }: FormContainerProps) => {
-  const hasUpsell = form.watch("hasUpsell");
+export function FormContainer({ form, onSubmit, formSchema, onAnalyze }: FormContainerProps) {
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const handleSubmitAndAnalyze = (e: React.FormEvent) => {
-    e.preventDefault();
-    const isValid = form.formState.isValid;
-    
-    if (!isValid) {
-      form.trigger();
-      return;
-    }
-    
-    const values = form.getValues();
-    onSubmit(values);
-    if (onAnalyze) onAnalyze();
+  const handleAnalyze = () => {
+    setIsAnalyzing(true);
+    // Simulate loading for better UX feedback
+    setTimeout(() => {
+      onAnalyze();
+      setIsAnalyzing(false);
+    }, 600);
   };
 
   return (
-    <Card className="p-6 shadow-md">
-      <h2 className="text-xl font-semibold text-blue-800 mb-4 flex items-center">
-        <span className="mr-2">✍️</span> Seus Números
-      </h2>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Form {...form}>
-        <form className="space-y-6">
-          <div className="flex items-center space-x-2 my-4">
-            <FormField
-              control={form.control}
-              name="hasUpsell"
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-2">
-                  <FormControl>
-                    <Checkbox 
-                      checked={field.value} 
-                      onCheckedChange={field.onChange} 
-                      id="hasUpsell"
-                    />
-                  </FormControl>
-                  <FormLabel htmlFor="hasUpsell" className="cursor-pointer font-medium">
-                    Você tem Upsell?
-                  </FormLabel>
-                </FormItem>
-              )}
-            />
-          </div>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormInputFields form={form} formSchema={formSchema} />
           
-          <DateRangeSelector form={form} />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <PriceSection form={form} formSchema={formSchema} hasUpsell={hasUpsell} />
-            <GoalsInvestmentsSection form={form} />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <TrafficMetricsSection form={form} />
-            <SalesSection form={form} hasUpsell={hasUpsell} />
-          </div>
-          
-          <Button 
-            type="button" 
-            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 transition-colors flex items-center justify-center gap-2" 
-            onClick={handleSubmitAndAnalyze}
+          <motion.div
+            className="flex justify-end"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            <BarChart3 className="h-4 w-4" />
-            Analisar Resultados
-          </Button>
+            <Button
+              type="button"
+              onClick={handleAnalyze}
+              disabled={isAnalyzing}
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-2 px-6"
+              size="lg"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analisando...
+                </>
+              ) : (
+                "Gerar Análise"
+              )}
+            </Button>
+          </motion.div>
         </form>
       </Form>
-    </Card>
+    </motion.div>
   );
-};
+}

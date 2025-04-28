@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FormValues } from "@/schemas/formSchema";
 import { Save, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface SaveToHistoryButtonProps {
   formData: FormValues;
@@ -60,14 +61,14 @@ export const SaveToHistoryButton = ({
       if (error) throw error;
       
       toast({
-        title: "Análise salva com sucesso!",
-        description: "Você pode ver seu histórico de análises clicando na aba 'Histórico'",
+        title: "Análise salva",
+        description: "Sua análise foi salva com sucesso no histórico",
       });
-    } catch (error: any) {
-      console.error("Erro ao salvar análise:", error);
+    } catch (error) {
+      console.error("Erro ao salvar no histórico:", error);
       toast({
-        title: "Erro ao salvar análise",
-        description: error.message || "Ocorreu um erro inesperado",
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar sua análise no histórico",
         variant: "destructive",
       });
     } finally {
@@ -76,19 +77,27 @@ export const SaveToHistoryButton = ({
   };
 
   return (
-    <div className="flex justify-end mt-6">
+    <motion.div 
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.98 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
       <Button 
         onClick={saveToHistory}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center gap-2 px-6 py-6 h-auto text-base shadow-md transition-all hover:shadow-lg"
+        variant="outline"
         disabled={saving}
+        className="flex items-center gap-2 border-blue-200 text-blue-700 bg-white hover:bg-blue-50 px-6 py-2 shadow-sm"
+        size="lg"
       >
         {saving ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <Save className="h-5 w-5" />
+          <Save className="h-4 w-4" />
         )}
         {saving ? "Salvando..." : "Salvar no Histórico"}
       </Button>
-    </div>
+    </motion.div>
   );
 };
