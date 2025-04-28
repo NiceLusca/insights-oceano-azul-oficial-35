@@ -2,6 +2,7 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, CheckCircle, HelpCircle } from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
+import { getIdealMetrics } from "./utils";
 
 interface FunnelIssuesProps {
   formData: any;
@@ -10,15 +11,7 @@ interface FunnelIssuesProps {
 
 export function FunnelIssues({ formData, diagnostics }: FunnelIssuesProps) {
   // Métricas ideais baseadas no guideline
-  const idealMetrics = {
-    cpaIdeal: 17,
-    icMaximo: 6,
-    cpcMaximo: 2,
-    hookRateBom: 30,
-    hookRatePromissor: 40,
-    hookRateExcelente: 45,
-    viewRate: 1
-  };
+  const idealMetrics = getIdealMetrics();
   
   // Determinar problemas do funil
   const funnelIssues = [];
@@ -102,7 +95,7 @@ export function FunnelIssues({ formData, diagnostics }: FunnelIssuesProps) {
         funnelIssues.map((issue) => (
           <Alert 
             key={issue.id}
-            variant={issue.severity === "error" ? "destructive" : issue.severity === "warning" ? "default" : "success"}
+            variant={issue.severity === "error" ? "destructive" : "default"}
             className={`border-l-4 ${
               issue.severity === "error" 
                 ? "border-l-red-500 bg-red-50" 
