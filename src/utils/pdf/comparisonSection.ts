@@ -65,6 +65,11 @@ export const createComparisonSection = (doc: jsPDF, comparisonData: PdfCompariso
           y: cell.y + cell.height / 2 + 3
         };
         
+        // Limpar qualquer texto pré-existente na célula (isso evita a duplicação)
+        doc.setFillColor(cell.styles.fillColor[0], cell.styles.fillColor[1], cell.styles.fillColor[2]);
+        doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
+        
+        // Desenhar o texto apenas uma vez
         doc.text(value, textPos.x, textPos.y, { align: 'center' });
         
         // Resetar a cor do texto
