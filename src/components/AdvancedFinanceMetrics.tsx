@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { periodsOverlap } from "@/components/TrendVisualization/utils";
+import { FormValues } from "@/schemas/formSchema";
+import { Json } from "@/integrations/supabase/types";
 
 interface AdvancedFinanceMetricsProps {
   formData: any;
@@ -21,6 +23,26 @@ interface HistoricalMetrics {
   cac: number;
   ltv: number;
   averageOrderValue: number;
+}
+
+// Define interfaces para trabalhar com dados do Json do Supabase
+interface HistoricalFormData {
+  startDate?: string;
+  endDate?: string;
+  adSpend?: number;
+  mainProductSales?: number;
+  comboSales?: number;
+  mainProductPrice?: number;
+  hasUpsell?: boolean;
+  upsellSales?: number;
+  upsellPrice?: number;
+  [key: string]: any;
+}
+
+interface HistoricalDiagnostics {
+  totalRevenue?: number;
+  currentROI?: number;
+  [key: string]: any;
 }
 
 export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanceMetricsProps) {
@@ -58,12 +80,14 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
         const nonOverlappingAnalyses = data.filter((analysis) => {
           if (!currentStartDate || !currentEndDate) return true;
           
-          const analysisStartDate = analysis.form_data?.startDate 
-            ? new Date(analysis.form_data.startDate) 
+          const formDataObj = analysis.form_data as HistoricalFormData;
+          
+          const analysisStartDate = formDataObj.startDate 
+            ? new Date(formDataObj.startDate) 
             : null;
           
-          const analysisEndDate = analysis.form_data?.endDate 
-            ? new Date(analysis.form_data.endDate) 
+          const analysisEndDate = formDataObj.endDate 
+            ? new Date(formDataObj.endDate) 
             : null;
             
           if (!analysisStartDate || !analysisEndDate) return true;
@@ -91,14 +115,17 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
               validCount++;
               
               // Calculate basic metrics
-              const revenue = analysis.diagnostics.totalRevenue || 0;
-              const adSpend = analysis.form_data?.adSpend || 0;
+              const diagnosticsObj = analysis.diagnostics as HistoricalDiagnostics;
+              const formDataObj = analysis.form_data as HistoricalFormData;
+              
+              const revenue = diagnosticsObj.totalRevenue || 0;
+              const adSpend = formDataObj.adSpend || 0;
               const profit = revenue - adSpend;
-              const roi = analysis.diagnostics.currentROI || 0;
+              const roi = diagnosticsObj.currentROI || 0;
               
               // Calculate sales metrics
-              const totalSales = (analysis.form_data?.mainProductSales || 0) + 
-                                (analysis.form_data?.comboSales || 0);
+              const totalSales = (formDataObj.mainProductSales || 0) + 
+                              (formDataObj.comboSales || 0);
               const aov = totalSales > 0 ? revenue / totalSales : 0;
               const cac = totalSales > 0 ? adSpend / totalSales : 0;
               const ltv = aov * 1.5;
