@@ -2,7 +2,7 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
-import { Eye, FileText } from "lucide-react";
+import { Eye, FileText, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,13 +15,30 @@ import { formatCurrency } from "@/utils/formatters";
 import { exportToPdf } from "@/utils/pdf";
 import { toast } from "sonner";
 import { getComparisonData } from "@/utils/metricsHelpers";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface HistoryTableProps {
   analyses: any[];
   onLoadAnalysis: (analysis: any) => void;
+  onDelete?: (analysisId: string) => void;
 }
 
-export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) => {
+export const HistoryTable = ({ analyses, onLoadAnalysis, onDelete }: HistoryTableProps) => {
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
   const handleExportPDF = async (analysis: any) => {
     try {
       toast.promise(
@@ -51,6 +68,31 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
     } catch (error) {
       console.error("Erro ao exportar PDF:", error);
       toast.error("Erro ao exportar o relatório.");
+    }
+  };
+
+  const handleDeleteAnalysis = async (analysisId: string) => {
+    setIsDeleting(true);
+    
+    try {
+      const { error } = await supabase
+        .from("user_analyses")
+        .delete()
+        .eq("id", analysisId);
+      
+      if (error) throw error;
+      
+      toast.success("Análise removida com sucesso");
+      
+      // If onDelete callback is provided, call it to refresh the list
+      if (onDelete) {
+        onDelete(analysisId);
+      }
+    } catch (error: any) {
+      toast.error(`Erro ao remover análise: ${error.message}`);
+    } finally {
+      setIsDeleting(false);
+      setDeletingId(null);
     }
   };
 
@@ -117,6 +159,37 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
                       <FileText className="h-3.5 w-3.5" />
                       <span>PDF</span>
                     </Button>
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex items-center gap-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          <span>Excluir</span>
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza que deseja excluir esta análise? Esta ação não pode ser desfeita.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteAnalysis(analysis.id)}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                            disabled={isDeleting}
+                          >
+                            {isDeleting && deletingId === analysis.id ? "Excluindo..." : "Sim, excluir"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>

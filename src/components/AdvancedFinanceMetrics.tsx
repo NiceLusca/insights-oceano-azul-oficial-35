@@ -1,19 +1,138 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CircleDollarSign, TrendingUp, TrendingDown, BarChart2, PieChart } from "lucide-react";
+import { CircleDollarSign, TrendingUp, TrendingDown, BarChart2, PieChart, HistoryIcon } from "lucide-react";
 import { formatCurrency } from "@/utils/formatters";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { periodsOverlap } from "@/components/TrendVisualization/utils";
 
 interface AdvancedFinanceMetricsProps {
   formData: any;
   diagnostics: any;
 }
 
+interface HistoricalMetrics {
+  revenue: number;
+  profit: number;
+  roi: number;
+  cac: number;
+  ltv: number;
+  averageOrderValue: number;
+}
+
 export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanceMetricsProps) {
   const [activeTab, setActiveTab] = useState("overview");
+  const [historicalMetrics, setHistoricalMetrics] = useState<HistoricalMetrics | null>(null);
+  const [isLoadingHistorical, setIsLoadingHistorical] = useState(true);
+  
+  // Fetch historical metrics from previous analyses
+  useEffect(() => {
+    const fetchHistoricalMetrics = async () => {
+      try {
+        setIsLoadingHistorical(true);
+        
+        const { data: session } = await supabase.auth.getSession();
+        
+        if (!session.session) {
+          return;
+        }
+        
+        const { data, error } = await supabase
+          .from("user_analyses")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(10);
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) return;
+        
+        // Get current period dates
+        const currentStartDate = formData?.startDate ? new Date(formData.startDate) : null;
+        const currentEndDate = formData?.endDate ? new Date(formData.endDate) : null;
+        
+        // Filter out analyses with overlapping periods
+        const nonOverlappingAnalyses = data.filter((analysis) => {
+          if (!currentStartDate || !currentEndDate) return true;
+          
+          const analysisStartDate = analysis.form_data?.startDate 
+            ? new Date(analysis.form_data.startDate) 
+            : null;
+          
+          const analysisEndDate = analysis.form_data?.endDate 
+            ? new Date(analysis.form_data.endDate) 
+            : null;
+            
+          if (!analysisStartDate || !analysisEndDate) return true;
+          
+          return !periodsOverlap(
+            currentStartDate, 
+            currentEndDate, 
+            analysisStartDate, 
+            analysisEndDate
+          );
+        });
+        
+        // Calculate average metrics from historical data
+        if (nonOverlappingAnalyses.length > 0) {
+          let totalRevenue = 0;
+          let totalProfit = 0;
+          let totalRoi = 0;
+          let totalCac = 0;
+          let totalLtv = 0;
+          let totalAov = 0;
+          let validCount = 0;
+          
+          nonOverlappingAnalyses.forEach((analysis) => {
+            if (analysis.diagnostics) {
+              validCount++;
+              
+              // Calculate basic metrics
+              const revenue = analysis.diagnostics.totalRevenue || 0;
+              const adSpend = analysis.form_data?.adSpend || 0;
+              const profit = revenue - adSpend;
+              const roi = analysis.diagnostics.currentROI || 0;
+              
+              // Calculate sales metrics
+              const totalSales = (analysis.form_data?.mainProductSales || 0) + 
+                                (analysis.form_data?.comboSales || 0);
+              const aov = totalSales > 0 ? revenue / totalSales : 0;
+              const cac = totalSales > 0 ? adSpend / totalSales : 0;
+              const ltv = aov * 1.5;
+              
+              // Add to totals
+              totalRevenue += revenue;
+              totalProfit += profit;
+              totalRoi += roi;
+              totalCac += cac;
+              totalLtv += ltv;
+              totalAov += aov;
+            }
+          });
+          
+          if (validCount > 0) {
+            setHistoricalMetrics({
+              revenue: totalRevenue / validCount,
+              profit: totalProfit / validCount,
+              roi: totalRoi / validCount,
+              cac: totalCac / validCount,
+              ltv: totalLtv / validCount,
+              averageOrderValue: totalAov / validCount
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao carregar métricas históricas:", error);
+      } finally {
+        setIsLoadingHistorical(false);
+      }
+    };
+    
+    fetchHistoricalMetrics();
+  }, [formData]);
   
   // Calcular métricas financeiras avançadas
   const totalRevenue = diagnostics?.totalRevenue || 0;
@@ -68,6 +187,12 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
     return "destructive";
   };
 
+  // Calculate percentage change between current and historical metrics
+  const getPercentageChange = (current: number, historical: number) => {
+    if (!historical) return 0;
+    return ((current - historical) / historical) * 100;
+  };
+
   return (
     <Card className="shadow-sm border-blue-100">
       <CardHeader className="pb-2">
@@ -93,21 +218,33 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
               <div className="bg-white p-4 rounded-lg border shadow-sm">
                 <div className="text-sm text-gray-500 mb-1">Receita Total</div>
                 <div className="text-2xl font-semibold">{formatCurrency(totalRevenue)}</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {totalSales} pedidos • {formatCurrency(aov)} ticket médio
+                <div className="text-xs text-gray-500 mt-1 flex justify-between items-center">
+                  <span>{totalSales} pedidos • {formatCurrency(aov)} ticket médio</span>
+                  
+                  {!isLoadingHistorical && historicalMetrics && (
+                    <Badge variant={totalRevenue > historicalMetrics.revenue ? "success" : "destructive"}>
+                      {getPercentageChange(totalRevenue, historicalMetrics.revenue).toFixed(1)}%
+                    </Badge>
+                  )}
                 </div>
               </div>
               
               <div className="bg-white p-4 rounded-lg border shadow-sm">
                 <div className="text-sm text-gray-500 mb-1">Lucro</div>
                 <div className="text-2xl font-semibold">{formatCurrency(profit)}</div>
-                <div className="flex items-center mt-1">
+                <div className="flex items-center mt-1 justify-between">
                   <Badge 
                     variant={profit >= 0 ? "success" : "destructive"}
                     className="text-xs font-normal"
                   >
                     Margem: {profitMargin.toFixed(1)}%
                   </Badge>
+                  
+                  {!isLoadingHistorical && historicalMetrics && (
+                    <Badge variant={profit > historicalMetrics.profit ? "success" : "destructive"}>
+                      {getPercentageChange(profit, historicalMetrics.profit).toFixed(1)}%
+                    </Badge>
+                  )}
                 </div>
               </div>
               
@@ -120,15 +257,33 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
                      diagnostics?.currentROI >= 1 ? "Aceitável" : "Preocupante"}
                   </Badge>
                 </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {formatCurrency(adSpend)} investido em anúncios
+                <div className="text-xs text-gray-500 mt-1 flex justify-between items-center">
+                  <span>{formatCurrency(adSpend)} investido em anúncios</span>
+                  
+                  {!isLoadingHistorical && historicalMetrics && (
+                    <Badge 
+                      variant={(diagnostics?.currentROI || 0) > historicalMetrics.roi ? "success" : "destructive"}
+                    >
+                      {getPercentageChange(diagnostics?.currentROI || 0, historicalMetrics.roi).toFixed(1)}%
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
             
             <Card className="border-dashed border-gray-200">
               <CardContent className="p-4">
-                <h3 className="font-medium text-sm mb-2 text-gray-700">Projeção Mensal</h3>
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-medium text-sm text-gray-700">Projeção Mensal</h3>
+                  
+                  {!isLoadingHistorical && historicalMetrics && (
+                    <div className="flex items-center text-xs text-gray-500">
+                      <HistoryIcon className="h-3.5 w-3.5 mr-1" />
+                      Comparado com a média histórica
+                    </div>
+                  )}
+                </div>
+                
                 <div className="flex justify-between mb-1">
                   <span className="text-sm">Meta: {formatCurrency(monthlyTarget)}</span>
                   <span className="text-sm">Projeção: {formatCurrency(monthlyProjection)}</span>
@@ -154,16 +309,28 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
               <div className="bg-white p-4 rounded-lg border shadow-sm">
                 <div className="text-sm text-gray-500 mb-1">CAC (Custo de Aquisição)</div>
                 <div className="text-2xl font-semibold">{formatCurrency(cac)}</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Gasto para adquirir cada cliente
+                <div className="text-xs text-gray-500 mt-1 flex justify-between items-center">
+                  <span>Gasto para adquirir cada cliente</span>
+                  
+                  {!isLoadingHistorical && historicalMetrics && (
+                    <Badge variant={cac < historicalMetrics.cac ? "success" : "destructive"}>
+                      {getPercentageChange(cac, historicalMetrics.cac).toFixed(1)}%
+                    </Badge>
+                  )}
                 </div>
               </div>
               
               <div className="bg-white p-4 rounded-lg border shadow-sm">
                 <div className="text-sm text-gray-500 mb-1">LTV (Valor do Cliente)</div>
                 <div className="text-2xl font-semibold">{formatCurrency(ltv)}</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  Valor estimado no ciclo de vida
+                <div className="text-xs text-gray-500 mt-1 flex justify-between items-center">
+                  <span>Valor estimado no ciclo de vida</span>
+                  
+                  {!isLoadingHistorical && historicalMetrics && (
+                    <Badge variant={ltv > historicalMetrics.ltv ? "success" : "destructive"}>
+                      {getPercentageChange(ltv, historicalMetrics.ltv).toFixed(1)}%
+                    </Badge>
+                  )}
                 </div>
               </div>
               
@@ -212,6 +379,30 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
                       }
                     </div>
                   </div>
+                  
+                  {!isLoadingHistorical && historicalMetrics && (
+                    <div className="flex items-start gap-2 mt-3 p-3 bg-blue-50 rounded-md">
+                      <div className="p-1 rounded-full bg-blue-100">
+                        <HistoryIcon className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <div className="text-sm">
+                        <p>
+                          <span className="font-medium">Comparação histórica:</span> Seu CAC atual está 
+                          {cac < historicalMetrics.cac ? (
+                            <span className="text-green-600"> {Math.abs(getPercentageChange(cac, historicalMetrics.cac)).toFixed(1)}% menor </span>
+                          ) : (
+                            <span className="text-red-600"> {Math.abs(getPercentageChange(cac, historicalMetrics.cac)).toFixed(1)}% maior </span>
+                          )}
+                          que a média histórica, enquanto seu ROI está 
+                          {(diagnostics?.currentROI || 0) > historicalMetrics.roi ? (
+                            <span className="text-green-600"> {Math.abs(getPercentageChange(diagnostics?.currentROI || 0, historicalMetrics.roi)).toFixed(1)}% melhor.</span>
+                          ) : (
+                            <span className="text-red-600"> {Math.abs(getPercentageChange(diagnostics?.currentROI || 0, historicalMetrics.roi)).toFixed(1)}% pior.</span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -250,8 +441,16 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
                   <div className="text-sm text-gray-500 mb-1">Valor Médio do Pedido</div>
                   <div className="text-2xl font-semibold">{formatCurrency(aov)}</div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {totalSales} pedidos totais
+                  <div className="text-xs text-gray-500 mt-1 flex justify-between items-center">
+                    <span>{totalSales} pedidos totais</span>
+                    
+                    {!isLoadingHistorical && historicalMetrics && (
+                      <Badge 
+                        variant={aov > historicalMetrics.averageOrderValue ? "success" : "destructive"}
+                      >
+                        {getPercentageChange(aov, historicalMetrics.averageOrderValue).toFixed(1)}%
+                      </Badge>
+                    )}
                   </div>
                 </div>
                 

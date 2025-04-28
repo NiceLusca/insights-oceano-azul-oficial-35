@@ -6,7 +6,7 @@ import { MainLayout } from "@/components/MainLayout";
 import { QuoteCard } from "@/components/QuoteCard";
 import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema";
 import { supabase } from "@/integrations/supabase/client";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,8 +14,6 @@ import { FormAnalyzer } from "@/components/FormAnalyzer";
 import { useAuthentication } from "@/hooks/useAuthentication";
 import { calculateMetrics, getComparisonData } from "@/utils/metricsHelpers";
 import { toast } from "sonner";
-import { TrendVisualization } from "@/components/TrendVisualization";
-import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
 
 const Index = () => {
   const [loadingUserData, setLoadingUserData] = useState(true);
@@ -94,8 +92,6 @@ const Index = () => {
     loadUserData();
   }, [form, isAuthenticated]);
 
-  const hasUpsell = form.watch("hasUpsell");
-  
   // Quando os dados do formulário mudam e temos diagnostics, atualizamos os dados de comparação
   useEffect(() => {
     if (diagnosticsData) {

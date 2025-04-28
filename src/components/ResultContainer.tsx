@@ -47,29 +47,29 @@ export const ResultContainer = ({
             className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
             <LayoutDashboard className="h-4 w-4" />
-            Análise Detalhada
+            Dashboard Inteligente
           </TabsTrigger>
           <TabsTrigger 
             value="detailed" 
             className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
             <FileText className="h-4 w-4" />
-            Dashboard Inteligente
+            Análise Detalhada
           </TabsTrigger>
         </TabsList>
       
         <TabsContent value="dashboard" className="space-y-6 animate-fade-in">
-          <FunnelDashboard 
-            formData={formData} 
-            diagnostics={diagnostics} 
-          />
-        </TabsContent>
-
-        <TabsContent value="detailed" className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <DiagnosticSection diagnostics={diagnostics} />
             <ComparisonChart actualData={comparisonData} />
           </div>
+        </TabsContent>
+
+        <TabsContent value="detailed" className="space-y-6 animate-fade-in">
+          <FunnelDashboard 
+            formData={formData} 
+            diagnostics={diagnostics} 
+          />
         </TabsContent>
       </Tabs>
 

@@ -1,6 +1,140 @@
 
+import { supabase } from "@/integrations/supabase/client";
+import { FormValues } from "@/schemas/formSchema";
+import { isWithinInterval } from "date-fns";
+
+interface HistoricalAnalysis {
+  id: string;
+  created_at: string;
+  form_data: FormValues;
+  diagnostics: any;
+}
+
+// Helper function to check if a period overlaps with another
+export const periodsOverlap = (
+  period1Start: Date | string, 
+  period1End: Date | string,
+  period2Start: Date | string,
+  period2End: Date | string
+) => {
+  const start1 = period1Start instanceof Date ? period1Start : new Date(period1Start);
+  const end1 = period1End instanceof Date ? period1End : new Date(period1End);
+  const start2 = period2Start instanceof Date ? period2Start : new Date(period2Start);
+  const end2 = period2End instanceof Date ? period2End : new Date(period2End);
+
+  return (
+    isWithinInterval(start1, { start: start2, end: end2 }) ||
+    isWithinInterval(end1, { start: start2, end: end2 }) ||
+    isWithinInterval(start2, { start: start1, end: end1 }) ||
+    isWithinInterval(end2, { start: start1, end: end1 })
+  );
+};
+
+// Function to fetch historical data from Supabase
+export const fetchHistoricalData = async (): Promise<HistoricalAnalysis[]> => {
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    
+    if (!session.session) {
+      return [];
+    }
+    
+    const { data, error } = await supabase
+      .from("user_analyses")
+      .select("*")
+      .order("created_at", { ascending: true });
+    
+    if (error) throw error;
+    
+    return data as HistoricalAnalysis[];
+  } catch (error) {
+    console.error("Erro ao carregar dados históricos:", error);
+    return [];
+  }
+};
+
 // Helper function to generate trend data for visualization
-export const generateTrendData = (days: number, baseValue: number, volatility: number, trend: number = 0) => {
+export const generateTrendData = async (
+  days: number, 
+  baseValue: number, 
+  volatility: number, 
+  trend: number = 0,
+  currentData: FormValues
+) => {
+  // First get data from simple algorithm for backfilling
+  const simulatedData = generateSimulatedTrendData(days, baseValue, volatility, trend);
+  
+  try {
+    // Fetch historical data
+    const historicalAnalyses = await fetchHistoricalData();
+    
+    if (historicalAnalyses.length === 0) {
+      return simulatedData;
+    }
+    
+    // Enhance simulated data with historical data points
+    const enhancedData = [...simulatedData];
+    const currentStart = currentData.startDate ? new Date(currentData.startDate) : null;
+    const currentEnd = currentData.endDate ? new Date(currentData.endDate) : null;
+    
+    // Go through historical data and integrate non-overlapping periods
+    historicalAnalyses.forEach(analysis => {
+      const analysisStartDate = analysis.form_data.startDate ? new Date(analysis.form_data.startDate) : null;
+      const analysisEndDate = analysis.form_data.endDate ? new Date(analysis.form_data.endDate) : null;
+      
+      // Skip if dates are missing or this is the current analysis period
+      if (!analysisStartDate || !analysisEndDate || !currentStart || !currentEnd) {
+        return;
+      }
+      
+      // Skip if periods overlap
+      if (periodsOverlap(currentStart, currentEnd, analysisStartDate, analysisEndDate)) {
+        return;
+      }
+      
+      // Calculate the average date for this analysis
+      const avgDate = new Date((analysisStartDate.getTime() + analysisEndDate.getTime()) / 2);
+      const dateStr = avgDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      
+      // Try to find matching date in existing data
+      const existingIndex = enhancedData.findIndex(d => d.date === dateStr);
+      
+      // Determine which metric to use based on the metric type
+      const metricValue = analysis.diagnostics?.currentROI || analysis.diagnostics?.totalRevenue / 30 || 0;
+      
+      if (existingIndex >= 0) {
+        // Update existing data point
+        enhancedData[existingIndex] = {
+          ...enhancedData[existingIndex],
+          value: metricValue,
+          historical: true
+        };
+      } else {
+        // Insert new data point and sort by date
+        enhancedData.push({
+          date: dateStr,
+          value: metricValue,
+          historical: true
+        });
+      }
+    });
+    
+    // Sort data by date
+    enhancedData.sort((a, b) => {
+      const dateA = new Date(`01/${a.date}`);
+      const dateB = new Date(`01/${b.date}`);
+      return dateA.getTime() - dateB.getTime();
+    });
+    
+    return enhancedData;
+  } catch (error) {
+    console.error("Erro ao processar dados históricos:", error);
+    return simulatedData;
+  }
+};
+
+// Original simulation function for backfilling
+export const generateSimulatedTrendData = (days: number, baseValue: number, volatility: number, trend: number = 0) => {
   const data = [];
   let currentValue = baseValue;
   
@@ -19,7 +153,8 @@ export const generateTrendData = (days: number, baseValue: number, volatility: n
     
     data.push({
       date: dateStr,
-      value: Number(currentValue.toFixed(2))
+      value: Number(currentValue.toFixed(2)),
+      historical: false
     });
   }
   

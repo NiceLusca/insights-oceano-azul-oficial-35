@@ -28,60 +28,65 @@ const History = () => {
   const navigate = useNavigate();
   const { toast: uiToast } = useToast();
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const { data: session } = await supabase.auth.getSession();
-        
-        if (!session.session) {
-          navigate("/auth");
-          return;
-        }
-        
-        const { data, error } = await supabase
-          .from("user_analyses")
-          .select("*")
-          .order("created_at", { ascending: false });
-        
-        if (error) throw error;
-        
-        // Type assertion to ensure we're working with an array of Analysis objects
-        const typedData = data as Analysis[];
-        
-        // Ensure dates are properly formatted for any stored analyses
-        const processedData = typedData?.map(analysis => {
-          if (analysis.form_data && typeof analysis.form_data === 'object') {
-            // Create a shallow copy to avoid modifying the original
-            const formData = { ...analysis.form_data };
-            
-            // Handle date fields if they exist
-            if ('startDate' in formData && formData.startDate) {
-              formData.startDate = formData.startDate;
-            }
-            
-            if ('endDate' in formData && formData.endDate) {
-              formData.endDate = formData.endDate;
-            }
-            
-            return { ...analysis, form_data: formData };
-          }
-          return analysis;
-        });
-        
-        setAnalyses(processedData || []);
-      } catch (error: any) {
-        uiToast({
-          title: "Erro ao carregar histórico",
-          description: error.message,
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
+  const fetchHistory = async () => {
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      
+      if (!session.session) {
+        navigate("/auth");
+        return;
       }
-    };
-    
+      
+      const { data, error } = await supabase
+        .from("user_analyses")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      
+      // Type assertion to ensure we're working with an array of Analysis objects
+      const typedData = data as Analysis[];
+      
+      // Ensure dates are properly formatted for any stored analyses
+      const processedData = typedData?.map(analysis => {
+        if (analysis.form_data && typeof analysis.form_data === 'object') {
+          // Create a shallow copy to avoid modifying the original
+          const formData = { ...analysis.form_data };
+          
+          // Handle date fields if they exist
+          if ('startDate' in formData && formData.startDate) {
+            formData.startDate = formData.startDate;
+          }
+          
+          if ('endDate' in formData && formData.endDate) {
+            formData.endDate = formData.endDate;
+          }
+          
+          return { ...analysis, form_data: formData };
+        }
+        return analysis;
+      });
+      
+      setAnalyses(processedData || []);
+    } catch (error: any) {
+      uiToast({
+        title: "Erro ao carregar histórico",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchHistory();
   }, [navigate, uiToast]);
+
+  const handleDeleteAnalysis = (analysisId: string) => {
+    // Filter out the deleted analysis from the local state
+    setAnalyses(analyses.filter(analysis => analysis.id !== analysisId));
+  };
 
   const loadAnalysis = (analysis: Analysis) => {
     try {
@@ -128,7 +133,11 @@ const History = () => {
         ) : analyses.length === 0 ? (
           <HistoryEmptyState />
         ) : (
-          <HistoryTable analyses={analyses} onLoadAnalysis={loadAnalysis} />
+          <HistoryTable 
+            analyses={analyses} 
+            onLoadAnalysis={loadAnalysis} 
+            onDelete={handleDeleteAnalysis}
+          />
         )}
       </Card>
     </MainLayout>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp } from "lucide-react";
-import { generateTrendData, getMetricConfigs } from "./utils";
+import { generateTrendData, getMetricConfigs, fetchHistoricalData } from "./utils";
 import { TrendChart } from "./TrendChart";
 import { TrendHeader } from "./TrendHeader";
 
@@ -18,6 +18,7 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
   
   // Generate trend data based on current metrics
   const [trendData, setTrendData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Get metric configurations
   const metricConfigs = getMetricConfigs(diagnostics);
@@ -27,8 +28,18 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
     const days = selectedPeriod === "7d" ? 7 : selectedPeriod === "30d" ? 30 : 90;
     const config = metricConfigs[selectedMetric as keyof typeof metricConfigs];
     
-    setTrendData(generateTrendData(days, config.baseValue, config.volatility, config.trend));
-  }, [selectedMetric, selectedPeriod, diagnostics]);
+    setIsLoading(true);
+    
+    generateTrendData(days, config.baseValue, config.volatility, config.trend, formData)
+      .then(data => {
+        setTrendData(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error("Erro ao gerar dados de tendência:", error);
+        setIsLoading(false);
+      });
+  }, [selectedMetric, selectedPeriod, diagnostics, formData]);
   
   // Get current configuration
   const currentConfig = metricConfigs[selectedMetric as keyof typeof metricConfigs];
@@ -47,6 +58,7 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
               <TrendingUp className="h-5 w-5 text-blue-600" />
             </span>
             Visualização de Tendências
+            {isLoading && <span className="text-xs text-gray-500 ml-2">(Carregando dados...)</span>}
           </CardTitle>
           
           <div className="flex gap-2">
@@ -82,10 +94,23 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
             trendPercentage={trendPercentage}
           />
           
-          <TrendChart 
-            trendData={trendData} 
-            currentConfig={currentConfig} 
-          />
+          {isLoading ? (
+            <div className="h-[300px] w-full flex items-center justify-center bg-slate-50 rounded-md">
+              <div className="animate-pulse text-blue-500">Carregando dados históricos...</div>
+            </div>
+          ) : (
+            <TrendChart 
+              trendData={trendData} 
+              currentConfig={currentConfig} 
+            />
+          )}
+          
+          <div className="mt-4 px-3 py-2 bg-blue-50 rounded-md text-sm text-blue-700">
+            <p>
+              <strong>Nota:</strong> Esta visualização combina dados históricos reais (quando disponíveis) 
+              e projeções para períodos sem histórico. Os pontos maiores indicam dados reais de análises anteriores.
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>
