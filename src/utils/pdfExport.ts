@@ -71,7 +71,17 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   doc.setFontSize(14);
   doc.text("Diagnóstico", 15, tableHeight + 10);
   
-  const diagnosisRows = diagnostics.messages.map((msg: any) => [msg.message]);
+  // Corrige o problema com as recomendações formatando corretamente o texto
+  const diagnosisRows = diagnostics.messages.map((msg: any) => {
+    // Substitui caracteres especiais e códigos HTML por texto legível
+    let cleanMessage = msg.message
+      .replace(/&b\s/g, "")  // Remove códigos HTML &b
+      .replace(/&p\s/g, "")  // Remove códigos HTML &p
+      .replace(/'L/g, "L")   // Corrige possíveis apóstrofos incorretos
+      .trim();
+      
+    return [cleanMessage];
+  });
   
   autoTable(doc, {
     startY: tableHeight + 15,
@@ -79,6 +89,14 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     body: diagnosisRows,
     theme: "grid",
     headStyles: { fillColor: [0, 102, 204] },
+    styles: {
+      overflow: 'linebreak',
+      cellWidth: 'wrap',
+      fontSize: 9
+    },
+    columnStyles: {
+      0: { cellWidth: 'auto' }
+    }
   });
   
   // Comparação com métricas ideais

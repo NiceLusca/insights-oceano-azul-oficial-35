@@ -13,15 +13,12 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <div className="container mx-auto px-4 py-8 space-y-6 max-w-6xl">
         <header className="flex justify-between items-center">
           <div className="flex items-center">
-            <div className="mr-4 relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full blur opacity-30"></div>
-              <div className="relative">
-                <img 
-                  src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png" 
-                  alt="Oceano Azul Logo" 
-                  className="h-12 w-auto"
-                />
-              </div>
+            <div className="mr-4">
+              <img 
+                src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png" 
+                alt="Oceano Azul Logo" 
+                className="h-12 w-auto"
+              />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-blue-800">

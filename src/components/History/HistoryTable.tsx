@@ -110,19 +110,23 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
         </TableHeader>
         <TableBody>
           {analyses.map((analysis) => {
-            const formData = analysis.form_data;
-            const diagnostics = analysis.diagnostics;
+            const formData = analysis.form_data || {};
+            const diagnostics = analysis.diagnostics || {};
             const date = new Date(analysis.created_at);
             const formattedDate = format(date, "PPp", { locale: ptBR });
+            
+            // Garantir valores default para evitar problemas de exibição
+            const totalRevenue = diagnostics.totalRevenue || 0;
+            const currentROI = diagnostics.currentROI;
             
             return (
               <TableRow key={analysis.id}>
                 <TableCell className="font-medium">{formattedDate}</TableCell>
                 <TableCell className="text-right">
-                  {formatCurrency(diagnostics.totalRevenue || 0)}
+                  {formatCurrency(totalRevenue)}
                 </TableCell>
                 <TableCell className="text-right">
-                  {diagnostics.currentROI ? `${diagnostics.currentROI.toFixed(2)}x` : 'N/A'}
+                  {currentROI !== undefined && currentROI !== null ? `${currentROI.toFixed(2)}x` : 'N/A'}
                 </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
