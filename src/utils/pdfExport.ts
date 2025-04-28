@@ -7,8 +7,8 @@ import { formatCurrency, formatPercentage } from "./formatters";
 export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) => {
   const doc = new jsPDF();
   
-  // Adiciona o logo
   try {
+    // Tentar adicionar o logo
     const imgData = "/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png";
     doc.addImage(imgData, "PNG", 15, 10, 30, 30);
   } catch (error) {
@@ -48,22 +48,30 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     ["Conversão da Página de Vendas", `${diagnostics.salesPageConversion.toFixed(1)}%`],
     ["Conversão do Checkout", `${diagnostics.checkoutConversion.toFixed(1)}%`],
     ["Conversão Final", `${diagnostics.finalConversion.toFixed(1)}%`],
-    ["Taxa de Order Bump", `${diagnostics.orderBumpRate ? diagnostics.orderBumpRate.toFixed(1) : 0}%`],
   ];
   
+  // Adicionar taxa de order bump se disponível
+  if (diagnostics.orderBumpRate !== undefined) {
+    metrics.push(["Taxa de Order Bump", `${diagnostics.orderBumpRate.toFixed(1)}%`]);
+  }
+  
+  // Adicionar taxa de upsell se disponível
   if (diagnostics.upsellRate !== undefined) {
     metrics.push(["Taxa de Upsell", `${diagnostics.upsellRate.toFixed(1)}%`]);
   }
   
-  if (diagnostics.currentROI) {
+  // Adicionar ROI se disponível
+  if (diagnostics.currentROI !== undefined) {
     metrics.push(["ROI Atual", `${diagnostics.currentROI.toFixed(2)}x`]);
   }
   
-  if (diagnostics.maxCPC) {
+  // Adicionar CPC máximo se disponível
+  if (diagnostics.maxCPC !== undefined) {
     metrics.push(["CPC Máximo Recomendado", formatCurrency(diagnostics.maxCPC)]);
   }
   
-  if (diagnostics.currentCPC) {
+  // Adicionar CPC atual se disponível
+  if (diagnostics.currentCPC !== undefined) {
     metrics.push(["CPC Atual", formatCurrency(diagnostics.currentCPC)]);
   }
   

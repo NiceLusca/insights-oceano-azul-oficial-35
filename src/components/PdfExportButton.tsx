@@ -14,9 +14,14 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
   const handleExportPDF = async () => {
     try {
       toast.promise(
-        new Promise(async (resolve) => {
-          const result = exportToPdf(formData, diagnostics, comparisonData);
-          resolve(result);
+        new Promise(async (resolve, reject) => {
+          try {
+            const result = exportToPdf(formData, diagnostics, comparisonData);
+            resolve(result);
+          } catch (error) {
+            console.error("Erro na geração do PDF:", error);
+            reject(error);
+          }
         }),
         {
           loading: 'Gerando PDF...',

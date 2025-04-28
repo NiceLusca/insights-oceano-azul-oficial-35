@@ -41,7 +41,17 @@ const History = () => {
         
         if (error) throw error;
         
-        setAnalyses(data || []);
+        // Ensure dates are properly formatted for any stored analyses
+        const processedData = data?.map(analysis => {
+          const formData = analysis.form_data;
+          if (formData) {
+            if (formData.startDate) formData.startDate = formData.startDate;
+            if (formData.endDate) formData.endDate = formData.endDate;
+          }
+          return analysis;
+        });
+        
+        setAnalyses(processedData || []);
       } catch (error: any) {
         uiToast({
           title: "Erro ao carregar histórico",
@@ -58,8 +68,21 @@ const History = () => {
 
   const loadAnalysis = (analysis: Analysis) => {
     try {
+      // Garantir que as datas sejam devidamente processadas
+      const processedAnalysis = {...analysis};
+      
+      if (processedAnalysis.form_data) {
+        // As datas já estão em string no banco, mas o form no frontend espera objetos Date
+        if (processedAnalysis.form_data.startDate) {
+          processedAnalysis.form_data.startDate = new Date(processedAnalysis.form_data.startDate);
+        }
+        if (processedAnalysis.form_data.endDate) {
+          processedAnalysis.form_data.endDate = new Date(processedAnalysis.form_data.endDate);
+        }
+      }
+      
       // Copiamos a análise para o localStorage para ser lida na página principal
-      localStorage.setItem("selectedAnalysis", JSON.stringify(analysis));
+      localStorage.setItem("selectedAnalysis", JSON.stringify(processedAnalysis));
       toast.success("Análise selecionada com sucesso");
       navigate("/");
     } catch (error) {

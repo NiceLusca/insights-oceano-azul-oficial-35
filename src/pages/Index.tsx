@@ -29,16 +29,24 @@ const Index = () => {
     const selectedAnalysis = localStorage.getItem("selectedAnalysis");
     
     if (selectedAnalysis) {
-      const analysis = JSON.parse(selectedAnalysis);
-      const formData = analysis.form_data as FormValues;
-      if (formData.startDate) formData.startDate = new Date(formData.startDate);
-      if (formData.endDate) formData.endDate = new Date(formData.endDate);
-      
-      form.reset(formData);
-      
-      localStorage.removeItem("selectedAnalysis");
-      
-      setActiveTab("results");
+      try {
+        const analysis = JSON.parse(selectedAnalysis);
+        const formData = analysis.form_data as FormValues;
+        
+        // Garantir que as datas sejam objetos Date
+        if (formData.startDate) formData.startDate = new Date(formData.startDate);
+        if (formData.endDate) formData.endDate = new Date(formData.endDate);
+        
+        form.reset(formData);
+        
+        // Limpar do localStorage após usar
+        localStorage.removeItem("selectedAnalysis");
+        
+        // Mudar para a aba de resultados automaticamente
+        setActiveTab("results");
+      } catch (error) {
+        console.error("Erro ao processar análise selecionada:", error);
+      }
     }
   }, [form]);
 
