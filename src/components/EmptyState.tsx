@@ -19,20 +19,28 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <motion.div
-      className="flex flex-col items-center justify-center p-12 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800"
+      className="flex flex-col items-center justify-center p-6 sm:p-12 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       {icon ? (
-        <div className="mb-6 text-blue-600 dark:text-blue-400">
+        <motion.div 
+          className="mb-6 text-blue-600 dark:text-blue-400"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, type: "spring" }}
+        >
           {icon}
-        </div>
+        </motion.div>
       ) : (
-        <img
+        <motion.img
           src="/lovable-uploads/2da50e89-1402-421c-8c73-60efe5119215.png"
           alt="Oceano Azul"
           className="w-32 h-32 mb-8 opacity-30 dark:opacity-20"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, type: "spring" }}
         />
       )}
       
@@ -61,11 +69,13 @@ export function EmptyState({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.3 }}
+          className="mt-6"
         >
           <Button 
-            className="mt-6"
             onClick={onAction}
             variant="default"
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 shadow-md"
           >
             {actionLabel}
           </Button>

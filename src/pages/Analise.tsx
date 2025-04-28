@@ -4,6 +4,8 @@ import { FunnelDashboard } from "@/components/FunnelDashboard";
 import { TrendVisualization } from "@/components/TrendVisualization";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { EmptyState } from "@/components/EmptyState";
+import { motion } from "framer-motion";
 
 const Analise = () => {
   const location = useLocation();
@@ -30,31 +32,50 @@ const Analise = () => {
   if (!formData || !diagnostics) {
     return (
       <MainLayout>
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-semibold text-gray-700">Nenhuma análise disponível</h2>
-          <p className="mt-2 text-gray-500">
-            Por favor, preencha o formulário na página inicial para visualizar sua análise detalhada.
-          </p>
-        </div>
+        <EmptyState
+          title="Nenhuma análise disponível"
+          description="Por favor, preencha o formulário na página inicial para visualizar sua análise detalhada."
+          actionLabel="Ir para formulário"
+          onAction={() => window.location.href = '/'}
+          icon={
+            <img 
+              src="/lovable-uploads/2da50e89-1402-421c-8c73-60efe5119215.png" 
+              alt="Oceano Azul" 
+              className="w-32 h-32 opacity-30 dark:opacity-20" 
+            />
+          }
+        />
       </MainLayout>
     );
   }
 
   return (
     <MainLayout>
-      <h1 className="text-2xl font-bold text-blue-800 mb-6">Análise Detalhada</h1>
-      
-      <FunnelDashboard 
-        formData={formData}
-        diagnostics={diagnostics}
-      />
-      
-      <div className="mt-8">
-        <TrendVisualization 
-          formData={formData} 
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.h1 
+          className="text-2xl font-bold text-blue-800 dark:text-blue-300 mb-6"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          Análise Detalhada
+        </motion.h1>
+        
+        <FunnelDashboard 
+          formData={formData}
           diagnostics={diagnostics}
         />
-      </div>
+        
+        <div className="mt-8">
+          <TrendVisualization 
+            formData={formData} 
+          />
+        </div>
+      </motion.div>
     </MainLayout>
   );
 };
