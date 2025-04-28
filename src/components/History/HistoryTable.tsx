@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import { formatCurrency } from "@/utils/formatters";
 import { useNavigate } from "react-router-dom";
-import { FileText, Download, Trash2 } from "lucide-react";
+import { FileText, Download, Trash2, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { 
@@ -124,17 +124,26 @@ export function HistoryTable({
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Button size="icon" variant="ghost" onClick={() => viewAnalysis(analysis)}>
-                      <FileText className="h-4 w-4" />
-                    </Button>
-                    {onGenPdf && (
-                      <Button size="icon" variant="ghost" onClick={() => onGenPdf(analysis.form_data, analysis.diagnostics)}>
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    )}
                     <Button 
                       size="icon" 
-                      variant="ghost" 
+                      variant="ghost"
+                      title="Ver análise" 
+                      onClick={() => viewAnalysis(analysis)}
+                    >
+                      <Eye className="h-4 w-4 text-blue-500" />
+                    </Button>
+                    <Button 
+                      size="icon" 
+                      variant="ghost"
+                      title="Exportar como PDF" 
+                      onClick={() => onGenPdf && onGenPdf(analysis.form_data, analysis.diagnostics)}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      size="icon" 
+                      variant="ghost"
+                      title="Excluir análise"
                       onClick={() => handleDeleteAnalysis(analysis.id)}
                       disabled={isLoading[analysis.id]}
                     >

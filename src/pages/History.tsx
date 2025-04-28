@@ -10,6 +10,7 @@ import { HistoryLoading } from "@/components/History/HistoryLoading";
 import { HistoryEmptyState } from "@/components/History/HistoryEmptyState";
 import { HistoryTable } from "@/components/History/HistoryTable";
 import { toast } from "sonner";
+import { generatePDF } from "@/utils/pdf";
 
 interface Analysis {
   id: string;
@@ -123,6 +124,16 @@ const History = () => {
     }
   };
 
+  const handleGeneratePdf = (formData: any, diagnostics: any) => {
+    try {
+      generatePDF(formData, diagnostics);
+      toast.success("PDF gerado com sucesso");
+    } catch (error) {
+      console.error("Erro ao gerar PDF:", error);
+      toast.error("Erro ao gerar PDF");
+    }
+  };
+
   return (
     <MainLayout>
       <Card className="p-6">
@@ -137,6 +148,8 @@ const History = () => {
             analyses={analyses} 
             onLoadAnalysis={loadAnalysis} 
             onDelete={handleDeleteAnalysis}
+            onGenPdf={handleGeneratePdf}
+            onRefresh={fetchHistory}
           />
         )}
       </Card>
