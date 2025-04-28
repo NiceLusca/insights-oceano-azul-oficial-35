@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,10 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormAnalyzer } from "@/components/FormAnalyzer";
 import { useAuthentication } from "@/hooks/useAuthentication";
+import { calculateMetrics } from "@/utils/metricsHelpers";
+import { toast } from "sonner";
 
 const Index = () => {
   const [loadingUserData, setLoadingUserData] = useState(true);
   const [activeTab, setActiveTab] = useState("form");
+  const [diagnosticsData, setDiagnosticsData] = useState(null);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthentication();
   
@@ -37,15 +39,28 @@ const Index = () => {
         if (formData.startDate) formData.startDate = new Date(formData.startDate);
         if (formData.endDate) formData.endDate = new Date(formData.endDate);
         
+        // Reset the form with the loaded data
         form.reset(formData);
+        
+        // If diagnostics exist, use them directly
+        if (analysis.diagnostics && Object.keys(analysis.diagnostics).length > 0) {
+          setDiagnosticsData(analysis.diagnostics);
+        } else {
+          // Otherwise calculate them from the form data
+          const calculatedMetrics = calculateMetrics(formData);
+          setDiagnosticsData(calculatedMetrics);
+        }
         
         // Limpar do localStorage após usar
         localStorage.removeItem("selectedAnalysis");
         
         // Mudar para a aba de resultados automaticamente
         setActiveTab("results");
+        
+        toast.success("Análise carregada com sucesso");
       } catch (error) {
         console.error("Erro ao processar análise selecionada:", error);
+        toast.error("Erro ao processar análise selecionada");
       }
     }
   }, [form]);
@@ -111,6 +126,7 @@ const Index = () => {
               isAuthenticated={isAuthenticated}
               activeTab={activeTab}
               onTabChange={setActiveTab}
+              initialDiagnostics={diagnosticsData}
             />
           
             {activeTab === "results" && <QuoteCard />}

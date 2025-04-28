@@ -17,15 +17,17 @@ interface FormAnalyzerProps {
   isAuthenticated: boolean;
   activeTab: string;
   onTabChange: (value: string) => void;
+  initialDiagnostics?: any;
 }
 
 export const FormAnalyzer = ({ 
   form, 
   isAuthenticated, 
   activeTab, 
-  onTabChange 
+  onTabChange,
+  initialDiagnostics = null
 }: FormAnalyzerProps) => {
-  const [diagnostics, setDiagnostics] = useState({
+  const [diagnostics, setDiagnostics] = useState(initialDiagnostics || {
     totalRevenue: 0,
     salesPageConversion: 0,
     checkoutConversion: 0,
@@ -36,6 +38,13 @@ export const FormAnalyzer = ({
   const [errorMessage, setErrorMessage] = useState("");
   const { toast } = useToast();
   const { validateRequiredFields } = useFormValidation({ form });
+  
+  // Initialize diagnostics from initialDiagnostics if provided
+  useEffect(() => {
+    if (initialDiagnostics) {
+      setDiagnostics(initialDiagnostics);
+    }
+  }, [initialDiagnostics]);
   
   const onSubmit = (values: FormValues) => {
     if (!validateRequiredFields()) {
@@ -61,6 +70,9 @@ export const FormAnalyzer = ({
   };
 
   useEffect(() => {
+    // Skip if we already have initialDiagnostics
+    if (initialDiagnostics) return;
+    
     const subscription = form.watch((value) => {
       if (Object.values(value).every((v) => v !== undefined)) {
         const metrics = calculateMetrics(value as FormValues);
@@ -77,7 +89,7 @@ export const FormAnalyzer = ({
     });
     
     return () => subscription.unsubscribe();
-  }, [form.watch, isAuthenticated]);
+  }, [form.watch, isAuthenticated, initialDiagnostics]);
 
   return (
     <>

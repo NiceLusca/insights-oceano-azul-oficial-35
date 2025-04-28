@@ -88,7 +88,8 @@ const History = () => {
       // Create a new object to avoid modifying the original
       const processedAnalysis = {
         ...analysis,
-        form_data: { ...analysis.form_data }
+        form_data: { ...analysis.form_data },
+        diagnostics: { ...analysis.diagnostics }
       };
       
       // Convert date strings to Date objects if they exist
@@ -100,6 +101,11 @@ const History = () => {
         if ('endDate' in processedAnalysis.form_data && processedAnalysis.form_data.endDate) {
           processedAnalysis.form_data.endDate = new Date(processedAnalysis.form_data.endDate.toString());
         }
+      }
+      
+      // Ensure we're passing the complete diagnostics data
+      if (!processedAnalysis.diagnostics) {
+        processedAnalysis.diagnostics = {};
       }
       
       // Store the processed analysis in localStorage
