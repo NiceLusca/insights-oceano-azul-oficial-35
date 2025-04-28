@@ -79,13 +79,13 @@ export const SaveToHistoryButton = ({
     <div className="flex justify-end mt-6">
       <Button 
         onClick={saveToHistory}
-        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 transition-colors"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center gap-2 px-6 py-6 h-auto text-base shadow-md transition-all hover:shadow-lg"
         disabled={saving}
       >
         {saving ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-5 w-5 animate-spin" />
         ) : (
-          <Save className="h-4 w-4" />
+          <Save className="h-5 w-5" />
         )}
         {saving ? "Salvando..." : "Salvar no Histórico"}
       </Button>

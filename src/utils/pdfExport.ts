@@ -77,7 +77,9 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     let cleanMessage = msg.message
       .replace(/&b\s/g, "")  // Remove códigos HTML &b
       .replace(/&p\s/g, "")  // Remove códigos HTML &p
+      .replace(/&#39;/g, "'") // Substitui código HTML para apóstrofo
       .replace(/'L/g, "L")   // Corrige possíveis apóstrofos incorretos
+      .replace(/'/g, "'")     // Substitui possíveis apóstrofos Unicode
       .trim();
       
     return [cleanMessage];
@@ -92,7 +94,8 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     styles: {
       overflow: 'linebreak',
       cellWidth: 'wrap',
-      fontSize: 9
+      fontSize: 9,
+      cellPadding: 4
     },
     columnStyles: {
       0: { cellWidth: 'auto' }

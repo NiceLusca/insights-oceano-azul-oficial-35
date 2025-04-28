@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { FormValues } from "@/schemas/formSchema";
+import { Save } from "lucide-react";
 
 interface SaveHistoryButtonProps {
   formData: FormValues;
@@ -66,8 +67,10 @@ export const SaveHistoryButton = ({ formData, diagnostics, disabled }: SaveHisto
     <Button 
       onClick={saveHistory} 
       disabled={loading || disabled}
-      className="w-full mt-4"
+      className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center justify-center gap-2 py-6 h-auto text-base"
+      size="lg"
     >
+      <Save className="h-5 w-5" />
       {loading ? "Salvando..." : "Salvar no Histórico"}
     </Button>
   );
