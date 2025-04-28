@@ -59,7 +59,7 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-white">
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.path}>
@@ -77,7 +77,7 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-white">
         <div className="p-4 text-xs text-gray-500 text-center">
           © {new Date().getFullYear()} Oceano Azul
         </div>

@@ -74,7 +74,7 @@ export const MainNavigation = () => {
               <span className="sr-only">Menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[250px]">
+          <SheetContent side="left" className="w-[250px] bg-white">
             <div className="py-4">
               <img 
                 src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png" 
