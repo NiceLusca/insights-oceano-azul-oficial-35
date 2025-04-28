@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormContainer } from "@/components/FormContainer";
@@ -11,6 +10,7 @@ import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButt
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
 import { IdealMetricsCard } from "@/components/IdealMetricsCard";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
+import { MetricsExplainer } from "@/components/ChatBot/MetricsExplainer";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
@@ -80,26 +80,29 @@ export const FormAnalyzer = ({
   }, [form.watch, isAuthenticated]);
 
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-      <TabsContent value="form" className="space-y-6">
-        <IdealMetricsCard hasUpsell={form.watch("hasUpsell")} />
-        <FormContainer 
-          form={form} 
-          onSubmit={onSubmit} 
-          formSchema={form.getValues()}
-          onAnalyze={() => onTabChange("results")} 
-        />
-      </TabsContent>
-      
-      <TabsContent value="results" className="space-y-6">
-        <ResultContainer 
-          formData={form.getValues()} 
-          diagnostics={diagnostics} 
-          hasErrors={hasFormErrors}
-          errorMessage={errorMessage}
-          isAuthenticated={isAuthenticated}
-        />
-      </TabsContent>
-    </Tabs>
+    <>
+      <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+        <TabsContent value="form" className="space-y-6">
+          <IdealMetricsCard hasUpsell={form.watch("hasUpsell")} />
+          <FormContainer 
+            form={form} 
+            onSubmit={onSubmit} 
+            formSchema={form.getValues()}
+            onAnalyze={() => onTabChange("results")} 
+          />
+        </TabsContent>
+        
+        <TabsContent value="results" className="space-y-6">
+          <ResultContainer 
+            formData={form.getValues()} 
+            diagnostics={diagnostics} 
+            hasErrors={hasFormErrors}
+            errorMessage={errorMessage}
+            isAuthenticated={isAuthenticated}
+          />
+        </TabsContent>
+      </Tabs>
+      <MetricsExplainer />
+    </>
   );
 };
