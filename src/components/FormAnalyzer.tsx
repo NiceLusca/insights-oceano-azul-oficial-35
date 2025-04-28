@@ -11,9 +11,7 @@ import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButt
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { MetricsExplainer } from "@/components/ChatBot/MetricsExplainer";
-import { TrendVisualization } from "@/components/TrendVisualization";
-import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
-import { QuoteCard } from "@/components/QuoteCard";
+import { useNavigate } from "react-router-dom";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
@@ -41,6 +39,7 @@ export const FormAnalyzer = ({
   const [errorMessage, setErrorMessage] = useState("");
   const { toast } = useToast();
   const { validateRequiredFields } = useFormValidation({ form });
+  const navigate = useNavigate();
   
   useEffect(() => {
     if (initialDiagnostics) {
@@ -58,6 +57,10 @@ export const FormAnalyzer = ({
     setHasFormErrors(false);
     const metrics = calculateMetrics(values);
     setDiagnostics(metrics);
+    
+    // Save to localStorage for persistence between pages
+    localStorage.setItem("currentFormData", JSON.stringify(values));
+    localStorage.setItem("currentDiagnostics", JSON.stringify(metrics));
     
     onTabChange("results");
     
@@ -78,6 +81,10 @@ export const FormAnalyzer = ({
       if (Object.values(value).every((v) => v !== undefined)) {
         const metrics = calculateMetrics(value as FormValues);
         setDiagnostics(metrics);
+        
+        // Save to localStorage
+        localStorage.setItem("currentFormData", JSON.stringify(value));
+        localStorage.setItem("currentDiagnostics", JSON.stringify(metrics));
         
         if (isAuthenticated) {
           const timeoutId = setTimeout(() => {
@@ -112,19 +119,15 @@ export const FormAnalyzer = ({
           hasErrors={hasFormErrors}
           errorMessage={errorMessage}
           isAuthenticated={isAuthenticated}
+          onNavigateTo={(path) => {
+            navigate(path, { 
+              state: { 
+                formData: form.getValues(),
+                diagnostics: diagnostics
+              } 
+            });
+          }}
         />
-        
-        <TrendVisualization 
-          formData={form.getValues()} 
-          diagnostics={diagnostics}
-        />
-        
-        <AdvancedFinanceMetrics 
-          formData={form.getValues()} 
-          diagnostics={diagnostics}
-        />
-        
-        <QuoteCard />
       </TabsContent>
       
       <MetricsExplainer />

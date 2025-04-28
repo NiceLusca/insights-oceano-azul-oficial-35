@@ -170,8 +170,15 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
   // Calcular métricas de eficiência de marketing
   const totalSales = (formData?.mainProductSales || 0) + (formData?.comboSales || 0);
   const aov = totalSales > 0 ? totalRevenue / totalSales : 0; // Average Order Value
+  
+  // Correção do cálculo de CAC
   const cac = totalSales > 0 ? adSpend / totalSales : 0; // Customer Acquisition Cost
-  const ltv = aov * 1.5; // LTV simulado (multiplicador simples)
+  
+  // Correção do cálculo de LTV 
+  // Usando um multiplicador de 1.5x do AOV como estimativa de LTV ou uma base mínima de 100 se AOV for muito baixo
+  const ltv = aov > 0 ? Math.max(aov * 1.5, 100) : 100; // Corrigido para sempre ter um valor mínimo
+  
+  // Correção da relação LTV:CAC
   const ltvToCAC = cac > 0 ? ltv / cac : 0;
   
   // Calcular breakdown de receita

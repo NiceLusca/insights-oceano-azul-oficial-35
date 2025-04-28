@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, FileText, Menu } from "lucide-react";
+import { LayoutDashboard, FileText, Menu, BarChart3, CircleDollarSign, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   NavigationMenu,
@@ -24,9 +24,24 @@ export const MainNavigation = () => {
       icon: <LayoutDashboard className="h-5 w-5 mr-2" />
     },
     {
+      title: "Dashboard",
+      path: "/dashboard",
+      icon: <BarChart3 className="h-5 w-5 mr-2" />
+    },
+    {
+      title: "Análise",
+      path: "/analise",
+      icon: <FileText className="h-5 w-5 mr-2" />
+    },
+    {
+      title: "Finanças",
+      path: "/financas",
+      icon: <CircleDollarSign className="h-5 w-5 mr-2" />
+    },
+    {
       title: "Histórico",
       path: "/history",
-      icon: <FileText className="h-5 w-5 mr-2" />
+      icon: <History className="h-5 w-5 mr-2" />
     }
   ];
   

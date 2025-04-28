@@ -1,8 +1,5 @@
 
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
-import { Eye, FileText, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,185 +8,120 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatCurrency } from "@/utils/formatters";
-import { exportToPdf } from "@/utils/pdf";
-import { toast } from "sonner";
-import { getComparisonData } from "@/utils/metricsHelpers";
-import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+import { formatCurrency } from "@/utils/formatters";
+import { useNavigate } from "react-router-dom";
+import { FileText, Download, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
 } from "@/components/ui/alert-dialog";
 
 interface HistoryTableProps {
   analyses: any[];
-  onLoadAnalysis: (analysis: any) => void;
-  onDelete?: (analysisId: string) => void;
+  onGenPdf: (formData: any, diagnostics: any) => void;
+  onRefresh: () => void;
 }
 
-export const HistoryTable = ({ analyses, onLoadAnalysis, onDelete }: HistoryTableProps) => {
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+export function HistoryTable({ analyses, onGenPdf, onRefresh }: HistoryTableProps) {
+  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [analysisToDelete, setAnalysisToDelete] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const viewAnalysis = (analysis: any) => {
+    localStorage.setItem("selectedAnalysis", JSON.stringify(analysis));
+    navigate("/dashboard", { state: { 
+      formData: analysis.form_data,
+      diagnostics: analysis.diagnostics
+    }});
+  };
   
-  const handleExportPDF = async (analysis: any) => {
-    try {
-      toast.promise(
-        new Promise<boolean>(async (resolve, reject) => {
-          try {
-            if (!analysis.form_data || !analysis.diagnostics) {
-              throw new Error("Dados insuficientes para gerar o relatório");
-            }
-            
-            const formData = analysis.form_data;
-            const diagnostics = analysis.diagnostics;
-            const comparisonData = getComparisonData(formData);
-            
-            const result = exportToPdf(formData, diagnostics, comparisonData);
-            resolve(result);
-          } catch (error) {
-            console.error("Erro ao exportar PDF:", error);
-            reject(error instanceof Error ? error : new Error("Falha desconhecida"));
-          }
-        }),
-        {
-          loading: 'Gerando PDF...',
-          success: 'Relatório exportado com sucesso!',
-          error: (err) => `Erro ao exportar relatório: ${err.message}`,
-        }
-      );
-    } catch (error) {
-      console.error("Erro ao exportar PDF:", error);
-      toast.error("Erro ao exportar o relatório.");
-    }
+  const handleDeleteAnalysis = async (id: string) => {
+    setAnalysisToDelete(id);
+    setDeleteConfirmOpen(true);
   };
 
-  const handleDeleteAnalysis = async (analysisId: string) => {
-    setIsDeleting(true);
+  const confirmDelete = async () => {
+    if (!analysisToDelete) return;
     
     try {
+      setIsLoading({...isLoading, [analysisToDelete]: true});
+      
       const { error } = await supabase
         .from("user_analyses")
         .delete()
-        .eq("id", analysisId);
+        .eq("id", analysisToDelete);
       
       if (error) throw error;
       
-      toast.success("Análise removida com sucesso");
-      
-      // If onDelete callback is provided, call it to refresh the list
-      if (onDelete) {
-        onDelete(analysisId);
-      }
-    } catch (error: any) {
-      toast.error(`Erro ao remover análise: ${error.message}`);
+      toast.success("Análise excluída com sucesso");
+      onRefresh(); // Refresh the list
+    } catch (error) {
+      console.error("Erro ao excluir análise:", error);
+      toast.error("Erro ao excluir análise");
     } finally {
-      setIsDeleting(false);
-      setDeletingId(null);
+      setIsLoading({...isLoading, [analysisToDelete]: false});
+      setDeleteConfirmOpen(false);
+      setAnalysisToDelete(null);
     }
   };
 
-  const formatPeriod = (formData: any) => {
-    if (!formData.startDate || !formData.endDate) return "Período não especificado";
-    
-    const startDate = new Date(formData.startDate);
-    const endDate = new Date(formData.endDate);
-    
-    return `${format(startDate, "dd/MM/yyyy", { locale: ptBR })} - ${format(endDate, "dd/MM/yyyy", { locale: ptBR })}`;
-  };
-
   return (
-    <div className="overflow-x-auto mt-6">
+    <>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Data</TableHead>
             <TableHead>Período</TableHead>
-            <TableHead className="text-right">Faturamento</TableHead>
+            <TableHead>Receita</TableHead>
             <TableHead className="text-right">ROI</TableHead>
-            <TableHead>Ações</TableHead>
+            <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {analyses.map((analysis) => {
-            const formData = analysis.form_data || {};
-            const diagnostics = analysis.diagnostics || {};
-            const date = new Date(analysis.created_at);
-            const formattedDate = format(date, "PPp", { locale: ptBR });
-            const period = formatPeriod(formData);
-            
-            // Garantir valores default para evitar problemas de exibição
-            const totalRevenue = diagnostics.totalRevenue || 0;
-            const currentROI = diagnostics.currentROI;
+            const startDate = analysis.form_data?.startDate ? new Date(analysis.form_data.startDate).toLocaleDateString('pt-BR') : '-';
+            const endDate = analysis.form_data?.endDate ? new Date(analysis.form_data.endDate).toLocaleDateString('pt-BR') : '-';
             
             return (
               <TableRow key={analysis.id}>
-                <TableCell className="font-medium">{formattedDate}</TableCell>
-                <TableCell>{period}</TableCell>
-                <TableCell className="text-right">
-                  {formatCurrency(totalRevenue)}
-                </TableCell>
-                <TableCell className="text-right">
-                  {currentROI !== undefined && currentROI !== null ? `${currentROI.toFixed(2)}x` : 'N/A'}
+                <TableCell className="font-medium">
+                  {new Date(analysis.created_at).toLocaleDateString('pt-BR')}
                 </TableCell>
                 <TableCell>
-                  <div className="flex space-x-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex items-center gap-1"
-                      onClick={() => onLoadAnalysis(analysis)}
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                      <span>Visualizar</span>
+                  {startDate} até {endDate}
+                </TableCell>
+                <TableCell>
+                  {formatCurrency(analysis.diagnostics?.totalRevenue || 0)}
+                </TableCell>
+                <TableCell className="text-right">
+                  {analysis.diagnostics?.currentROI?.toFixed(2) || 0}x
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    <Button size="icon" variant="ghost" onClick={() => viewAnalysis(analysis)}>
+                      <FileText className="h-4 w-4" />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex items-center gap-1"
-                      onClick={() => handleExportPDF(analysis)}
-                    >
-                      <FileText className="h-3.5 w-3.5" />
-                      <span>PDF</span>
+                    <Button size="icon" variant="ghost" onClick={() => onGenPdf(analysis.form_data, analysis.diagnostics)}>
+                      <Download className="h-4 w-4" />
                     </Button>
-                    
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex items-center gap-1 text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          <span>Excluir</span>
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Tem certeza que deseja excluir esta análise? Esta ação não pode ser desfeita.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteAnalysis(analysis.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white"
-                            disabled={isDeleting}
-                          >
-                            {isDeleting && deletingId === analysis.id ? "Excluindo..." : "Sim, excluir"}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      onClick={() => handleDeleteAnalysis(analysis.id)}
+                      disabled={isLoading[analysis.id]}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -197,6 +129,26 @@ export const HistoryTable = ({ analyses, onLoadAnalysis, onDelete }: HistoryTabl
           })}
         </TableBody>
       </Table>
-    </div>
+      
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir análise</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir esta análise? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDelete} 
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
-};
+}

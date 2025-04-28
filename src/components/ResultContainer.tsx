@@ -4,12 +4,10 @@ import { DiagnosticSection } from "@/components/DiagnosticSection";
 import { ComparisonChart } from "@/components/ComparisonChart";
 import { PdfExportButton } from "@/components/PdfExportButton";
 import { SaveHistoryButton } from "@/components/SaveHistoryButton";
-import { FunnelDashboard } from "@/components/FunnelDashboard";
-import { getComparisonData } from "@/utils/metricsHelpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, LayoutDashboard, FileText } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useState } from "react";
+import { AlertTriangle, BarChart3, FileText, CircleDollarSign } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getComparisonData } from "@/utils/metricsHelpers";
 
 interface ResultContainerProps {
   formData: any;
@@ -17,6 +15,7 @@ interface ResultContainerProps {
   hasErrors?: boolean;
   errorMessage?: string;
   isAuthenticated: boolean;
+  onNavigateTo?: (path: string) => void;
 }
 
 export const ResultContainer = ({ 
@@ -24,10 +23,10 @@ export const ResultContainer = ({
   diagnostics, 
   hasErrors,
   errorMessage,
-  isAuthenticated 
+  isAuthenticated,
+  onNavigateTo
 }: ResultContainerProps) => {
   const comparisonData = getComparisonData(formData);
-  const [activeTab, setActiveTab] = useState("dashboard");
 
   return (
     <>
@@ -40,39 +39,46 @@ export const ResultContainer = ({
         </Alert>
       )}
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
-        <TabsList className="w-full grid grid-cols-2 mb-2 rounded-xl bg-slate-100">
-          <TabsTrigger 
-            value="dashboard" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            Dashboard Inteligente
-          </TabsTrigger>
-          <TabsTrigger 
-            value="detailed" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
-          >
-            <FileText className="h-4 w-4" />
-            Análise Detalhada
-          </TabsTrigger>
-        </TabsList>
-      
-        <TabsContent value="dashboard" className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DiagnosticSection diagnostics={diagnostics} />
-            <ComparisonChart actualData={comparisonData} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <DiagnosticSection diagnostics={diagnostics} />
+        <ComparisonChart actualData={comparisonData} />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <Button 
+          className="flex items-center gap-2 h-auto py-4 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200" 
+          onClick={() => onNavigateTo && onNavigateTo("/dashboard")}
+        >
+          <BarChart3 className="h-5 w-5" />
+          <div className="text-left">
+            <div className="font-medium">Dashboard Inteligente</div>
+            <div className="text-xs text-blue-600">Visão resumida com métricas principais</div>
           </div>
-        </TabsContent>
-
-        <TabsContent value="detailed" className="space-y-6 animate-fade-in">
-          <FunnelDashboard 
-            formData={formData} 
-            diagnostics={diagnostics} 
-          />
-        </TabsContent>
-      </Tabs>
-
+        </Button>
+        
+        <Button 
+          className="flex items-center gap-2 h-auto py-4 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200" 
+          onClick={() => onNavigateTo && onNavigateTo("/analise")}
+        >
+          <FileText className="h-5 w-5" />
+          <div className="text-left">
+            <div className="font-medium">Análise Detalhada</div>
+            <div className="text-xs text-blue-600">Diagnóstico completo, problemas e ações</div>
+          </div>
+        </Button>
+        
+        <Button 
+          className="flex items-center gap-2 h-auto py-4 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200" 
+          onClick={() => onNavigateTo && onNavigateTo("/financas")}
+        >
+          <CircleDollarSign className="h-5 w-5" />
+          <div className="text-left">
+            <div className="font-medium">Métricas Financeiras</div>
+            <div className="text-xs text-blue-600">ROI, LTV, CAC e outras métricas avançadas</div>
+          </div>
+        </Button>
+      </div>
+      
       <Card className="p-6 mt-6 border border-blue-100 rounded-xl shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex-1">
