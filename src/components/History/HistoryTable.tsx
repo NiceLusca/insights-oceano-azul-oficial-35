@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency } from "@/utils/formatters";
-import { exportToPdf } from "@/utils/pdfExport";
+import { exportToPdf } from "@/utils/pdf";
 import { toast } from "sonner";
 import { getComparisonData } from "@/utils/metricsHelpers";
 

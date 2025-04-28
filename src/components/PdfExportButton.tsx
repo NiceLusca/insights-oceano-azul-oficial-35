@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { toast } from "sonner";
-import { exportToPdf } from "@/utils/pdfExport";
+import { exportToPdf } from "@/utils/pdf";
 
 interface PdfExportButtonProps {
   formData: any;
