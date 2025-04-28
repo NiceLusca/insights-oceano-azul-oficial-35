@@ -1,17 +1,22 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { exportToPdf } from "@/utils/pdf";
+import { generatePDF } from "@/utils/pdf";
 import { getComparisonData } from "@/utils/metricsHelpers";
 
 interface PdfExportButtonProps {
   formData: any;
   diagnostics: any;
+  variant?: "default" | "compact";
 }
 
-export const PdfExportButton = ({ formData, diagnostics }: PdfExportButtonProps) => {
+export const PdfExportButton = ({ 
+  formData, 
+  diagnostics,
+  variant = "default"
+}: PdfExportButtonProps) => {
   const [loading, setLoading] = useState(false);
   
   const handleExportPDF = async () => {
@@ -61,21 +66,9 @@ export const PdfExportButton = ({ formData, diagnostics }: PdfExportButtonProps)
                typeof item.ideal === 'number' && !isNaN(item.ideal);
       });
       
-      console.log("Exportando PDF com dados validados:", {
-        formData: safeFormData,
-        diagnostics: safeDiagnostics,
-        comparisonData: validComparisonData
-      });
-      
       // Exportar o PDF com dados validados
-      const success = await exportToPdf(safeFormData, safeDiagnostics, validComparisonData);
-      
-      if (success) {
-        toast.success("Relatório exportado com sucesso!");
-      } else {
-        toast.error("Não foi possível gerar o relatório");
-      }
-      
+      await generatePDF(safeFormData, safeDiagnostics, validComparisonData);
+      toast.success("Relatório exportado com sucesso!");
     } catch (error) {
       console.error("Erro ao exportar PDF:", error);
       toast.error(`Erro ao exportar o relatório: ${error instanceof Error ? error.message : 'Falha desconhecida'}`);
@@ -84,14 +77,42 @@ export const PdfExportButton = ({ formData, diagnostics }: PdfExportButtonProps)
     }
   };
 
+  // Render different UI variants
+  if (variant === "compact") {
+    return (
+      <Button
+        onClick={handleExportPDF}
+        disabled={loading}
+        size="icon"
+        variant="ghost"
+        title="Exportar como PDF"
+      >
+        {loading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <FileText className="h-4 w-4" />
+        )}
+      </Button>
+    );
+  }
+
   return (
     <Button
       onClick={handleExportPDF}
       disabled={loading}
       className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 h-auto shadow-sm transition-all hover:shadow-md rounded-xl text-sm font-medium w-full sm:w-auto flex items-center justify-center"
     >
-      <FileText className="mr-2 h-4 w-4" />
-      {loading ? "Gerando PDF..." : "Exportar PDF"}
+      {loading ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Gerando PDF...
+        </>
+      ) : (
+        <>
+          <FileText className="mr-2 h-4 w-4" />
+          Exportar PDF
+        </>
+      )}
     </Button>
   );
 };
