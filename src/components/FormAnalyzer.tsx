@@ -10,6 +10,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
 import { IdealMetricsCard } from "@/components/IdealMetricsCard";
+import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
