@@ -1,5 +1,7 @@
 
+import { ReactNode } from "react";
 import { Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -12,27 +14,49 @@ interface DiagnosticCardProps {
   value: string;
   valueColor?: string;
   tooltip?: string;
+  icon?: string;
+  className?: string;
+  statusIcon?: ReactNode;
 }
 
-export const DiagnosticCard = ({ title, value, valueColor, tooltip }: DiagnosticCardProps) => {
+export const DiagnosticCard = ({ 
+  title, 
+  value, 
+  valueColor, 
+  tooltip,
+  icon,
+  className,
+  statusIcon
+}: DiagnosticCardProps) => {
   return (
-    <div className="p-4 bg-white rounded-lg shadow-sm">
-      <p className="text-sm text-blue-600 flex items-center gap-2">
-        {title}
-        {tooltip && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{tooltip}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+    <div className={cn(
+      "p-4 bg-white rounded-lg shadow-sm transition-all hover:shadow-md", 
+      className
+    )}>
+      <div className="flex justify-between items-start">
+        <p className="text-sm text-blue-600 flex items-center gap-2">
+          {icon && <span className="text-lg">{icon}</span>}
+          <span className="font-medium">{title}</span>
+          {tooltip && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Info className="h-3.5 w-3.5 text-blue-400" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs max-w-52">{tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </p>
+        {statusIcon && (
+          <span className="ml-1">
+            {statusIcon}
+          </span>
         )}
-      </p>
-      <p className={`text-2xl font-bold flex items-center gap-2 ${valueColor || ''}`}>
+      </div>
+      <p className={`text-xl sm:text-2xl font-bold flex items-center gap-2 mt-1.5 ${valueColor || ''}`}>
         {value}
       </p>
     </div>

@@ -1,7 +1,17 @@
 
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { MetricsGrid } from "./DiagnosticSection/MetricsGrid";
 import { DiagnosticMessages } from "./DiagnosticSection/DiagnosticMessages";
+import { Progress } from "@/components/ui/progress";
+import { Info } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { formatCurrency, formatPercentage } from "@/utils/formatters";
 
 interface DiagnosticSectionProps {
   diagnostics: {
@@ -22,10 +32,51 @@ interface DiagnosticSectionProps {
 export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
   return (
     <Card className="p-6 bg-gradient-to-br from-blue-50 to-white">
-      <h2 className="text-xl font-semibold text-blue-800 mb-4">📊 Insights</h2>
+      <h2 className="text-xl font-semibold text-blue-800 mb-4 flex items-center gap-2">
+        <span className="bg-blue-100 p-1.5 rounded-md">📊</span>
+        Insights
+      </h2>
       
-      <MetricsGrid diagnostics={diagnostics} />
-      <DiagnosticMessages messages={diagnostics.messages} />
+      {diagnostics.monthlyGoalProgress !== undefined && (
+        <div className="mb-6 animate-fade-in">
+          <div className="flex justify-between items-center mb-1">
+            <div className="flex items-center">
+              <span className="text-sm font-medium text-blue-700">Progresso da Meta Mensal</span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="ml-1 cursor-help">
+                      <Info className="h-3.5 w-3.5 text-blue-500" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">Progresso em relação à sua meta de faturamento mensal</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            <span className="text-xs font-semibold">
+              {formatCurrency(diagnostics.totalRevenue)} de {formatPercentage(diagnostics.monthlyGoalProgress)}
+            </span>
+          </div>
+          <Progress 
+            value={Math.min(diagnostics.monthlyGoalProgress * 100, 100)} 
+            className="h-2 bg-blue-100"
+          />
+          <div className="flex justify-between mt-1">
+            <span className="text-xs text-slate-500">0%</span>
+            <span className="text-xs text-slate-500">100%</span>
+          </div>
+        </div>
+      )}
+      
+      <div className="space-y-6">
+        <MetricsGrid diagnostics={diagnostics} />
+        
+        <Separator className="my-6 bg-blue-100" />
+        
+        <DiagnosticMessages messages={diagnostics.messages} />
+      </div>
     </Card>
   );
 };
