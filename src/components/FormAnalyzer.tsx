@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormContainer } from "@/components/FormContainer";
@@ -13,6 +12,7 @@ import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { MetricsExplainer } from "@/components/ChatBot/MetricsExplainer";
 import { TrendVisualization } from "@/components/TrendVisualization";
 import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
+import { QuoteCard } from "@/components/QuoteCard";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
@@ -41,7 +41,6 @@ export const FormAnalyzer = ({
   const { toast } = useToast();
   const { validateRequiredFields } = useFormValidation({ form });
   
-  // Initialize diagnostics from initialDiagnostics if provided
   useEffect(() => {
     if (initialDiagnostics) {
       setDiagnostics(initialDiagnostics);
@@ -59,7 +58,6 @@ export const FormAnalyzer = ({
     const metrics = calculateMetrics(values);
     setDiagnostics(metrics);
     
-    // Immediately switch to results tab to fix double-click issue
     onTabChange("results");
     
     if (isAuthenticated) {
@@ -73,7 +71,6 @@ export const FormAnalyzer = ({
   };
 
   useEffect(() => {
-    // Skip if we already have initialDiagnostics
     if (initialDiagnostics) return;
     
     const subscription = form.watch((value) => {
@@ -102,7 +99,6 @@ export const FormAnalyzer = ({
           onSubmit={onSubmit} 
           formSchema={form.getValues()}
           onAnalyze={() => {
-            // Direct call to onSubmit with current form values to avoid double-click issue
             onSubmit(form.getValues());
           }} 
         />
@@ -117,7 +113,6 @@ export const FormAnalyzer = ({
           isAuthenticated={isAuthenticated}
         />
         
-        {/* Always show these components in results tab */}
         <TrendVisualization 
           formData={form.getValues()} 
           diagnostics={diagnostics}
