@@ -11,6 +11,7 @@ import { HistoryEmptyState } from "@/components/History/HistoryEmptyState";
 import { HistoryTable } from "@/components/History/HistoryTable";
 import { toast } from "sonner";
 import { generatePDF } from "@/utils/pdf";
+import { getComparisonData } from "@/utils/metricsHelpers";
 
 interface Analysis {
   id: string;
@@ -126,7 +127,11 @@ const History = () => {
 
   const handleGeneratePdf = (formData: any, diagnostics: any) => {
     try {
-      generatePDF(formData, diagnostics);
+      // Generate comparison data for the third parameter
+      const comparisonData = getComparisonData(formData);
+      
+      // Call generatePDF with all three required parameters
+      generatePDF(formData, diagnostics, comparisonData);
       toast.success("PDF gerado com sucesso");
     } catch (error) {
       console.error("Erro ao gerar PDF:", error);
