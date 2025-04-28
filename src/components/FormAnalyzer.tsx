@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormContainer } from "@/components/FormContainer";
@@ -7,9 +6,10 @@ import { calculateMetrics } from "@/utils/metricsHelpers";
 import { FormValues } from "@/schemas/formSchema";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
+import { SaveToHistoryButton } from "@/components/SaveToHistoryButton";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
+import { IdealMetricsCard } from "@/components/IdealMetricsCard";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
@@ -37,7 +37,6 @@ export const FormAnalyzer = ({
   const { validateRequiredFields } = useFormValidation({ form });
   
   const onSubmit = (values: FormValues) => {
-    // Validate required fields
     if (!validateRequiredFields()) {
       setHasFormErrors(true);
       setErrorMessage("Por favor, preencha todos os campos obrigatórios antes de analisar os resultados.");
@@ -48,10 +47,8 @@ export const FormAnalyzer = ({
     const metrics = calculateMetrics(values);
     setDiagnostics(metrics);
     
-    // Muda para a guia de resultados
     onTabChange("results");
     
-    // Se estiver autenticado, salva os últimos dados do usuário
     if (isAuthenticated) {
       UserDataService.saveUserLastAnalysis(values);
     }
@@ -68,7 +65,6 @@ export const FormAnalyzer = ({
         const metrics = calculateMetrics(value as FormValues);
         setDiagnostics(metrics);
         
-        // Se estiver autenticado, salva os últimos dados do usuário (debounced)
         if (isAuthenticated) {
           const timeoutId = setTimeout(() => {
             UserDataService.saveUserLastAnalysis(value as FormValues);
@@ -85,6 +81,7 @@ export const FormAnalyzer = ({
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
       <TabsContent value="form" className="space-y-6">
+        <IdealMetricsCard hasUpsell={form.watch("hasUpsell")} />
         <FormContainer 
           form={form} 
           onSubmit={onSubmit} 
@@ -99,11 +96,6 @@ export const FormAnalyzer = ({
           diagnostics={diagnostics} 
           hasErrors={hasFormErrors}
           errorMessage={errorMessage}
-        />
-        
-        <SaveToHistoryButton 
-          formData={form.getValues()}
-          diagnostics={diagnostics}
           isAuthenticated={isAuthenticated}
         />
       </TabsContent>

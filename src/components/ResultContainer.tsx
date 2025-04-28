@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { DiagnosticSection } from "@/components/DiagnosticSection";
 import { ComparisonChart } from "@/components/ComparisonChart";
 import { PdfExportButton } from "@/components/PdfExportButton";
+import { SaveHistoryButton } from "@/components/SaveHistoryButton";
 import { getComparisonData } from "@/utils/metricsHelpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
@@ -12,14 +13,18 @@ interface ResultContainerProps {
   diagnostics: any;
   hasErrors?: boolean;
   errorMessage?: string;
+  isAuthenticated: boolean;
 }
 
 export const ResultContainer = ({ 
   formData, 
   diagnostics, 
   hasErrors,
-  errorMessage 
+  errorMessage,
+  isAuthenticated 
 }: ResultContainerProps) => {
+  const comparisonData = getComparisonData(formData);
+
   return (
     <>
       {hasErrors && (
@@ -33,15 +38,30 @@ export const ResultContainer = ({
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <DiagnosticSection diagnostics={diagnostics} />
-        <ComparisonChart actualData={getComparisonData(formData)} />
+        <ComparisonChart actualData={comparisonData} />
       </div>
 
       <Card className="p-6 mt-6">
-        <PdfExportButton 
-          formData={formData} 
-          diagnostics={diagnostics} 
-          comparisonData={getComparisonData(formData)}
-        />
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="flex-1">
+            <h3 className="text-xl font-medium text-blue-800 mb-3">Exportar e Salvar Análise</h3>
+            <p className="text-gray-600 mb-4 md:mb-0">
+              Exporte um relatório detalhado em PDF ou salve esta análise no seu histórico para consultas futuras.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <SaveHistoryButton 
+              formData={formData}
+              diagnostics={diagnostics}
+              disabled={!isAuthenticated}
+            />
+            <PdfExportButton 
+              formData={formData}
+              diagnostics={diagnostics}
+              comparisonData={comparisonData}
+            />
+          </div>
+        </div>
       </Card>
     </>
   );

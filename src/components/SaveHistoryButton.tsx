@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { FormValues } from "@/schemas/formSchema";
 import { Save } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SaveHistoryButtonProps {
   formData: FormValues;
@@ -12,9 +13,14 @@ interface SaveHistoryButtonProps {
   disabled?: boolean;
 }
 
-export const SaveHistoryButton = ({ formData, diagnostics, disabled }: SaveHistoryButtonProps) => {
+export const SaveHistoryButton = ({ 
+  formData, 
+  diagnostics, 
+  disabled 
+}: SaveHistoryButtonProps) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const saveHistory = async () => {
     setLoading(true);
@@ -28,10 +34,10 @@ export const SaveHistoryButton = ({ formData, diagnostics, disabled }: SaveHisto
           description: "Faça login para salvar seu histórico",
           variant: "destructive",
         });
+        navigate("/auth");
         return;
       }
       
-      // Preparar dados para envio ao Supabase (converter Date para string)
       const formDataForDb = {
         ...formData,
         startDate: formData.startDate ? formData.startDate.toISOString() : null,
@@ -50,7 +56,7 @@ export const SaveHistoryButton = ({ formData, diagnostics, disabled }: SaveHisto
       
       toast({
         title: "Análise salva com sucesso!",
-        description: "Você pode ver seu histórico de análises clicando em 'Ver Histórico'",
+        description: "Você pode ver seu histórico de análises na aba 'Histórico'",
       });
     } catch (error: any) {
       toast({
@@ -65,13 +71,19 @@ export const SaveHistoryButton = ({ formData, diagnostics, disabled }: SaveHisto
 
   return (
     <Button 
-      onClick={saveHistory} 
+      onClick={saveHistory}
       disabled={loading || disabled}
-      className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center justify-center gap-2 py-6 h-auto text-base"
+      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-6 h-auto shadow-md transition-all hover:shadow-lg text-base w-full sm:w-auto whitespace-nowrap"
       size="lg"
     >
-      <Save className="h-5 w-5" />
-      {loading ? "Salvando..." : "Salvar no Histórico"}
+      {loading ? (
+        "Salvando..."
+      ) : (
+        <>
+          <Save className="mr-2 h-5 w-5" />
+          Salvar Análise
+        </>
+      )}
     </Button>
   );
 };
