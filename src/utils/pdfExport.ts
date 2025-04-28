@@ -1,6 +1,6 @@
 
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import { formatCurrency } from "./formatters";
 
 const generateHeader = (doc: any, title: string) => {
@@ -29,7 +29,7 @@ const createMetricsTable = (doc: any, formData: any, diagnostics: any) => {
     ["Taxa de Order Bump", `${(diagnostics.orderBumpRate || 0).toFixed(1)}%`],
   ];
   
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: 40,
     head: [["Métrica", "Valor"]],
     body: metricsData,
@@ -45,7 +45,8 @@ const createMetricsTable = (doc: any, formData: any, diagnostics: any) => {
 };
 
 const createComparisonTable = (doc: any, comparisonData: any) => {
-  const currentY = (doc as any).autoTable.previous.finalY + 15;
+  const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 40;
+  const currentY = finalY + 15;
   
   doc.setFont("helvetica", "bold");
   doc.text("Comparação com Métricas Ideais", 20, currentY);
@@ -58,7 +59,7 @@ const createComparisonTable = (doc: any, comparisonData: any) => {
     item.actual >= item.ideal ? "✓" : "✗"
   ]);
   
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: currentY + 5,
     head: [["Métrica", "Seu Valor", "Valor Ideal", "Status"]],
     body: tableData,
@@ -74,7 +75,8 @@ const createComparisonTable = (doc: any, comparisonData: any) => {
 };
 
 const createRecommendationsSection = (doc: any, diagnostics: any) => {
-  const currentY = (doc as any).autoTable.previous.finalY + 15;
+  const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 40;
+  const currentY = finalY + 15;
   
   doc.setFont("helvetica", "bold");
   doc.text("Recomendações", 20, currentY);
@@ -153,7 +155,7 @@ const createRecommendationsSection = (doc: any, diagnostics: any) => {
     ]);
   }
   
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: currentY + 5,
     head: [["Área", "Recomendação"]],
     body: recommendations,
@@ -168,7 +170,9 @@ const createRecommendationsSection = (doc: any, diagnostics: any) => {
   });
   
   // Adicionar regras gerais e parâmetros ideais
-  const currentY2 = (doc as any).autoTable.previous.finalY + 15;
+  const finalY2 = doc.lastAutoTable ? doc.lastAutoTable.finalY : currentY + 50;
+  const currentY2 = finalY2 + 15;
+  
   doc.setFont("helvetica", "bold");
   doc.text("Regras Gerais do Funil", 20, currentY2);
   doc.setFont("helvetica", "normal");
@@ -183,7 +187,7 @@ const createRecommendationsSection = (doc: any, diagnostics: any) => {
     ["Taxa de Order Bump", "> 30%"]
   ];
   
-  (doc as any).autoTable({
+  autoTable(doc, {
     startY: currentY2 + 5,
     head: [["Parâmetro", "Valor Ideal"]],
     body: rulesData,

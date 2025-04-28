@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -110,12 +111,18 @@ const Index = () => {
       ) : (
         <>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-2 mb-4 w-full">
-              <TabsTrigger value="form" className="flex items-center gap-2">
+            <TabsList className="grid grid-cols-2 mb-6 w-full bg-slate-100 p-1 rounded-xl shadow-sm">
+              <TabsTrigger 
+                value="form" 
+                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm data-[state=active]:font-medium py-3"
+              >
                 <FileText className="h-4 w-4" />
                 <span>Formulário</span>
               </TabsTrigger>
-              <TabsTrigger value="results" className="flex items-center gap-2">
+              <TabsTrigger 
+                value="results" 
+                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm data-[state=active]:font-medium py-3"
+              >
                 <BarChart3 className="h-4 w-4" />
                 <span>Resultados</span>
               </TabsTrigger>

@@ -6,11 +6,12 @@ import { ResultContainer } from "@/components/ResultContainer";
 import { calculateMetrics } from "@/utils/metricsHelpers";
 import { FormValues } from "@/schemas/formSchema";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { MetricsExplainer } from "@/components/ChatBot/MetricsExplainer";
+import { FileText, BarChart3 } from "lucide-react";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
@@ -94,7 +95,7 @@ export const FormAnalyzer = ({
   return (
     <>
       <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-        <TabsContent value="form" className="space-y-6">
+        <TabsContent value="form" className="space-y-6 animate-fade-in">
           <FormContainer 
             form={form} 
             onSubmit={onSubmit} 
@@ -103,7 +104,7 @@ export const FormAnalyzer = ({
           />
         </TabsContent>
         
-        <TabsContent value="results" className="space-y-6">
+        <TabsContent value="results" className="space-y-6 animate-fade-in">
           <ResultContainer 
             formData={form.getValues()} 
             diagnostics={diagnostics} 

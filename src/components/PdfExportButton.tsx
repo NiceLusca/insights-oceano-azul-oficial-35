@@ -38,10 +38,9 @@ export const PdfExportButton = ({ formData, diagnostics, comparisonData }: PdfEx
   return (
     <Button
       onClick={handleExportPDF}
-      className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-6 h-auto shadow-md transition-all hover:shadow-lg text-base w-full sm:w-auto whitespace-nowrap"
-      size="lg"
+      className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 h-auto shadow-sm transition-all hover:shadow-md rounded-xl text-sm font-medium w-full sm:w-auto flex items-center justify-center"
     >
-      <FileText className="mr-2 h-5 w-5" />
+      <FileText className="mr-2 h-4 w-4" />
       Exportar PDF
     </Button>
   );

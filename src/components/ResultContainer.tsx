@@ -27,7 +27,7 @@ export const ResultContainer = ({
   isAuthenticated 
 }: ResultContainerProps) => {
   const comparisonData = getComparisonData(formData);
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("detailed");
 
   return (
     <>
@@ -40,20 +40,30 @@ export const ResultContainer = ({
         </Alert>
       )}
       
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="w-full grid grid-cols-2 mb-6">
-          <TabsTrigger value="dashboard">Dashboard Inteligente</TabsTrigger>
-          <TabsTrigger value="detailed">Análise Detalhada</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
+        <TabsList className="w-full grid grid-cols-2 mb-2 rounded-xl bg-slate-100">
+          <TabsTrigger 
+            value="detailed" 
+            className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
+          >
+            Dashboard Inteligente
+          </TabsTrigger>
+          <TabsTrigger 
+            value="dashboard" 
+            className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
+          >
+            Análise Detalhada
+          </TabsTrigger>
         </TabsList>
       
-        <TabsContent value="dashboard" className="space-y-6">
+        <TabsContent value="detailed" className="space-y-6 animate-fade-in">
           <FunnelDashboard 
             formData={formData} 
             diagnostics={diagnostics} 
           />
         </TabsContent>
         
-        <TabsContent value="detailed" className="space-y-6">
+        <TabsContent value="dashboard" className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <DiagnosticSection diagnostics={diagnostics} />
             <ComparisonChart actualData={comparisonData} />
@@ -61,7 +71,7 @@ export const ResultContainer = ({
         </TabsContent>
       </Tabs>
 
-      <Card className="p-6 mt-6">
+      <Card className="p-6 mt-6 border border-blue-100 rounded-xl shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex-1">
             <h3 className="text-xl font-medium text-blue-800 mb-3">Exportar e Salvar Análise</h3>
