@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +7,7 @@ import { QuoteCard } from "@/components/QuoteCard";
 import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, FileText, History as HistoryIcon } from "lucide-react";
+import { FileText, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FormAnalyzer } from "@/components/FormAnalyzer";
@@ -25,42 +24,35 @@ const Index = () => {
     defaultValues: defaultFormValues,
   });
 
-  // Verifica se há uma análise selecionada no localStorage (da página de histórico)
   useEffect(() => {
     const selectedAnalysis = localStorage.getItem("selectedAnalysis");
     
     if (selectedAnalysis) {
       const analysis = JSON.parse(selectedAnalysis);
-      // Converter datas de string para objeto Date
       const formData = analysis.form_data as FormValues;
       if (formData.startDate) formData.startDate = new Date(formData.startDate);
       if (formData.endDate) formData.endDate = new Date(formData.endDate);
       
       form.reset(formData);
       
-      // Limpa o localStorage após carregar
       localStorage.removeItem("selectedAnalysis");
       
-      // Muda para a guia de resultados
       setActiveTab("results");
     }
   }, [form]);
 
-  // Verifica autenticação e carrega últimos dados do usuário
   useEffect(() => {
     const loadUserData = async () => {
       setLoadingUserData(true);
       
       try {
         if (isAuthenticated) {
-          // Busca os últimos dados do usuário
           const { data } = await supabase
             .from("user_last_analysis")
             .select("*")
             .maybeSingle();
           
           if (data) {
-            // Converter datas de string para objeto Date
             const formData = data.form_data as any;
             if (formData.startDate) formData.startDate = new Date(formData.startDate);
             if (formData.endDate) formData.endDate = new Date(formData.endDate);
@@ -94,7 +86,7 @@ const Index = () => {
       ) : (
         <>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 mb-4 w-full">
+            <TabsList className="grid grid-cols-2 mb-4 w-full">
               <TabsTrigger value="form" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 <span>Formulário</span>
@@ -102,14 +94,6 @@ const Index = () => {
               <TabsTrigger value="results" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
                 <span>Resultados</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="history" 
-                className="flex items-center gap-2"
-                onClick={() => navigate("/history")}
-              >
-                <HistoryIcon className="h-4 w-4" />
-                <span>Histórico</span>
               </TabsTrigger>
             </TabsList>
           

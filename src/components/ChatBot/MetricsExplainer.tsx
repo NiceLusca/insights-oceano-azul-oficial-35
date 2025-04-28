@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Bot } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -63,6 +62,16 @@ const explanations = {
       "Use copy focado em aumento de valor",
       "Teste diferentes ofertas de upsell"
     ]
+  },
+  cpc: {
+    title: "Custo por Clique (CPC)",
+    description: "O quanto você paga, em média, por cada clique em seus anúncios.",
+    tips: [
+      "Monitore o CPC máximo permitido para seu ROI desejado",
+      "Otimize seus anúncios para reduzir o CPC",
+      "Teste diferentes segmentações de público",
+      "Melhore o score de qualidade dos seus anúncios"
+    ]
   }
 };
 
@@ -95,9 +104,9 @@ export function MetricsExplainer() {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-6 right-6 h-12 w-12 rounded-full shadow-lg bg-blue-50 hover:bg-blue-100 border-blue-200"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0"
         >
-          <Bot className="h-6 w-6 text-blue-600" />
+          <MessageCircle className="h-6 w-6 text-white" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="max-h-[90vh]">
