@@ -6,7 +6,7 @@ import { formatCurrency } from "../formatters";
 export const createRecommendationsSection = (doc: jsPDF, diagnostics: any) => {
   // Get finalY safely with a fallback value
   const finalY = doc.lastAutoTable?.finalY || 40;
-  const currentY = finalY + 15;
+  const currentY = finalY + 10; // Reduced from 15 to 10
   
   doc.setFont("helvetica", "bold");
   doc.text("Recomendações", 20, currentY);
@@ -102,7 +102,7 @@ export const createRecommendationsSection = (doc: jsPDF, diagnostics: any) => {
   // Adicionar regras gerais e parâmetros ideais
   // Get finalY safely with a fallback value
   const finalY2 = doc.lastAutoTable?.finalY || currentY + 50;
-  const currentY2 = finalY2 + 15;
+  const currentY2 = finalY2 + 8; // Reduced from 15 to 8
   
   doc.setFont("helvetica", "bold");
   doc.text("Regras Gerais do Funil", 20, currentY2);
@@ -119,7 +119,7 @@ export const createRecommendationsSection = (doc: jsPDF, diagnostics: any) => {
   ];
   
   autoTable(doc, {
-    startY: currentY2 + 5,
+    startY: currentY2 + 3, // Reduced from 5 to 3
     head: [["Parâmetro", "Valor Ideal"]],
     body: rulesData,
     theme: "grid",
