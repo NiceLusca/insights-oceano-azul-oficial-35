@@ -14,7 +14,11 @@ import { toast } from "sonner";
 interface Analysis {
   id: string;
   created_at: string;
-  form_data: any;
+  form_data: {
+    startDate?: string | Date;
+    endDate?: string | Date;
+    [key: string]: any;
+  };
   diagnostics: any;
 }
 
@@ -41,12 +45,25 @@ const History = () => {
         
         if (error) throw error;
         
+        // Type assertion to ensure we're working with an array of Analysis objects
+        const typedData = data as Analysis[];
+        
         // Ensure dates are properly formatted for any stored analyses
-        const processedData = data?.map(analysis => {
-          const formData = analysis.form_data;
-          if (formData) {
-            if (formData.startDate) formData.startDate = formData.startDate;
-            if (formData.endDate) formData.endDate = formData.endDate;
+        const processedData = typedData?.map(analysis => {
+          if (analysis.form_data && typeof analysis.form_data === 'object') {
+            // Create a shallow copy to avoid modifying the original
+            const formData = { ...analysis.form_data };
+            
+            // Handle date fields if they exist
+            if ('startDate' in formData && formData.startDate) {
+              formData.startDate = formData.startDate;
+            }
+            
+            if ('endDate' in formData && formData.endDate) {
+              formData.endDate = formData.endDate;
+            }
+            
+            return { ...analysis, form_data: formData };
           }
           return analysis;
         });
@@ -68,20 +85,24 @@ const History = () => {
 
   const loadAnalysis = (analysis: Analysis) => {
     try {
-      // Garantir que as datas sejam devidamente processadas
-      const processedAnalysis = {...analysis};
+      // Create a new object to avoid modifying the original
+      const processedAnalysis = {
+        ...analysis,
+        form_data: { ...analysis.form_data }
+      };
       
+      // Convert date strings to Date objects if they exist
       if (processedAnalysis.form_data) {
-        // As datas já estão em string no banco, mas o form no frontend espera objetos Date
-        if (processedAnalysis.form_data.startDate) {
-          processedAnalysis.form_data.startDate = new Date(processedAnalysis.form_data.startDate);
+        if ('startDate' in processedAnalysis.form_data && processedAnalysis.form_data.startDate) {
+          processedAnalysis.form_data.startDate = new Date(processedAnalysis.form_data.startDate.toString());
         }
-        if (processedAnalysis.form_data.endDate) {
-          processedAnalysis.form_data.endDate = new Date(processedAnalysis.form_data.endDate);
+        
+        if ('endDate' in processedAnalysis.form_data && processedAnalysis.form_data.endDate) {
+          processedAnalysis.form_data.endDate = new Date(processedAnalysis.form_data.endDate.toString());
         }
       }
       
-      // Copiamos a análise para o localStorage para ser lida na página principal
+      // Store the processed analysis in localStorage
       localStorage.setItem("selectedAnalysis", JSON.stringify(processedAnalysis));
       toast.success("Análise selecionada com sucesso");
       navigate("/");
