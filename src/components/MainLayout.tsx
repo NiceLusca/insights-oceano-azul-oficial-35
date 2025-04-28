@@ -1,7 +1,6 @@
 
 import { ReactNode } from "react";
 import { AuthButton } from "./AuthButton";
-import { MoveRight } from "lucide-react";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -24,9 +23,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               <h1 className="text-2xl md:text-3xl font-bold text-blue-800">
                 Insights Oceano Azul
               </h1>
-              <p className="text-[#0EA5E9] font-medium flex items-center gap-1.5">
+              <p className="text-[#0EA5E9] font-medium">
                 Diagnóstico de Funil
-                <MoveRight className="h-3.5 w-3.5" />
               </p>
             </div>
           </div>

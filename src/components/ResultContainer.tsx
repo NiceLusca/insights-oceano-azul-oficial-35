@@ -27,7 +27,7 @@ export const ResultContainer = ({
   isAuthenticated 
 }: ResultContainerProps) => {
   const comparisonData = getComparisonData(formData);
-  const [activeTab, setActiveTab] = useState("detailed");
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   return (
     <>
@@ -43,31 +43,31 @@ export const ResultContainer = ({
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
         <TabsList className="w-full grid grid-cols-2 mb-2 rounded-xl bg-slate-100">
           <TabsTrigger 
-            value="detailed" 
-            className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
-          >
-            Análise Detalhada
-          </TabsTrigger>
-          <TabsTrigger 
             value="dashboard" 
             className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
             Dashboard Inteligente
           </TabsTrigger>
+          <TabsTrigger 
+            value="detailed" 
+            className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
+          >
+            Análise Detalhada
+          </TabsTrigger>
         </TabsList>
       
-        <TabsContent value="detailed" className="space-y-6 animate-fade-in">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DiagnosticSection diagnostics={diagnostics} />
-            <ComparisonChart actualData={comparisonData} />
-          </div>
-        </TabsContent>
-        
         <TabsContent value="dashboard" className="space-y-6 animate-fade-in">
           <FunnelDashboard 
             formData={formData} 
             diagnostics={diagnostics} 
           />
+        </TabsContent>
+
+        <TabsContent value="detailed" className="space-y-6 animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <DiagnosticSection diagnostics={diagnostics} />
+            <ComparisonChart actualData={comparisonData} />
+          </div>
         </TabsContent>
       </Tabs>
 
