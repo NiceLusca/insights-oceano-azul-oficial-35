@@ -5,3 +5,4 @@ export * from './headerFooter';
 export * from './metricsSection';
 export * from './comparisonSection';
 export * from './recommendationsSection';
+export * from './tableOfContents';
