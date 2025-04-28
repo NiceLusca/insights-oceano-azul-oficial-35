@@ -4,9 +4,12 @@ import { DiagnosticSection } from "@/components/DiagnosticSection";
 import { ComparisonChart } from "@/components/ComparisonChart";
 import { PdfExportButton } from "@/components/PdfExportButton";
 import { SaveHistoryButton } from "@/components/SaveHistoryButton";
+import { FunnelDashboard } from "@/components/FunnelDashboard";
 import { getComparisonData } from "@/utils/metricsHelpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useState } from "react";
 
 interface ResultContainerProps {
   formData: any;
@@ -24,6 +27,7 @@ export const ResultContainer = ({
   isAuthenticated 
 }: ResultContainerProps) => {
   const comparisonData = getComparisonData(formData);
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   return (
     <>
@@ -36,10 +40,26 @@ export const ResultContainer = ({
         </Alert>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <DiagnosticSection diagnostics={diagnostics} />
-        <ComparisonChart actualData={comparisonData} />
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="w-full grid grid-cols-2 mb-6">
+          <TabsTrigger value="dashboard">Dashboard Inteligente</TabsTrigger>
+          <TabsTrigger value="detailed">Análise Detalhada</TabsTrigger>
+        </TabsList>
+      
+        <TabsContent value="dashboard" className="space-y-6">
+          <FunnelDashboard 
+            formData={formData} 
+            diagnostics={diagnostics} 
+          />
+        </TabsContent>
+        
+        <TabsContent value="detailed" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <DiagnosticSection diagnostics={diagnostics} />
+            <ComparisonChart actualData={comparisonData} />
+          </div>
+        </TabsContent>
+      </Tabs>
 
       <Card className="p-6 mt-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">

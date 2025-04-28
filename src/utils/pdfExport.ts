@@ -1,162 +1,251 @@
 
 import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
-import { format } from "date-fns";
-import { formatCurrency, formatPercentage } from "./formatters";
+import "jspdf-autotable";
+import { formatCurrency } from "./formatters";
 
-export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) => {
-  const doc = new jsPDF();
-  
-  try {
-    // Tentar adicionar o logo
-    const imgData = "/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png";
-    doc.addImage(imgData, "PNG", 15, 10, 30, 30);
-  } catch (error) {
-    console.error("Erro ao adicionar a imagem:", error);
-    // Continua mesmo se a imagem falhar
-  }
-  
-  // Título
-  doc.setTextColor(0, 51, 153);
-  doc.setFontSize(22);
-  doc.text("Insights Oceano Azul", 55, 25);
-  
-  doc.setTextColor(0, 102, 204);
-  doc.setFontSize(16);
-  doc.text("Diagnóstico de Funil", 55, 35);
-  
-  // Data do relatório
-  doc.setTextColor(100, 100, 100);
-  doc.setFontSize(10);
-  const today = format(new Date(), "dd/MM/yyyy");
-  doc.text(`Relatório gerado em: ${today}`, 15, 50);
-  
-  // Período da análise (se disponível)
-  if (data.startDate && data.endDate) {
-    const startDate = format(new Date(data.startDate), "dd/MM/yyyy");
-    const endDate = format(new Date(data.endDate), "dd/MM/yyyy");
-    doc.text(`Período da análise: ${startDate} a ${endDate}`, 15, 55);
-  }
-  
-  // Métricas principais
+const generateHeader = (doc: any, title: string) => {
+  doc.setFontSize(18);
+  doc.setTextColor(41, 98, 255);
+  doc.setFont("helvetica", "bold");
+  doc.text(title, 20, 20);
+  doc.line(20, 25, 190, 25);
+  doc.setFontSize(12);
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(14);
-  doc.text("Métricas Principais", 15, 65);
+  doc.setFont("helvetica", "normal");
+};
+
+const createMetricsTable = (doc: any, formData: any, diagnostics: any) => {
+  doc.setFont("helvetica", "bold");
+  doc.text("Métricas Principais", 20, 35);
+  doc.setFont("helvetica", "normal");
   
-  const metrics = [
-    ["Faturamento Total", formatCurrency(diagnostics.totalRevenue)],
-    ["Conversão da Página de Vendas", `${diagnostics.salesPageConversion.toFixed(1)}%`],
-    ["Conversão do Checkout", `${diagnostics.checkoutConversion.toFixed(1)}%`],
-    ["Conversão Final", `${diagnostics.finalConversion.toFixed(1)}%`],
+  const metricsData = [
+    ["Faturamento Total", formatCurrency(diagnostics.totalRevenue || 0)],
+    ["ROI Atual", diagnostics.currentROI ? `${diagnostics.currentROI.toFixed(2)}x` : "N/A"],
+    ["CPC Atual", diagnostics.currentCPC ? formatCurrency(diagnostics.currentCPC) : "N/A"],
+    ["CPC Máx. Recomendado", diagnostics.maxCPC ? formatCurrency(diagnostics.maxCPC) : "N/A"],
+    ["Conversão Página de Vendas", `${diagnostics.salesPageConversion?.toFixed(1) || 0}%`],
+    ["Conversão Checkout", `${diagnostics.checkoutConversion?.toFixed(1) || 0}%`],
+    ["Taxa de Order Bump", `${(diagnostics.orderBumpRate || 0).toFixed(1)}%`],
   ];
   
-  // Adicionar taxa de order bump se disponível
-  if (diagnostics.orderBumpRate !== undefined) {
-    metrics.push(["Taxa de Order Bump", `${diagnostics.orderBumpRate.toFixed(1)}%`]);
-  }
-  
-  // Adicionar taxa de upsell se disponível
-  if (diagnostics.upsellRate !== undefined) {
-    metrics.push(["Taxa de Upsell", `${diagnostics.upsellRate.toFixed(1)}%`]);
-  }
-  
-  // Adicionar ROI se disponível
-  if (diagnostics.currentROI !== undefined) {
-    metrics.push(["ROI Atual", `${diagnostics.currentROI.toFixed(2)}x`]);
-  }
-  
-  // Adicionar CPC máximo se disponível
-  if (diagnostics.maxCPC !== undefined) {
-    metrics.push(["CPC Máximo Recomendado", formatCurrency(diagnostics.maxCPC)]);
-  }
-  
-  // Adicionar CPC atual se disponível
-  if (diagnostics.currentCPC !== undefined) {
-    metrics.push(["CPC Atual", formatCurrency(diagnostics.currentCPC)]);
-  }
-  
-  autoTable(doc, {
-    startY: 70,
+  (doc as any).autoTable({
+    startY: 40,
     head: [["Métrica", "Valor"]],
-    body: metrics,
+    body: metricsData,
     theme: "grid",
-    headStyles: { fillColor: [0, 102, 204] },
-  });
-  
-  // Diagnósticos
-  const tableHeight = (doc as any).lastAutoTable?.finalY || 130;
-  doc.setFontSize(14);
-  doc.text("Diagnóstico", 15, tableHeight + 10);
-  
-  // Corrige o problema com as recomendações formatando corretamente o texto
-  const diagnosisRows = diagnostics.messages.map((msg: any) => {
-    // Substitui caracteres especiais e códigos HTML por texto legível
-    let cleanMessage = msg.message
-      .replace(/&b\s/g, "")  // Remove códigos HTML &b
-      .replace(/&p\s/g, "")  // Remove códigos HTML &p
-      .replace(/&#39;/g, "'") // Substitui código HTML para apóstrofo
-      .replace(/'L/g, "L")   // Corrige possíveis apóstrofos incorretos
-      .replace(/'/g, "'")     // Substitui possíveis apóstrofos Unicode
-      .trim();
-      
-    return [cleanMessage];
-  });
-  
-  autoTable(doc, {
-    startY: tableHeight + 15,
-    head: [["Insights e Recomendações"]],
-    body: diagnosisRows,
-    theme: "grid",
-    headStyles: { fillColor: [0, 102, 204] },
-    styles: {
-      overflow: 'linebreak',
-      cellWidth: 'wrap',
-      fontSize: 9,
-      cellPadding: 4
+    headStyles: {
+      fillColor: [41, 98, 255],
+      textColor: [255, 255, 255]
     },
-    columnStyles: {
-      0: { cellWidth: 'auto' }
+    alternateRowStyles: {
+      fillColor: [240, 245, 255]
+    }
+  });
+};
+
+const createComparisonTable = (doc: any, comparisonData: any) => {
+  const currentY = (doc as any).autoTable.previous.finalY + 15;
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("Comparação com Métricas Ideais", 20, currentY);
+  doc.setFont("helvetica", "normal");
+  
+  const tableData = comparisonData.map((item: any) => [
+    item.name,
+    `${item.actual}%`,
+    `${item.ideal}%`,
+    item.actual >= item.ideal ? "✓" : "✗"
+  ]);
+  
+  (doc as any).autoTable({
+    startY: currentY + 5,
+    head: [["Métrica", "Seu Valor", "Valor Ideal", "Status"]],
+    body: tableData,
+    theme: "grid",
+    headStyles: {
+      fillColor: [41, 98, 255],
+      textColor: [255, 255, 255]
+    },
+    alternateRowStyles: {
+      fillColor: [240, 245, 255]
+    }
+  });
+};
+
+const createRecommendationsSection = (doc: any, diagnostics: any) => {
+  const currentY = (doc as any).autoTable.previous.finalY + 15;
+  
+  doc.setFont("helvetica", "bold");
+  doc.text("Recomendações", 20, currentY);
+  doc.setFont("helvetica", "normal");
+  
+  // Gerar recomendações com base nas métricas
+  const recommendations = [];
+  
+  // Recomendações baseadas no CPC
+  if (diagnostics.currentCPC > 2) {
+    recommendations.push([
+      "Tráfego",
+      `Seu CPC (${formatCurrency(diagnostics.currentCPC)}) está acima do máximo recomendado (R$2,00). Pause conjuntos que não venderam após 2 dias.`
+    ]);
+  } else {
+    recommendations.push([
+      "Tráfego",
+      `Seu CPC (${formatCurrency(diagnostics.currentCPC)}) está dentro do limite recomendado. Continue monitorando.`
+    ]);
+  }
+  
+  // Recomendações baseadas no ROI
+  if (diagnostics.currentROI < 1) {
+    recommendations.push([
+      "ROI",
+      `Seu ROI (${diagnostics.currentROI?.toFixed(2) || 0}x) está gerando prejuízo. Se persistir por 3 dias, pause a campanha.`
+    ]);
+  } else if (diagnostics.currentROI >= 1 && diagnostics.currentROI < 1.5) {
+    recommendations.push([
+      "ROI",
+      `Seu ROI (${diagnostics.currentROI.toFixed(2)}x) está aceitável. Mantenha o orçamento e otimize criativos.`
+    ]);
+  } else if (diagnostics.currentROI >= 1.5) {
+    recommendations.push([
+      "ROI",
+      `Seu ROI (${diagnostics.currentROI.toFixed(2)}x) está excelente. Aumente o orçamento em 20%.`
+    ]);
+  }
+  
+  // Recomendações para página de vendas
+  if (diagnostics.salesPageConversion < 40) {
+    recommendations.push([
+      "Página de Vendas",
+      `Taxa de conversão baixa (${diagnostics.salesPageConversion.toFixed(1)}%). Melhore elementos persuasivos e chamadas para ação.`
+    ]);
+  } else {
+    recommendations.push([
+      "Página de Vendas",
+      `Taxa de conversão boa (${diagnostics.salesPageConversion.toFixed(1)}%). Continue testando melhorias incrementais.`
+    ]);
+  }
+  
+  // Recomendações para checkout
+  if (diagnostics.checkoutConversion < 40) {
+    recommendations.push([
+      "Checkout",
+      `Conversão baixa (${diagnostics.checkoutConversion.toFixed(1)}%). Simplifique o processo e adicione elementos de confiança.`
+    ]);
+  } else {
+    recommendations.push([
+      "Checkout",
+      `Conversão boa (${diagnostics.checkoutConversion.toFixed(1)}%). Mantenha o processo atual.`
+    ]);
+  }
+  
+  // Recomendações para Order Bump
+  if ((diagnostics.orderBumpRate || 0) < 30) {
+    recommendations.push([
+      "Order Bump",
+      `Taxa baixa (${(diagnostics.orderBumpRate || 0).toFixed(1)}%). Melhore a proposta de valor e posicionamento.`
+    ]);
+  } else {
+    recommendations.push([
+      "Order Bump",
+      `Taxa boa (${(diagnostics.orderBumpRate || 0).toFixed(1)}%). Continue com a estratégia atual.`
+    ]);
+  }
+  
+  (doc as any).autoTable({
+    startY: currentY + 5,
+    head: [["Área", "Recomendação"]],
+    body: recommendations,
+    theme: "grid",
+    headStyles: {
+      fillColor: [41, 98, 255],
+      textColor: [255, 255, 255]
+    },
+    alternateRowStyles: {
+      fillColor: [240, 245, 255]
     }
   });
   
-  // Comparação com métricas ideais
-  const comparisonStartY = (doc as any).lastAutoTable?.finalY || 200;
-  doc.setFontSize(14);
-  doc.text("Comparação com Métricas Ideais", 15, comparisonStartY + 10);
+  // Adicionar regras gerais e parâmetros ideais
+  const currentY2 = (doc as any).autoTable.previous.finalY + 15;
+  doc.setFont("helvetica", "bold");
+  doc.text("Regras Gerais do Funil", 20, currentY2);
+  doc.setFont("helvetica", "normal");
   
-  const comparisonRows = comparisonData.map((item: any) => [
-    item.name, 
-    `${item.actual}%`, 
-    `${item.ideal}%`
-  ]);
+  const rulesData = [
+    ["CPA Ideal", "R$17,00"],
+    ["IC Máximo", "R$6,00"],
+    ["CPC Máximo", "R$2,00"],
+    ["ROI para Escala", "> 1.5x"],
+    ["Conversão Página", "> 40%"],
+    ["Conversão Checkout", "> 40%"],
+    ["Taxa de Order Bump", "> 30%"]
+  ];
   
-  autoTable(doc, {
-    startY: comparisonStartY + 15,
-    head: [["Métrica", "Seu Valor", "Valor Ideal"]],
-    body: comparisonRows,
+  (doc as any).autoTable({
+    startY: currentY2 + 5,
+    head: [["Parâmetro", "Valor Ideal"]],
+    body: rulesData,
     theme: "grid",
-    headStyles: { fillColor: [0, 102, 204] },
+    headStyles: {
+      fillColor: [41, 98, 255],
+      textColor: [255, 255, 255]
+    },
+    alternateRowStyles: {
+      fillColor: [240, 245, 255]
+    }
   });
+};
+
+const createDateInfo = (doc: any, formData: any) => {
+  // Adicionar período de análise
+  let periodText = "Período não especificado";
   
-  // Rodapé
-  const pageCount = doc.getNumberOfPages();
-  doc.setFontSize(10);
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setTextColor(100, 100, 100);
-    doc.text(
-      "© Insights Oceano Azul - Diagnóstico de Funil",
-      15,
-      doc.internal.pageSize.height - 10
-    );
-    doc.text(
-      `Página ${i} de ${pageCount}`,
-      doc.internal.pageSize.width - 30,
-      doc.internal.pageSize.height - 10
-    );
+  if (formData.startDate && formData.endDate) {
+    const startDate = formData.startDate instanceof Date 
+      ? formData.startDate 
+      : new Date(formData.startDate);
+      
+    const endDate = formData.endDate instanceof Date 
+      ? formData.endDate 
+      : new Date(formData.endDate);
+      
+    periodText = `Período de análise: ${startDate.toLocaleDateString('pt-BR')} a ${endDate.toLocaleDateString('pt-BR')}`;
   }
   
-  doc.save("insights-oceano-azul.pdf");
+  doc.setFontSize(10);
+  doc.text(periodText, 20, 290);
+};
+
+export const exportToPdf = (formData: any, diagnostics: any, comparisonData: any) => {
+  const doc = new jsPDF();
+  
+  // Adicionar cabeçalho
+  generateHeader(doc, "Relatório de Análise de Funil - Oceano Azul");
+  
+  // Adicionar tabela de métricas
+  createMetricsTable(doc, formData, diagnostics);
+  
+  // Adicionar tabela de comparação
+  createComparisonTable(doc, comparisonData);
+  
+  // Adicionar nova página para recomendações
+  doc.addPage();
+  generateHeader(doc, "Recomendações & Regras do Funil");
+  
+  // Adicionar seção de recomendações
+  createRecommendationsSection(doc, diagnostics);
+  
+  // Adicionar informações de data
+  createDateInfo(doc, formData);
+  
+  // Adicionar rodapé
+  doc.setFontSize(8);
+  doc.text("© Insights Oceano Azul - " + new Date().getFullYear(), 80, 290);
+  
+  // Salvar PDF
+  doc.save("relatorio-analise-funil.pdf");
   
   return true;
 };

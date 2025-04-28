@@ -65,7 +65,7 @@ export const FormAnalyzer = ({
     
     toast({
       title: "Análise realizada",
-      description: "Seus dados foram analisados com sucesso. Veja os resultados!",
+      description: "Seus dados foram analisados com sucesso. Veja os resultados detalhados e recomendações.",
     });
   };
 
