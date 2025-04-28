@@ -10,27 +10,27 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50/30 to-white">
-      <div className="container mx-auto px-4 py-8 space-y-6 max-w-6xl">
-        <header className="flex justify-between items-center">
+      <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
+        <header className="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm">
           <div className="flex items-center gap-4">
             <div className="mr-1">
               <img 
                 src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png" 
                 alt="Oceano Azul Logo" 
-                className="h-12 w-auto"
+                className="h-10 w-auto"
               />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-800">
+              <h1 className="text-xl md:text-2xl font-bold text-blue-800">
                 Insights Oceano Azul
               </h1>
-              <p className="text-[#0EA5E9] font-medium">
+              <p className="text-[#0EA5E9] text-sm font-medium">
                 Diagnóstico de Funil
               </p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <MainNavigation />
             <AuthButton />
           </div>

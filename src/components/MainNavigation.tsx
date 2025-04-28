@@ -38,7 +38,7 @@ export const MainNavigation = () => {
         to={route.path} 
         className={cn(
           mobile ? "flex items-center py-3 px-4 text-sm font-medium hover:bg-blue-50 rounded-md" : "",
-          isActive ? "text-blue-700" : "text-gray-700 hover:text-blue-700"
+          isActive ? "text-blue-700 font-medium" : "text-gray-700 hover:text-blue-700"
         )}
         onClick={() => mobile && setIsOpen(false)}
       >
@@ -54,7 +54,7 @@ export const MainNavigation = () => {
       <div className="md:hidden">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="mr-2">
+            <Button variant="outline" size="icon" className="mr-2">
               <Menu className="h-5 w-5" />
               <span className="sr-only">Menu</span>
             </Button>

@@ -5,6 +5,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
+  TooltipProvider
 } from "@/components/ui/tooltip";
 
 interface TrendHeaderProps {
@@ -24,20 +25,22 @@ export function TrendHeader({ title, trendPercentage }: TrendHeaderProps) {
           {Math.abs(trendPercentage).toFixed(1)}%
         </Badge>
       </div>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="text-xs text-gray-500 flex items-center gap-1 cursor-help">
-            <HelpCircle className="h-3 w-3" />
-            <span className="hidden sm:inline">Dados baseados em performance estimada</span>
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p className="text-xs max-w-xs">
-            Este gráfico mostra uma estimativa da tendência baseada nos dados fornecidos. 
-            Os resultados podem variar de acordo com as condições reais do mercado.
-          </p>
-        </TooltipContent>
-      </Tooltip>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="text-xs text-gray-500 flex items-center gap-1 cursor-help bg-gray-50 px-2 py-1 rounded-md">
+              <HelpCircle className="h-3 w-3" />
+              <span className="hidden sm:inline">Informação</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="bg-white p-3 shadow-lg border border-gray-100">
+            <p className="text-xs max-w-xs">
+              Este gráfico mostra uma estimativa da tendência baseada nos dados fornecidos. 
+              Os resultados podem variar de acordo com as condições reais do mercado.
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

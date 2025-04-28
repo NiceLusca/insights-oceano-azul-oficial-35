@@ -6,12 +6,13 @@ import { ResultContainer } from "@/components/ResultContainer";
 import { calculateMetrics } from "@/utils/metricsHelpers";
 import { FormValues } from "@/schemas/formSchema";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent } from "@/components/ui/tabs";
 import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { MetricsExplainer } from "@/components/ChatBot/MetricsExplainer";
-import { FileText, BarChart3 } from "lucide-react";
+import { TrendVisualization } from "@/components/TrendVisualization";
+import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
@@ -58,6 +59,7 @@ export const FormAnalyzer = ({
     const metrics = calculateMetrics(values);
     setDiagnostics(metrics);
     
+    // Immediately switch to results tab to fix double-click issue
     onTabChange("results");
     
     if (isAuthenticated) {
@@ -94,26 +96,41 @@ export const FormAnalyzer = ({
 
   return (
     <>
-      <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-        <TabsContent value="form" className="space-y-6 animate-fade-in">
-          <FormContainer 
-            form={form} 
-            onSubmit={onSubmit} 
-            formSchema={form.getValues()}
-            onAnalyze={() => onTabChange("results")} 
-          />
-        </TabsContent>
+      <TabsContent value="form" className="space-y-6 animate-fade-in">
+        <FormContainer 
+          form={form} 
+          onSubmit={onSubmit} 
+          formSchema={form.getValues()}
+          onAnalyze={() => {
+            // Direct call to onSubmit with current form values to avoid double-click issue
+            onSubmit(form.getValues());
+          }} 
+        />
+      </TabsContent>
+      
+      <TabsContent value="results" className="space-y-6 animate-fade-in">
+        <ResultContainer 
+          formData={form.getValues()} 
+          diagnostics={diagnostics} 
+          hasErrors={hasFormErrors}
+          errorMessage={errorMessage}
+          isAuthenticated={isAuthenticated}
+        />
         
-        <TabsContent value="results" className="space-y-6 animate-fade-in">
-          <ResultContainer 
-            formData={form.getValues()} 
-            diagnostics={diagnostics} 
-            hasErrors={hasFormErrors}
-            errorMessage={errorMessage}
-            isAuthenticated={isAuthenticated}
-          />
-        </TabsContent>
-      </Tabs>
+        {/* Always show these components in results tab */}
+        <TrendVisualization 
+          formData={form.getValues()} 
+          diagnostics={diagnostics}
+        />
+        
+        <AdvancedFinanceMetrics 
+          formData={form.getValues()} 
+          diagnostics={diagnostics}
+        />
+        
+        <QuoteCard />
+      </TabsContent>
+      
       <MetricsExplainer />
     </>
   );

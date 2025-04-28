@@ -15,24 +15,13 @@ export const AuthButton = () => {
     }
   };
 
-  const handleHistory = () => {
-    navigate("/history");
-  };
-
   if (loading) {
     return <Button disabled>Carregando...</Button>;
   }
 
   return (
-    <div className="flex gap-2">
-      {user && (
-        <Button variant="outline" onClick={handleHistory}>
-          Ver Histórico
-        </Button>
-      )}
-      <Button onClick={handleAuth}>
-        {user ? "Sair" : "Entrar / Cadastrar"}
-      </Button>
-    </div>
+    <Button onClick={handleAuth}>
+      {user ? "Sair" : "Entrar / Cadastrar"}
+    </Button>
   );
 };

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MainLayout } from "@/components/MainLayout";
-import { CompactIdealMetrics } from "@/components/CompactIdealMetrics";
 import { QuoteCard } from "@/components/QuoteCard";
 import { formSchema, defaultFormValues, FormValues } from "@/schemas/formSchema";
 import { supabase } from "@/integrations/supabase/client";
@@ -108,8 +107,6 @@ const Index = () => {
 
   return (
     <MainLayout>
-      <CompactIdealMetrics hasUpsell={hasUpsell} />
-      
       {loadingUserData ? (
         <div className="space-y-4 p-8 bg-white rounded-lg shadow-sm border">
           <div className="flex items-center space-x-2">
@@ -145,20 +142,6 @@ const Index = () => {
               onTabChange={setActiveTab}
               initialDiagnostics={diagnosticsData}
             />
-          
-            {activeTab === "results" && diagnosticsData && (
-              <div className="space-y-6 mt-6">
-                <TrendVisualization 
-                  formData={form.getValues()} 
-                  diagnostics={diagnosticsData}
-                />
-                <AdvancedFinanceMetrics 
-                  formData={form.getValues()} 
-                  diagnostics={diagnosticsData}
-                />
-                <QuoteCard />
-              </div>
-            )}
           </Tabs>
         </>
       )}
