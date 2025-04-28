@@ -1,6 +1,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Card } from "./ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ComparisonChartProps {
   actualData: {
@@ -12,6 +13,8 @@ interface ComparisonChartProps {
 }
 
 export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
+  const isMobile = useIsMobile();
+  
   const chartConfig = {
     actual: {
       color: "#0EA5E9",
@@ -28,7 +31,9 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={actualData}
-            margin={{ top: 20, right: 20, bottom: 80, left: 40 }}
+            margin={isMobile ? 
+              { top: 20, right: 10, bottom: 80, left: 10 } : 
+              { top: 20, right: 20, bottom: 80, left: 40 }}
             barGap={8}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -39,10 +44,13 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
               angle={-45}
               textAnchor="end"
               height={60}
+              tick={{fontSize: isMobile ? 10 : 12}}
             />
             <YAxis 
               tickSize={5}
               tickFormatter={(value) => `${value}%`}
+              tick={{fontSize: isMobile ? 10 : 12}}
+              width={isMobile ? 30 : 40}
             />
             <Tooltip 
               formatter={(value) => [`${value}%`, ""]}
@@ -55,8 +63,8 @@ export const ComparisonChart = ({ actualData }: ComparisonChartProps) => {
               verticalAlign="bottom"
               layout="horizontal"
             />
-            <Bar dataKey="actual" name="Atual" fill={chartConfig.actual.color} barSize={20} />
-            <Bar dataKey="ideal" name="Ideal" fill={chartConfig.ideal.color} barSize={20} />
+            <Bar dataKey="actual" name="Atual" fill={chartConfig.actual.color} barSize={isMobile ? 15 : 20} />
+            <Bar dataKey="ideal" name="Ideal" fill={chartConfig.ideal.color} barSize={isMobile ? 15 : 20} />
           </BarChart>
         </ResponsiveContainer>
       </div>

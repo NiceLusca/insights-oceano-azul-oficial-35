@@ -1,6 +1,7 @@
 
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/utils/formatters";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MetricComparisonProps {
   metrics: Array<{
@@ -13,6 +14,8 @@ interface MetricComparisonProps {
 }
 
 export function MetricComparison({ metrics }: MetricComparisonProps) {
+  const isMobile = useIsMobile();
+  
   const formatValue = (value: number, format: string) => {
     switch (format) {
       case "currency":
@@ -29,10 +32,10 @@ export function MetricComparison({ metrics }: MetricComparisonProps) {
   const getComparisonPercentage = (actual: number, ideal: number, isHigherBetter: boolean) => {
     if (isHigherBetter) {
       // Para métricas onde maior é melhor
-      return Math.min((actual / ideal) * 100, 150); // Limitamos a 150% para visualização
+      return Math.min((actual / ideal) * 100, 100); // Limitamos a 100% para visualização mobile
     } else {
       // Para métricas onde menor é melhor (como CPC)
-      return Math.min((ideal / Math.max(actual, 0.1)) * 100, 150); // Evitamos divisão por zero
+      return Math.min((ideal / Math.max(actual, 0.1)) * 100, 100); // Evitamos divisão por zero
     }
   };
   
@@ -54,9 +57,9 @@ export function MetricComparison({ metrics }: MetricComparisonProps) {
       <div className="space-y-4">
         {metrics.map((metric, index) => (
           <div key={index} className="space-y-1">
-            <div className="flex justify-between text-sm">
+            <div className={`flex ${isMobile ? 'flex-col gap-1' : 'justify-between'} text-sm`}>
               <span className="font-medium">{metric.name}</span>
-              <div className="flex items-center gap-3">
+              <div className={`flex ${isMobile ? 'justify-between' : 'items-center gap-3'}`}>
                 <span className="text-gray-500">
                   Atual: {formatValue(metric.actual, metric.format)}
                 </span>
@@ -67,7 +70,7 @@ export function MetricComparison({ metrics }: MetricComparisonProps) {
             </div>
             <div className="relative pt-1">
               <div className="flex items-center">
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
                     className={`h-2 rounded-full ${getProgressColor(metric.actual, metric.ideal, metric.isHigherBetter)}`}
                     style={{

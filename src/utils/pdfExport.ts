@@ -52,12 +52,18 @@ const createComparisonTable = (doc: any, comparisonData: any) => {
   doc.text("Comparação com Métricas Ideais", 20, currentY);
   doc.setFont("helvetica", "normal");
   
-  const tableData = comparisonData.map((item: any) => [
-    item.name,
-    `${item.actual}%`,
-    `${item.ideal}%`,
-    item.actual >= item.ideal ? "✓" : "✗"
-  ]);
+  const tableData = comparisonData.map((item: any) => {
+    // Determine the status symbol based on values
+    const isPositive = item.actual >= item.ideal;
+    const statusSymbol = isPositive ? "✓" : "✗";
+    
+    return [
+      item.name,
+      `${item.actual}%`,
+      `${item.ideal}%`,
+      statusSymbol
+    ];
+  });
   
   autoTable(doc, {
     startY: currentY + 5,
