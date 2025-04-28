@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/drawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface MetricCardProps {
   title: string;
@@ -172,18 +173,22 @@ export function MetricsExplainer() {
               </TabsTrigger>
             </TabsList>
             
-            {Object.keys(metrics).map((category) => (
-              <TabsContent key={category} value={category} className="space-y-2 overflow-y-auto px-1 pb-2">
-                {metrics[category].map((metric, i) => (
-                  <MetricCard
-                    key={i}
-                    title={metric.title}
-                    description={metric.description}
-                    tips={metric.tips}
-                  />
+            <div className="h-[50vh] overflow-hidden">
+              <ScrollArea className="h-full w-full pr-3">
+                {Object.keys(metrics).map((category) => (
+                  <TabsContent key={category} value={category} className="space-y-2 pb-2">
+                    {metrics[category].map((metric, i) => (
+                      <MetricCard
+                        key={i}
+                        title={metric.title}
+                        description={metric.description}
+                        tips={metric.tips}
+                      />
+                    ))}
+                  </TabsContent>
                 ))}
-              </TabsContent>
-            ))}
+              </ScrollArea>
+            </div>
           </Tabs>
         </div>
         

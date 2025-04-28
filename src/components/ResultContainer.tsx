@@ -46,28 +46,28 @@ export const ResultContainer = ({
             value="detailed" 
             className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
-            Dashboard Inteligente
+            Análise Detalhada
           </TabsTrigger>
           <TabsTrigger 
             value="dashboard" 
             className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
-            Análise Detalhada
+            Dashboard Inteligente
           </TabsTrigger>
         </TabsList>
       
         <TabsContent value="detailed" className="space-y-6 animate-fade-in">
-          <FunnelDashboard 
-            formData={formData} 
-            diagnostics={diagnostics} 
-          />
-        </TabsContent>
-        
-        <TabsContent value="dashboard" className="space-y-6 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <DiagnosticSection diagnostics={diagnostics} />
             <ComparisonChart actualData={comparisonData} />
           </div>
+        </TabsContent>
+        
+        <TabsContent value="dashboard" className="space-y-6 animate-fade-in">
+          <FunnelDashboard 
+            formData={formData} 
+            diagnostics={diagnostics} 
+          />
         </TabsContent>
       </Tabs>
 

@@ -70,6 +70,12 @@ const createComparisonTable = (doc: any, comparisonData: any) => {
     },
     alternateRowStyles: {
       fillColor: [240, 245, 255]
+    },
+    columnStyles: {
+      3: { 
+        halign: 'center',
+        cellWidth: 20
+      }
     }
   });
 };
@@ -218,8 +224,13 @@ const createDateInfo = (doc: any, formData: any) => {
     periodText = `Período de análise: ${startDate.toLocaleDateString('pt-BR')} a ${endDate.toLocaleDateString('pt-BR')}`;
   }
   
+  const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 280;
   doc.setFontSize(10);
-  doc.text(periodText, 20, 290);
+  doc.text(periodText, 20, finalY + 10);
+  
+  // Adicionar rodapé
+  doc.setFontSize(8);
+  doc.text("© Insights Oceano Azul - " + new Date().getFullYear(), 80, finalY + 20);
 };
 
 export const exportToPdf = (formData: any, diagnostics: any, comparisonData: any) => {
@@ -241,12 +252,8 @@ export const exportToPdf = (formData: any, diagnostics: any, comparisonData: any
   // Adicionar seção de recomendações
   createRecommendationsSection(doc, diagnostics);
   
-  // Adicionar informações de data
+  // Adicionar informações de data e rodapé
   createDateInfo(doc, formData);
-  
-  // Adicionar rodapé
-  doc.setFontSize(8);
-  doc.text("© Insights Oceano Azul - " + new Date().getFullYear(), 80, 290);
   
   // Salvar PDF
   doc.save("relatorio-analise-funil.pdf");
