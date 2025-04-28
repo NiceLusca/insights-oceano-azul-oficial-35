@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 export const idealMetrics = {
@@ -106,60 +105,57 @@ export const calculateMetrics = (values: any) => {
   };
 };
 
-export const getComparisonData = (formData: any) => {
-  // Calcular métricas atuais
-  const salesPageConversion = formData.salesPageVisits > 0 
-    ? (formData.checkoutVisits / formData.salesPageVisits) * 100 
-    : 0;
+/**
+ * Retorna dados de comparação entre métricas atuais e ideais
+ * @param formData Dados do formulário
+ * @returns Array com comparações formatadas
+ */
+export const getComparisonData = (formData: any): Array<{name: string, actual: number, ideal: number}> => {
+  // Garantir que formData seja um objeto válido
+  if (!formData) return [];
+  
+  try {
+    // Calcular métricas apenas se formData existir
+    const metrics = calculateMetrics(formData);
     
-  const checkoutConversion = formData.checkoutVisits > 0 
-    ? ((formData.mainProductSales + formData.comboSales) / formData.checkoutVisits) * 100 
-    : 0;
+    // Criar comparações apenas com dados disponíveis
+    const comparisons = [];
     
-  const totalSales = formData.mainProductSales + formData.comboSales;
-  const comboRate = totalSales > 0 
-    ? (formData.comboSales / totalSales) * 100 
-    : 0;
-    
-  const orderBumpRate = totalSales > 0 
-    ? (formData.orderBumpSales / totalSales) * 100 
-    : 0;
-    
-  const upsellRate = formData.hasUpsell && totalSales > 0 
-    ? (formData.upsellSales / totalSales) * 100 
-    : 0;
-
-  // Configurar dados para o gráfico de comparação
-  const comparisonData = [
-    {
-      name: "Conversão Página",
-      actual: Math.round(salesPageConversion),
-      ideal: 40
-    },
-    {
-      name: "Conversão Checkout",
-      actual: Math.round(checkoutConversion),
-      ideal: 40
-    },
-    {
-      name: "Taxa de Combo",
-      actual: Math.round(comboRate),
-      ideal: 35
-    },
-    {
-      name: "Taxa Order Bump",
-      actual: Math.round(orderBumpRate),
-      ideal: 30
+    if (metrics && typeof metrics.salesPageConversion === 'number') {
+      comparisons.push({
+        name: "Conversão de Página",
+        actual: Number(metrics.salesPageConversion.toFixed(1)),
+        ideal: 40
+      });
     }
-  ];
-
-  if (formData.hasUpsell) {
-    comparisonData.push({
-      name: "Taxa de Upsell",
-      actual: Math.round(upsellRate),
-      ideal: 5
-    });
+    
+    if (metrics && typeof metrics.checkoutConversion === 'number') {
+      comparisons.push({
+        name: "Conversão de Checkout",
+        actual: Number(metrics.checkoutConversion.toFixed(1)),
+        ideal: 40
+      });
+    }
+    
+    if (metrics && typeof metrics.currentROI === 'number') {
+      comparisons.push({
+        name: "ROI",
+        actual: Number((metrics.currentROI * 100).toFixed(1)),
+        ideal: 150
+      });
+    }
+    
+    if (formData.hasUpsell && metrics && typeof metrics.orderBumpRate === 'number') {
+      comparisons.push({
+        name: "Taxa de Order Bump",
+        actual: Number(metrics.orderBumpRate.toFixed(1)),
+        ideal: 30
+      });
+    }
+    
+    return comparisons;
+  } catch (error) {
+    console.error("Erro ao calcular dados de comparação:", error);
+    return [];
   }
-
-  return comparisonData;
 };

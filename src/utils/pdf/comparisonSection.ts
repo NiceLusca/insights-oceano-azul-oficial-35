@@ -9,38 +9,45 @@ import { COLORS, SPACING, PdfComparisonItem } from "./types";
 export const createComparisonSection = (doc: jsPDF, comparisonData: PdfComparisonItem[], startY: number): number => {
   // Título da seção com fonte menor e mais discreto
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12); // Reduzindo o tamanho da fonte do título
+  doc.setFontSize(12);
   doc.text("Comparação com Métricas Ideais", SPACING.marginX, startY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10); // Voltando para tamanho padrão
+  doc.setFontSize(10);
+  
+  // Verificar se comparisonData é um array válido
+  const safeComparisonData = Array.isArray(comparisonData) ? comparisonData : [];
   
   // Preparar dados para a tabela de comparação
-  const tableData = comparisonData.map((item: any) => {
+  const tableData = safeComparisonData.map((item: any) => {
+    // Garantir valores numéricos válidos
+    const actual = Number.isFinite(item.actual) ? item.actual : 0;
+    const ideal = Number.isFinite(item.ideal) ? item.ideal : 0;
+    
     // Determine the status text based on values
-    const isPositive = item.actual >= item.ideal;
+    const isPositive = actual >= ideal;
     const statusText = isPositive ? "BOM" : "RUIM";
     
     return [
-      item.name,
-      `${item.actual}%`,
-      `${item.ideal}%`,
+      item.name || "N/A",
+      `${actual}%`,
+      `${ideal}%`,
       statusText
     ];
   });
   
   // Renderizar tabela de comparação com tamanho reduzido
   autoTable(doc, {
-    startY: startY + 4, // Reduzir espaço entre título e tabela
+    startY: startY + 4,
     head: [["Métrica", "Seu Valor", "Valor Ideal", "Status"]],
     body: tableData,
     theme: "grid",
     headStyles: {
       fillColor: COLORS.primary,
       textColor: [255, 255, 255],
-      fontSize: 9 // Reduzindo tamanho da fonte do cabeçalho
+      fontSize: 9
     },
     bodyStyles: {
-      fontSize: 8 // Reduzindo tamanho da fonte do corpo da tabela
+      fontSize: 8
     },
     alternateRowStyles: {
       fillColor: COLORS.secondary
@@ -53,6 +60,9 @@ export const createComparisonSection = (doc: jsPDF, comparisonData: PdfCompariso
     },
     margin: { left: SPACING.marginX, right: SPACING.marginX },
     didDrawCell: (data) => {
+      // Verificar índices válidos
+      if (!tableData.length || data.row.index >= tableData.length) return;
+      
       // Adicionar cor ao texto de status
       if (data.column.index === 3 && data.row.index >= 0 && data.section === 'body') {
         const cell = data.cell;
@@ -71,7 +81,7 @@ export const createComparisonSection = (doc: jsPDF, comparisonData: PdfCompariso
           y: cell.y + cell.height / 2 + 2
         };
         
-        // Limpar qualquer texto pré-existente na célula (isso evita a duplicação)
+        // Limpar qualquer texto pré-existente na célula
         doc.setFillColor(cell.styles.fillColor[0], cell.styles.fillColor[1], cell.styles.fillColor[2]);
         doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
         

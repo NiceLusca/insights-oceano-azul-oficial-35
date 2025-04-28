@@ -18,16 +18,21 @@ export const PdfExportButton = ({ formData, diagnostics }: PdfExportButtonProps)
     try {
       setLoading(true);
       
-      // Verificar se os dados necessários estão disponíveis
+      // Validar dados de entrada
       if (!formData || !diagnostics) {
-        throw new Error("Dados insuficientes para gerar o PDF");
+        toast.error("Dados insuficientes para gerar o PDF");
+        return;
       }
       
-      // Gerar dados de comparação com métricas ideais
-      const comparisonData = getComparisonData(formData);
+      // Criar cópias seguras dos dados para evitar referências mutáveis
+      const safeFormData = JSON.parse(JSON.stringify(formData || {}));
+      const safeDiagnostics = JSON.parse(JSON.stringify(diagnostics || {}));
       
-      // Exportar o PDF
-      await exportToPdf(formData, diagnostics, comparisonData);
+      // Gerar dados de comparação com métricas ideais
+      const comparisonData = getComparisonData(safeFormData);
+      
+      // Exportar o PDF com dados validados
+      await exportToPdf(safeFormData, safeDiagnostics, comparisonData);
       
       toast.success("Relatório exportado com sucesso!");
       

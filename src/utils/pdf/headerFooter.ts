@@ -6,14 +6,18 @@ import { COLORS, SPACING, PdfFormData } from "./types";
  * Gera o cabeçalho do documento
  */
 export const generateHeader = (doc: jsPDF, title: string, startY: number): number => {
+  // Verificar parâmetros de entrada
+  const safeTitle = title || "Relatório de Análise";
+  const safeStartY = typeof startY === 'number' ? startY : 15;
+  
   // Configurações de estilo para o cabeçalho
   doc.setFontSize(18);
   doc.setTextColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
   doc.setFont("helvetica", "bold");
-  doc.text(title, SPACING.marginX, startY);
+  doc.text(safeTitle, SPACING.marginX, safeStartY);
   
   // Linha separadora
-  const lineY = startY + 5;
+  const lineY = safeStartY + 5;
   doc.setDrawColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
   doc.line(SPACING.marginX, lineY, 190, lineY);
   
@@ -30,21 +34,39 @@ export const generateHeader = (doc: jsPDF, title: string, startY: number): numbe
  * Adiciona o rodapé com informações da data
  */
 export const createDateFooter = (doc: jsPDF, formData: PdfFormData) => {
+  // Validar dados de entrada
+  const safeFormData = formData || {};
+  
   // Obter dimensões do documento
   const pageHeight = doc.internal.pageSize.height;
   
   // Formatar período de análise
   let periodText = "Período não especificado";
-  if (formData.startDate && formData.endDate) {
-    const startDate = formData.startDate instanceof Date 
-      ? formData.startDate 
-      : new Date(formData.startDate);
+  
+  try {
+    if (safeFormData.startDate && safeFormData.endDate) {
+      let startDate, endDate;
       
-    const endDate = formData.endDate instanceof Date 
-      ? formData.endDate 
-      : new Date(formData.endDate);
+      if (safeFormData.startDate instanceof Date) {
+        startDate = safeFormData.startDate;
+      } else if (typeof safeFormData.startDate === 'string') {
+        startDate = new Date(safeFormData.startDate);
+      }
       
-    periodText = `Período de análise: ${startDate.toLocaleDateString('pt-BR')} a ${endDate.toLocaleDateString('pt-BR')}`;
+      if (safeFormData.endDate instanceof Date) {
+        endDate = safeFormData.endDate;
+      } else if (typeof safeFormData.endDate === 'string') {
+        endDate = new Date(safeFormData.endDate);
+      }
+      
+      // Verificar se as datas são válidas
+      if (startDate && !isNaN(startDate.getTime()) && 
+          endDate && !isNaN(endDate.getTime())) {
+        periodText = `Período de análise: ${startDate.toLocaleDateString('pt-BR')} a ${endDate.toLocaleDateString('pt-BR')}`;
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao formatar datas:", error);
   }
   
   // Adicionar período de análise

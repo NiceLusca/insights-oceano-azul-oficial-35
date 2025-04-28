@@ -1,146 +1,126 @@
 
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import { formatCurrency } from "../formatters";
 import { COLORS, SPACING, PdfDiagnostics } from "./types";
 
 /**
  * Cria a seção de recomendações
  */
 export const createRecommendationsSection = (doc: jsPDF, diagnostics: PdfDiagnostics, startY: number): number => {
+  // Garantir que diagnostics seja um objeto válido
+  const safeData = diagnostics || {};
+  
   // Título da seção
   doc.setFont("helvetica", "bold");
-  doc.text("Recomendações", SPACING.marginX, startY);
-  doc.setFont("helvetica", "normal");
+  doc.setFontSize(14);
+  doc.text("Recomendações & Regras do Funil", SPACING.marginX, startY);
+  doc.setFontSize(12);
   
-  // Gerar recomendações com base nas métricas
-  const recommendations = [];
+  // Métrica de ROI para determinar recomendações específicas
+  const roi = safeData.currentROI || 0;
+  const cpc = safeData.currentCPC || 0;
+  const salesPageConversion = safeData.salesPageConversion || 0;
+  const checkoutConversion = safeData.checkoutConversion || 0;
+  const orderBumpRate = safeData.orderBumpRate || 0;
   
-  // Recomendações baseadas no CPC
-  if (diagnostics.currentCPC && diagnostics.currentCPC > 2) {
-    recommendations.push([
-      "Tráfego",
-      `Seu CPC (${formatCurrency(diagnostics.currentCPC)}) está acima do máximo recomendado (R$2,00). Pause conjuntos que não venderam após 2 dias.`
-    ]);
-  } else {
-    recommendations.push([
-      "Tráfego",
-      `Seu CPC (${formatCurrency(diagnostics.currentCPC || 0)}) está dentro do limite recomendado. Continue monitorando.`
-    ]);
-  }
-  
-  // Recomendações baseadas no ROI
-  if (diagnostics.currentROI && diagnostics.currentROI < 1) {
-    recommendations.push([
-      "ROI",
-      `Seu ROI (${diagnostics.currentROI?.toFixed(2) || 0}x) está gerando prejuízo. Se persistir por 3 dias, pause a campanha.`
-    ]);
-  } else if (diagnostics.currentROI && diagnostics.currentROI >= 1 && diagnostics.currentROI < 1.5) {
-    recommendations.push([
-      "ROI",
-      `Seu ROI (${diagnostics.currentROI.toFixed(2)}x) está aceitável. Mantenha o orçamento e otimize criativos.`
-    ]);
-  } else if (diagnostics.currentROI && diagnostics.currentROI >= 1.5) {
-    recommendations.push([
-      "ROI",
-      `Seu ROI (${diagnostics.currentROI.toFixed(2)}x) está excelente. Aumente o orçamento em 20%.`
-    ]);
-  }
-  
-  // Recomendações para página de vendas
-  if (diagnostics.salesPageConversion && diagnostics.salesPageConversion < 40) {
-    recommendations.push([
-      "Página de Vendas",
-      `Taxa de conversão baixa (${diagnostics.salesPageConversion.toFixed(1)}%). Melhore elementos persuasivos e chamadas para ação.`
-    ]);
-  } else if (diagnostics.salesPageConversion) {
-    recommendations.push([
-      "Página de Vendas",
-      `Taxa de conversão boa (${diagnostics.salesPageConversion.toFixed(1)}%). Continue testando melhorias incrementais.`
-    ]);
-  }
-  
-  // Recomendações para checkout
-  if (diagnostics.checkoutConversion && diagnostics.checkoutConversion < 40) {
-    recommendations.push([
-      "Checkout",
-      `Conversão baixa (${diagnostics.checkoutConversion.toFixed(1)}%). Simplifique o processo e adicione elementos de confiança.`
-    ]);
-  } else if (diagnostics.checkoutConversion) {
-    recommendations.push([
-      "Checkout",
-      `Conversão boa (${diagnostics.checkoutConversion.toFixed(1)}%). Mantenha o processo atual.`
-    ]);
-  }
-  
-  // Recomendações para Order Bump
-  if ((diagnostics.orderBumpRate || 0) < 30) {
-    recommendations.push([
-      "Order Bump",
-      `Taxa baixa (${(diagnostics.orderBumpRate || 0).toFixed(1)}%). Melhore a proposta de valor e posicionamento.`
-    ]);
-  } else {
-    recommendations.push([
-      "Order Bump",
-      `Taxa boa (${(diagnostics.orderBumpRate || 0).toFixed(1)}%). Continue com a estratégia atual.`
-    ]);
-  }
-  
-  // Renderizar tabela de recomendações
-  autoTable(doc, {
-    startY: startY + 5,
-    head: [["Área", "Recomendação"]],
-    body: recommendations,
-    theme: "grid",
-    headStyles: {
-      fillColor: COLORS.primary,
-      textColor: [255, 255, 255]
+  // Gerar recomendações baseadas nas métricas atuais
+  const recommendations = [
+    {
+      categoria: "Tráfego",
+      recomendacoes: [
+        cpc > 2 
+          ? "Pause conjuntos com CPC > R$2 que não converteram após 2 dias" 
+          : "Continue monitorando seu CPC para mantê-lo abaixo de R$2",
+        roi >= 1.5
+          ? "Aumente seu orçamento em 20% para escalar seus resultados"
+          : "Mantenha o orçamento atual e focus na otimização dos criativos"
+      ]
     },
-    alternateRowStyles: {
-      fillColor: COLORS.secondary
+    {
+      categoria: "Conversão",
+      recomendacoes: [
+        salesPageConversion < 40
+          ? "Otimize sua página de vendas para melhorar a taxa de conversão (ideal: 40%+)"
+          : "Sua página de vendas está convertendo bem, continue com a estratégia atual",
+        checkoutConversion < 40
+          ? "Simplifique seu processo de checkout para aumentar a taxa de finalização"
+          : "Seu checkout está performando bem (conversão acima de 40%)"
+      ]
     },
-    margin: { left: SPACING.marginX, right: SPACING.marginX },
-    styles: {
-      fontSize: 10,
-      cellPadding: 4
+    {
+      categoria: "Maximização de Receita",
+      recomendacoes: [
+        orderBumpRate < 30
+          ? "Melhore sua proposta de order bump para aumentar a taxa de aceitação"
+          : "Seu order bump está performando bem, considere testar outros produtos"
+      ]
     }
-  });
-  
-  // Posição Y após a tabela
-  const currentY = (doc as any).lastAutoTable?.finalY + 6 || startY + 100;
-  
-  // Título da seção de regras
-  doc.setFont("helvetica", "bold");
-  doc.text("Regras Gerais do Funil", SPACING.marginX, currentY);
-  doc.setFont("helvetica", "normal");
-  
-  // Dados para a tabela de regras
-  const rulesData = [
-    ["CPA Ideal", "R$17,00"],
-    ["IC Máximo", "R$6,00"],
-    ["CPC Máximo", "R$2,00"],
-    ["ROI para Escala", "> 1.5x"],
-    ["Conversão Página", "> 40%"],
-    ["Conversão Checkout", "> 40%"],
-    ["Taxa de Order Bump", "> 30%"]
   ];
   
-  // Renderizar tabela de regras
-  autoTable(doc, {
-    startY: currentY + 5,
-    head: [["Parâmetro", "Valor Ideal"]],
-    body: rulesData,
-    theme: "grid",
-    headStyles: {
-      fillColor: COLORS.primary,
-      textColor: [255, 255, 255]
-    },
-    alternateRowStyles: {
-      fillColor: COLORS.secondary
-    },
-    margin: { left: SPACING.marginX, right: SPACING.marginX },
+  // Regras gerais do funil
+  const rules = [
+    "Mantenha o CPC abaixo de R$2,00 para garantir lucratividade",
+    "Busque um ROI mínimo de 1,5x para escalar com segurança",
+    "Se o ROI estiver < 1x por 3 dias seguidos, pause a campanha",
+    "Teste novos criativos a cada 3-5 dias para evitar fadiga de audiência",
+    "Revise os resultados diariamente para otimização contínua"
+  ];
+  
+  // Renderizar recomendações por categoria
+  let currentY = startY + 10;
+  
+  recommendations.forEach((categ) => {
+    // Título da categoria
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
+    doc.text(`${categ.categoria}:`, SPACING.marginX, currentY);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
+    
+    currentY += 7;
+    
+    // Listar recomendações
+    categ.recomendacoes.forEach((rec) => {
+      // Usar texto multi-linha se necessário
+      const textLines = doc.splitTextToSize(rec, 170);
+      doc.text(`• ${textLines[0]}`, SPACING.marginX + 5, currentY);
+      
+      // Se houver mais linhas, adicionar abaixo com recuo
+      for (let i = 1; i < textLines.length; i++) {
+        currentY += 5;
+        doc.text(textLines[i], SPACING.marginX + 7, currentY);
+      }
+      
+      currentY += 7;
+    });
+    
+    currentY += 3;
   });
   
-  // Retornar posição Y após a tabela
-  return (doc as any).lastAutoTable?.finalY + SPACING.sectionSpacing || currentY + 80;
+  // Seção de regras gerais
+  currentY += 5;
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
+  doc.text("Regras Gerais do Funil:", SPACING.marginX, currentY);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
+  
+  currentY += 7;
+  
+  // Listar regras
+  rules.forEach((rule) => {
+    // Usar texto multi-linha se necessário
+    const textLines = doc.splitTextToSize(rule, 170);
+    doc.text(`• ${textLines[0]}`, SPACING.marginX + 5, currentY);
+    
+    // Se houver mais linhas, adicionar abaixo com recuo
+    for (let i = 1; i < textLines.length; i++) {
+      currentY += 5;
+      doc.text(textLines[i], SPACING.marginX + 7, currentY);
+    }
+    
+    currentY += 7;
+  });
+  
+  return currentY + SPACING.sectionSpacing;
 };

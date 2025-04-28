@@ -13,15 +13,27 @@ export const createMetricsSection = (doc: jsPDF, formData: PdfFormData, diagnost
   doc.text("Métricas Principais", SPACING.marginX, startY);
   doc.setFont("helvetica", "normal");
   
+  // Garantir que diagnostics seja um objeto válido
+  const safeData = diagnostics || {};
+  
+  // Tratar valores nulos ou indefinidos
+  const totalRevenue = safeData.totalRevenue || 0;
+  const currentROI = safeData.currentROI || 0;
+  const currentCPC = safeData.currentCPC || 0;
+  const maxCPC = safeData.maxCPC || 0;
+  const salesPageConversion = safeData.salesPageConversion || 0;
+  const checkoutConversion = safeData.checkoutConversion || 0;
+  const orderBumpRate = safeData.orderBumpRate || 0;
+  
   // Dados para a tabela de métricas
   const metricsData = [
-    ["Faturamento Total", formatCurrency(diagnostics.totalRevenue || 0)],
-    ["ROI Atual", diagnostics.currentROI ? `${diagnostics.currentROI.toFixed(2)}x` : "N/A"],
-    ["CPC Atual", diagnostics.currentCPC ? formatCurrency(diagnostics.currentCPC) : "N/A"],
-    ["CPC Máx. Recomendado", diagnostics.maxCPC ? formatCurrency(diagnostics.maxCPC) : "N/A"],
-    ["Conversão Página de Vendas", `${diagnostics.salesPageConversion?.toFixed(1) || 0}%`],
-    ["Conversão Checkout", `${diagnostics.checkoutConversion?.toFixed(1) || 0}%`],
-    ["Taxa de Order Bump", `${(diagnostics.orderBumpRate || 0).toFixed(1)}%`],
+    ["Faturamento Total", formatCurrency(totalRevenue)],
+    ["ROI Atual", `${currentROI.toFixed(2)}x`],
+    ["CPC Atual", formatCurrency(currentCPC)],
+    ["CPC Máx. Recomendado", formatCurrency(maxCPC)],
+    ["Conversão Página de Vendas", `${salesPageConversion.toFixed(1)}%`],
+    ["Conversão Checkout", `${checkoutConversion.toFixed(1)}%`],
+    ["Taxa de Order Bump", `${orderBumpRate.toFixed(1)}%`],
   ];
   
   // Renderizar tabela de métricas

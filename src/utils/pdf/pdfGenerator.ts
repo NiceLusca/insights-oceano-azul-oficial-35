@@ -19,11 +19,10 @@ export const exportToPdf = (
   comparisonData: PdfComparisonItem[]
 ): boolean => {
   try {
-    // Validar dados de entrada
-    if (!formData || !diagnostics || !comparisonData) {
-      console.error("Dados insuficientes para gerar PDF");
-      throw new Error("Dados insuficientes para gerar o relatório");
-    }
+    // Validar e garantir que os dados sejam objetos válidos
+    const safeFormData = formData || {};
+    const safeDiagnostics = diagnostics || {};
+    const safeComparisonData = Array.isArray(comparisonData) ? comparisonData : [];
 
     // Inicializar documento PDF
     const doc = new jsPDF();
@@ -37,10 +36,10 @@ export const exportToPdf = (
     currentY = createTableOfContents(doc, currentY);
     
     // Seção de métricas principais
-    currentY = createMetricsSection(doc, formData, diagnostics, currentY);
+    currentY = createMetricsSection(doc, safeFormData, safeDiagnostics, currentY);
     
     // Seção de comparação com métricas ideais
-    currentY = createComparisonSection(doc, comparisonData, currentY);
+    currentY = createComparisonSection(doc, safeComparisonData, currentY);
     
     // ===== PÁGINA 2: RECOMENDAÇÕES E REGRAS =====
     // Nova página
@@ -51,10 +50,10 @@ export const exportToPdf = (
     currentY = generateHeader(doc, "Recomendações & Regras do Funil", currentY);
     
     // Seção de recomendações
-    currentY = createRecommendationsSection(doc, diagnostics, currentY);
+    currentY = createRecommendationsSection(doc, safeDiagnostics, currentY);
     
     // Adicionar rodapé com informações de data
-    createDateFooter(doc, formData);
+    createDateFooter(doc, safeFormData);
     
     // Salvar o PDF
     doc.save("relatorio-analise-funil.pdf");
