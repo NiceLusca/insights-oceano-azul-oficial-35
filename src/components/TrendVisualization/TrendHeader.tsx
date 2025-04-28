@@ -1,6 +1,11 @@
 
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, HelpCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 interface TrendHeaderProps {
   title: string;
@@ -19,10 +24,20 @@ export function TrendHeader({ title, trendPercentage }: TrendHeaderProps) {
           {Math.abs(trendPercentage).toFixed(1)}%
         </Badge>
       </div>
-      <div className="text-xs text-gray-500 flex items-center gap-1">
-        <HelpCircle className="h-3 w-3" />
-        <span>Dados baseados em performance estimada</span>
-      </div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="text-xs text-gray-500 flex items-center gap-1 cursor-help">
+            <HelpCircle className="h-3 w-3" />
+            <span className="hidden sm:inline">Dados baseados em performance estimada</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="text-xs max-w-xs">
+            Este gráfico mostra uma estimativa da tendência baseada nos dados fornecidos. 
+            Os resultados podem variar de acordo com as condições reais do mercado.
+          </p>
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }

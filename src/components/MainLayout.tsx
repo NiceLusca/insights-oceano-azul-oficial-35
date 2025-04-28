@@ -1,6 +1,7 @@
 
 import { ReactNode } from "react";
 import { AuthButton } from "./AuthButton";
+import { MainNavigation } from "./MainNavigation";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -11,8 +12,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50/30 to-white">
       <div className="container mx-auto px-4 py-8 space-y-6 max-w-6xl">
         <header className="flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="mr-4">
+          <div className="flex items-center gap-4">
+            <div className="mr-1">
               <img 
                 src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png" 
                 alt="Oceano Azul Logo" 
@@ -28,7 +29,11 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               </p>
             </div>
           </div>
-          <AuthButton />
+          
+          <div className="flex items-center gap-2">
+            <MainNavigation />
+            <AuthButton />
+          </div>
         </header>
         <main className="space-y-6">{children}</main>
         <footer className="text-center text-sm text-gray-600 pt-8 pb-4">

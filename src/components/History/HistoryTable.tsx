@@ -25,22 +25,32 @@ export const HistoryTable = ({ analyses, onLoadAnalysis }: HistoryTableProps) =>
   const handleExportPDF = async (analysis: any) => {
     try {
       toast.promise(
-        new Promise(async (resolve) => {
-          const formData = analysis.form_data;
-          const diagnostics = analysis.diagnostics;
-          const comparisonData = getComparisonData(formData);
-          
-          const result = exportToPdf(formData, diagnostics, comparisonData);
-          resolve(result);
+        new Promise<boolean>(async (resolve, reject) => {
+          try {
+            if (!analysis.form_data || !analysis.diagnostics) {
+              throw new Error("Dados insuficientes para gerar o relatório");
+            }
+            
+            const formData = analysis.form_data;
+            const diagnostics = analysis.diagnostics;
+            const comparisonData = getComparisonData(formData);
+            
+            const result = exportToPdf(formData, diagnostics, comparisonData);
+            resolve(result);
+          } catch (error) {
+            console.error("Erro ao exportar PDF:", error);
+            reject(error instanceof Error ? error : new Error("Falha desconhecida"));
+          }
         }),
         {
           loading: 'Gerando PDF...',
           success: 'Relatório exportado com sucesso!',
-          error: 'Erro ao exportar relatório.',
+          error: (err) => `Erro ao exportar relatório: ${err.message}`,
         }
       );
     } catch (error) {
       console.error("Erro ao exportar PDF:", error);
+      toast.error("Erro ao exportar o relatório.");
     }
   };
 

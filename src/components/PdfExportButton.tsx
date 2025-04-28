@@ -14,11 +14,17 @@ export const PdfExportButton = ({ formData, diagnostics }: PdfExportButtonProps)
   const handleExportPDF = async () => {
     try {
       toast.promise(
-        new Promise(async (resolve, reject) => {
+        new Promise<boolean>((resolve, reject) => {
           try {
+            // Verificar se os dados necessários estão disponíveis
+            if (!formData || !diagnostics) {
+              throw new Error("Dados insuficientes para gerar o PDF");
+            }
+            
             // Gerar dados de comparação com métricas ideais
             const comparisonData = getComparisonData(formData);
             
+            // Exportar o PDF
             const result = exportToPdf(formData, diagnostics, comparisonData);
             resolve(result);
           } catch (error) {
@@ -29,7 +35,7 @@ export const PdfExportButton = ({ formData, diagnostics }: PdfExportButtonProps)
         {
           loading: 'Gerando PDF...',
           success: 'Relatório exportado com sucesso!',
-          error: 'Erro ao exportar o relatório.',
+          error: (err) => `Erro ao exportar o relatório: ${err instanceof Error ? err.message : 'Falha desconhecida'}`,
         }
       );
     } catch (error) {

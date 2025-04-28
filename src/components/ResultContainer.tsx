@@ -7,7 +7,7 @@ import { SaveHistoryButton } from "@/components/SaveHistoryButton";
 import { FunnelDashboard } from "@/components/FunnelDashboard";
 import { getComparisonData } from "@/utils/metricsHelpers";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, LayoutDashboard, FileText } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useState } from "react";
 
@@ -44,14 +44,16 @@ export const ResultContainer = ({
         <TabsList className="w-full grid grid-cols-2 mb-2 rounded-xl bg-slate-100">
           <TabsTrigger 
             value="dashboard" 
-            className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
+            <LayoutDashboard className="h-4 w-4" />
             Análise Detalhada
           </TabsTrigger>
           <TabsTrigger 
             value="detailed" 
-            className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
+            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
+            <FileText className="h-4 w-4" />
             Dashboard Inteligente
           </TabsTrigger>
         </TabsList>
