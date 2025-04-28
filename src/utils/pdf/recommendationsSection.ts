@@ -72,10 +72,10 @@ export const createRecommendationsSection = (doc: jsPDF, diagnostics: PdfDiagnos
   recommendations.forEach((categ) => {
     // Título da categoria
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
+    doc.setTextColor(COLORS.primary);  // Fixed: Using hex string directly
     doc.text(`${categ.categoria}:`, SPACING.marginX, currentY);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
+    doc.setTextColor(COLORS.text);  // Fixed: Using hex string directly
     
     currentY += 7;
     
@@ -100,10 +100,10 @@ export const createRecommendationsSection = (doc: jsPDF, diagnostics: PdfDiagnos
   // Seção de regras gerais
   currentY += 5;
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
+  doc.setTextColor(COLORS.primary);  // Fixed: Using hex string directly
   doc.text("Regras Gerais do Funil:", SPACING.marginX, currentY);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
+  doc.setTextColor(COLORS.text);  // Fixed: Using hex string directly
   
   currentY += 7;
   
