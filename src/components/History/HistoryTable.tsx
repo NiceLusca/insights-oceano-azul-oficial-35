@@ -25,24 +25,39 @@ import {
   AlertDialogTitle 
 } from "@/components/ui/alert-dialog";
 
-interface HistoryTableProps {
-  analyses: any[];
-  onGenPdf: (formData: any, diagnostics: any) => void;
-  onRefresh: () => void;
+interface Analysis {
+  id: string;
+  created_at: string;
+  form_data: {
+    startDate?: string | Date;
+    endDate?: string | Date;
+    [key: string]: any;
+  };
+  diagnostics: any;
 }
 
-export function HistoryTable({ analyses, onGenPdf, onRefresh }: HistoryTableProps) {
+interface HistoryTableProps {
+  analyses: Analysis[];
+  onLoadAnalysis: (analysis: Analysis) => void;
+  onDelete: (analysisId: string) => void;
+  onGenPdf?: (formData: any, diagnostics: any) => void;
+  onRefresh?: () => void;
+}
+
+export function HistoryTable({ 
+  analyses, 
+  onLoadAnalysis, 
+  onDelete,
+  onGenPdf,
+  onRefresh = () => {} 
+}: HistoryTableProps) {
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [analysisToDelete, setAnalysisToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const viewAnalysis = (analysis: any) => {
-    localStorage.setItem("selectedAnalysis", JSON.stringify(analysis));
-    navigate("/dashboard", { state: { 
-      formData: analysis.form_data,
-      diagnostics: analysis.diagnostics
-    }});
+    onLoadAnalysis(analysis);
   };
   
   const handleDeleteAnalysis = async (id: string) => {
@@ -64,7 +79,8 @@ export function HistoryTable({ analyses, onGenPdf, onRefresh }: HistoryTableProp
       if (error) throw error;
       
       toast.success("Análise excluída com sucesso");
-      onRefresh(); // Refresh the list
+      onDelete(analysisToDelete);
+      if (onRefresh) onRefresh();
     } catch (error) {
       console.error("Erro ao excluir análise:", error);
       toast.error("Erro ao excluir análise");
@@ -111,9 +127,11 @@ export function HistoryTable({ analyses, onGenPdf, onRefresh }: HistoryTableProp
                     <Button size="icon" variant="ghost" onClick={() => viewAnalysis(analysis)}>
                       <FileText className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="ghost" onClick={() => onGenPdf(analysis.form_data, analysis.diagnostics)}>
-                      <Download className="h-4 w-4" />
-                    </Button>
+                    {onGenPdf && (
+                      <Button size="icon" variant="ghost" onClick={() => onGenPdf(analysis.form_data, analysis.diagnostics)}>
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    )}
                     <Button 
                       size="icon" 
                       variant="ghost" 
