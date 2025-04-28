@@ -29,14 +29,15 @@ export interface PdfPosition {
   y: number;
 }
 
-// Define colors as tuples with exactly 3 elements [R, G, B]
+// Define colors as simple hex strings to ensure compatibility with jsPDF
 export const COLORS = {
-  primary: [41, 98, 255] as [number, number, number],
-  secondary: [240, 245, 255] as [number, number, number],
-  text: [0, 0, 0] as [number, number, number],
-  textLight: [120, 120, 120] as [number, number, number],
-  success: [46, 204, 113] as [number, number, number],
-  error: [231, 76, 60] as [number, number, number]
+  primary: "#2962FF",        // Blue
+  secondary: "#F0F5FF",      // Light blue background
+  text: "#000000",           // Black
+  textLight: "#787878",      // Grey
+  success: "#2ECC71",        // Green
+  error: "#E74C3C",          // Red
+  background: "#FFFFFF"      // White
 };
 
 export const SPACING = {

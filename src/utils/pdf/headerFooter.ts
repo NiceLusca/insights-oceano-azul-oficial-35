@@ -12,18 +12,18 @@ export const generateHeader = (doc: jsPDF, title: string, startY: number): numbe
   
   // Configurações de estilo para o cabeçalho
   doc.setFontSize(18);
-  doc.setTextColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
+  doc.setTextColor(COLORS.primary);
   doc.setFont("helvetica", "bold");
   doc.text(safeTitle, SPACING.marginX, safeStartY);
   
   // Linha separadora
   const lineY = safeStartY + 5;
-  doc.setDrawColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
+  doc.setDrawColor(COLORS.primary);
   doc.line(SPACING.marginX, lineY, 190, lineY);
   
   // Resetar estilos
   doc.setFontSize(12);
-  doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
+  doc.setTextColor(COLORS.text);
   doc.setFont("helvetica", "normal");
   
   // Retornar posição Y após cabeçalho
@@ -72,6 +72,7 @@ export const createDateFooter = (doc: jsPDF, formData: PdfFormData) => {
   // Adicionar período de análise
   const footerTopY = pageHeight - 30;
   doc.setFontSize(10);
+  doc.setTextColor(COLORS.textLight);
   doc.text(periodText, SPACING.marginX, footerTopY);
   
   // Adicionar mensagem de direitos autorais

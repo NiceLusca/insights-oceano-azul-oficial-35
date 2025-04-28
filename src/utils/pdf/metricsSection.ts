@@ -10,8 +10,10 @@ import { COLORS, SPACING, PdfFormData, PdfDiagnostics } from "./types";
 export const createMetricsSection = (doc: jsPDF, formData: PdfFormData, diagnostics: PdfDiagnostics, startY: number): number => {
   // Título da seção
   doc.setFont("helvetica", "bold");
+  doc.setTextColor(COLORS.primary);
   doc.text("Métricas Principais", SPACING.marginX, startY);
   doc.setFont("helvetica", "normal");
+  doc.setTextColor(COLORS.text);
   
   // Garantir que diagnostics seja um objeto válido
   const safeData = diagnostics || {};
@@ -44,7 +46,7 @@ export const createMetricsSection = (doc: jsPDF, formData: PdfFormData, diagnost
     theme: "grid",
     headStyles: {
       fillColor: COLORS.primary,
-      textColor: [255, 255, 255]
+      textColor: "#FFFFFF"
     },
     alternateRowStyles: {
       fillColor: COLORS.secondary

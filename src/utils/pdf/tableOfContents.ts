@@ -12,11 +12,11 @@ export const createTableOfContents = (doc: jsPDF, startY: number): number => {
   // Title for the table of contents
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(COLORS.primary[0], COLORS.primary[1], COLORS.primary[2]);
+  doc.setTextColor(COLORS.primary);
   doc.text("Sumário", SPACING.marginX, startY);
   
   // Reset text color and font
-  doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
+  doc.setTextColor(COLORS.text);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(12);
   

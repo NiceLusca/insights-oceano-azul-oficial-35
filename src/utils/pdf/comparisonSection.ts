@@ -7,93 +7,107 @@ import { COLORS, SPACING, PdfComparisonItem } from "./types";
  * Cria a seção de comparação com métricas ideais
  */
 export const createComparisonSection = (doc: jsPDF, comparisonData: PdfComparisonItem[], startY: number): number => {
-  // Título da seção com fonte menor e mais discreto
+  // Validar se temos dados para mostrar
+  if (!Array.isArray(comparisonData) || comparisonData.length === 0) {
+    return startY + 10;
+  }
+
+  // Título da seção
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
+  doc.setTextColor(COLORS.primary);
   doc.text("Comparação com Métricas Ideais", SPACING.marginX, startY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setTextColor(COLORS.text);
   
-  // Verificar se comparisonData é um array válido
-  const safeComparisonData = Array.isArray(comparisonData) ? comparisonData : [];
-  
-  // Preparar dados para a tabela de comparação
-  const tableData = safeComparisonData.map((item: any) => {
-    // Garantir valores numéricos válidos
-    const actual = Number.isFinite(item.actual) ? item.actual : 0;
-    const ideal = Number.isFinite(item.ideal) ? item.ideal : 0;
+  // Formatar dados para a tabela
+  const bodyData = comparisonData.map(item => {
+    // Garantir que todos os valores são números válidos
+    const actualNum = typeof item.actual === 'number' && !isNaN(item.actual) ? item.actual : 0;
+    const idealNum = typeof item.ideal === 'number' && !isNaN(item.ideal) ? item.ideal : 0;
     
-    // Determine the status text based on values
-    const isPositive = actual >= ideal;
-    const statusText = isPositive ? "BOM" : "RUIM";
+    // Calcular a proporção como porcentagem da meta
+    const proportion = idealNum > 0 ? (actualNum / idealNum) * 100 : 0;
     
-    return [
-      item.name || "N/A",
-      `${actual}%`,
-      `${ideal}%`,
-      statusText
-    ];
+    // Formatar os valores com unidades apropriadas
+    let actualFormatted = actualNum.toFixed(1);
+    let idealFormatted = idealNum.toFixed(1);
+    
+    // Adicionar % para métricas que são percentuais
+    if (item.name.toLowerCase().includes("conversão") || 
+        item.name.toLowerCase().includes("taxa")) {
+      actualFormatted += "%";
+      idealFormatted += "%";
+    } else if (item.name.toLowerCase().includes("roi")) {
+      // Para ROI, dividir por 100 pois é armazenado como percentual mas exibido como multiplicador
+      actualFormatted = (actualNum / 100).toFixed(2) + "x";
+      idealFormatted = (idealNum / 100).toFixed(2) + "x";
+    }
+    
+    // Retornar linha formatada para a tabela
+    return [item.name, actualFormatted, idealFormatted, proportion.toFixed(1) + "%"];
   });
   
-  // Renderizar tabela de comparação com tamanho reduzido
+  // Configurar e renderizar a tabela
   autoTable(doc, {
-    startY: startY + 4,
-    head: [["Métrica", "Seu Valor", "Valor Ideal", "Status"]],
-    body: tableData,
+    startY: startY + 5,
+    head: [["Métrica", "Atual", "Ideal", "Proporção"]],
+    body: bodyData,
     theme: "grid",
     headStyles: {
       fillColor: COLORS.primary,
-      textColor: [255, 255, 255],
-      fontSize: 9
-    },
-    bodyStyles: {
-      fontSize: 8
+      textColor: "#FFFFFF"
     },
     alternateRowStyles: {
       fillColor: COLORS.secondary
     },
-    columnStyles: {
-      0: { cellWidth: 'auto' },
-      1: { cellWidth: 35, halign: 'center' },
-      2: { cellWidth: 35, halign: 'center' },
-      3: { cellWidth: 25, halign: 'center' }
-    },
     margin: { left: SPACING.marginX, right: SPACING.marginX },
     didDrawCell: (data) => {
-      // Verificar índices válidos
-      if (!tableData.length || data.row.index >= tableData.length) return;
-      
-      // Adicionar cor ao texto de status
-      if (data.column.index === 3 && data.row.index >= 0 && data.section === 'body') {
-        const cell = data.cell;
-        const value = tableData[data.row.index][3];
-        
-        // Configurar a cor baseada no texto
-        if (value === "BOM") {
-          doc.setTextColor(COLORS.success[0], COLORS.success[1], COLORS.success[2]);
-        } else {
-          doc.setTextColor(COLORS.error[0], COLORS.error[1], COLORS.error[2]);
+      // Se estiver desenhando uma célula de proporção (última coluna)
+      if (data.section === 'body' && data.column.index === 3) {
+        try {
+          // Extrair valor numérico da proporção
+          const proportionText = data.cell.text[0] || "0%";
+          const proportionValue = parseFloat(proportionText.replace('%', ''));
+          
+          // Determinar cor baseada na proporção
+          let fillColor;
+          if (proportionValue >= 100) {
+            fillColor = COLORS.success;
+          } else if (proportionValue >= 70) {
+            fillColor = "#F39C12"; // Amber (usando string hex direta)
+          } else {
+            fillColor = COLORS.error;
+          }
+          
+          // Definir cor para célula
+          const width = data.cell.width;
+          const height = data.cell.height;
+          const x = data.cell.x;
+          const y = data.cell.y;
+          
+          // Renderizar barra de progresso
+          const barWidth = (width - 2) * (proportionValue / 100);
+          const maxBarWidth = width - 2; // Limitar largura máxima
+          
+          // Certificar-se de que a barra tem largura válida
+          const finalBarWidth = Math.min(Math.max(0, barWidth), maxBarWidth);
+          
+          // Salvar estado atual
+          doc.saveGraphicsState();
+          
+          // Desenhar barra com cor apropriada
+          doc.setFillColor(fillColor);
+          doc.rect(x + 1, y + 1, finalBarWidth, height - 2, 'F');
+          
+          // Restaurar estado
+          doc.restoreGraphicsState();
+        } catch (error) {
+          console.error("Erro ao desenhar célula de comparação:", error);
         }
-        
-        // Calcular posição central da célula e desenhar o texto
-        const textPos = {
-          x: cell.x + cell.width / 2,
-          y: cell.y + cell.height / 2 + 2
-        };
-        
-        // Limpar qualquer texto pré-existente na célula
-        doc.setFillColor(cell.styles.fillColor[0], cell.styles.fillColor[1], cell.styles.fillColor[2]);
-        doc.rect(cell.x, cell.y, cell.width, cell.height, 'F');
-        
-        // Desenhar o texto apenas uma vez
-        doc.text(value, textPos.x, textPos.y, { align: 'center' });
-        
-        // Resetar a cor do texto
-        doc.setTextColor(COLORS.text[0], COLORS.text[1], COLORS.text[2]);
       }
     }
   });
   
   // Retornar posição Y após a tabela
-  return (doc as any).lastAutoTable?.finalY + SPACING.sectionSpacing || startY + 60;
+  return (doc as any).lastAutoTable?.finalY + SPACING.sectionSpacing || startY + 100;
 };
