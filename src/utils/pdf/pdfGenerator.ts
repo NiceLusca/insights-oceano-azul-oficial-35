@@ -3,13 +3,14 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { formatCurrency } from "../formatters";
 
+// Define colors as tuples with exactly 3 elements [R, G, B]
 const COLORS = {
-  primary: [41, 98, 255],
-  secondary: [240, 245, 255],
-  text: [0, 0, 0],
-  textLight: [120, 120, 120],
-  success: [46, 204, 113],
-  error: [231, 76, 60]
+  primary: [41, 98, 255] as [number, number, number],
+  secondary: [240, 245, 255] as [number, number, number],
+  text: [0, 0, 0] as [number, number, number],
+  textLight: [120, 120, 120] as [number, number, number],
+  success: [46, 204, 113] as [number, number, number],
+  error: [231, 76, 60] as [number, number, number]
 };
 
 const SPACING = {
