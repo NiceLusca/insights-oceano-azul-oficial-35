@@ -46,7 +46,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="bg-white">
         <div className="flex items-center gap-2 px-4 py-2">
           <img
             src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png"
