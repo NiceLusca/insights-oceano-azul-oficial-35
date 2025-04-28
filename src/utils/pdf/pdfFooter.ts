@@ -17,7 +17,8 @@ export const createDateInfo = (doc: jsPDF, formData: any) => {
     periodText = `Período de análise: ${startDate.toLocaleDateString('pt-BR')} a ${endDate.toLocaleDateString('pt-BR')}`;
   }
   
-  const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 280;
+  // Get finalY safely with a fallback value
+  const finalY = doc.lastAutoTable?.finalY || 280;
   doc.setFontSize(10);
   doc.text(periodText, 20, finalY + 10);
   

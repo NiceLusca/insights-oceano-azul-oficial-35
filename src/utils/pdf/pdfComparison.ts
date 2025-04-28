@@ -3,7 +3,8 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 export const createComparisonTable = (doc: jsPDF, comparisonData: any) => {
-  const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 40;
+  // Get finalY safely with a fallback value
+  const finalY = doc.lastAutoTable?.finalY || 40;
   const currentY = finalY + 15;
   
   doc.setFont("helvetica", "bold");

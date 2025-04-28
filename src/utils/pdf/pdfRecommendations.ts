@@ -4,7 +4,8 @@ import autoTable from "jspdf-autotable";
 import { formatCurrency } from "../formatters";
 
 export const createRecommendationsSection = (doc: jsPDF, diagnostics: any) => {
-  const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 40;
+  // Get finalY safely with a fallback value
+  const finalY = doc.lastAutoTable?.finalY || 40;
   const currentY = finalY + 15;
   
   doc.setFont("helvetica", "bold");
@@ -99,7 +100,8 @@ export const createRecommendationsSection = (doc: jsPDF, diagnostics: any) => {
   });
   
   // Adicionar regras gerais e parâmetros ideais
-  const finalY2 = doc.lastAutoTable ? doc.lastAutoTable.finalY : currentY + 50;
+  // Get finalY safely with a fallback value
+  const finalY2 = doc.lastAutoTable?.finalY || currentY + 50;
   const currentY2 = finalY2 + 15;
   
   doc.setFont("helvetica", "bold");
