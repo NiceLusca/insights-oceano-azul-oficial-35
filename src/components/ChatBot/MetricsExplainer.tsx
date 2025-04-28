@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -69,7 +70,6 @@ const explanations = {
     tips: [
       "Monitore o CPC máximo permitido para seu ROI desejado",
       "Otimize seus anúncios para reduzir o CPC",
-      "Teste diferentes segmentações de público",
       "Melhore o score de qualidade dos seus anúncios"
     ]
   }
@@ -106,7 +106,7 @@ export function MetricsExplainer() {
           size="icon"
           className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 border-0"
         >
-          <MessageCircle className="h-6 w-6 text-white" />
+          <Info className="h-6 w-6 text-white" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="max-h-[90vh]">

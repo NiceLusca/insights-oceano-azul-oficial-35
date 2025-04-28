@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormContainer } from "@/components/FormContainer";
@@ -8,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
-import { IdealMetricsCard } from "@/components/IdealMetricsCard";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { MetricsExplainer } from "@/components/ChatBot/MetricsExplainer";
 
@@ -83,7 +83,6 @@ export const FormAnalyzer = ({
     <>
       <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
         <TabsContent value="form" className="space-y-6">
-          <IdealMetricsCard hasUpsell={form.watch("hasUpsell")} />
           <FormContainer 
             form={form} 
             onSubmit={onSubmit} 

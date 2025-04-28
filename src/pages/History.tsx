@@ -9,6 +9,7 @@ import { HistoryHeader } from "@/components/History/HistoryHeader";
 import { HistoryLoading } from "@/components/History/HistoryLoading";
 import { HistoryEmptyState } from "@/components/History/HistoryEmptyState";
 import { HistoryTable } from "@/components/History/HistoryTable";
+import { toast } from "sonner";
 
 interface Analysis {
   id: string;
@@ -21,7 +22,7 @@ const History = () => {
   const [analyses, setAnalyses] = useState<Analysis[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast: uiToast } = useToast();
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -42,7 +43,7 @@ const History = () => {
         
         setAnalyses(data || []);
       } catch (error: any) {
-        toast({
+        uiToast({
           title: "Erro ao carregar histórico",
           description: error.message,
           variant: "destructive",
@@ -53,11 +54,18 @@ const History = () => {
     };
     
     fetchHistory();
-  }, [navigate, toast]);
+  }, [navigate, uiToast]);
 
   const loadAnalysis = (analysis: Analysis) => {
-    localStorage.setItem("selectedAnalysis", JSON.stringify(analysis));
-    navigate("/");
+    try {
+      // Copiamos a análise para o localStorage para ser lida na página principal
+      localStorage.setItem("selectedAnalysis", JSON.stringify(analysis));
+      toast.success("Análise selecionada com sucesso");
+      navigate("/");
+    } catch (error) {
+      toast.error("Erro ao selecionar análise");
+      console.error("Erro ao selecionar análise:", error);
+    }
   };
 
   return (

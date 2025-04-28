@@ -8,8 +8,13 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
   const doc = new jsPDF();
   
   // Adiciona o logo
-  const imgData = "/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png";
-  doc.addImage(imgData, "PNG", 15, 10, 30, 30);
+  try {
+    const imgData = "/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png";
+    doc.addImage(imgData, "PNG", 15, 10, 30, 30);
+  } catch (error) {
+    console.error("Erro ao adicionar a imagem:", error);
+    // Continua mesmo se a imagem falhar
+  }
   
   // Título
   doc.setTextColor(0, 51, 153);
@@ -45,6 +50,10 @@ export const exportToPdf = (data: any, diagnostics: any, comparisonData: any) =>
     ["Conversão Final", `${diagnostics.finalConversion.toFixed(1)}%`],
     ["Taxa de Order Bump", `${diagnostics.orderBumpRate ? diagnostics.orderBumpRate.toFixed(1) : 0}%`],
   ];
+  
+  if (diagnostics.upsellRate !== undefined) {
+    metrics.push(["Taxa de Upsell", `${diagnostics.upsellRate.toFixed(1)}%`]);
+  }
   
   if (diagnostics.currentROI) {
     metrics.push(["ROI Atual", `${diagnostics.currentROI.toFixed(2)}x`]);
