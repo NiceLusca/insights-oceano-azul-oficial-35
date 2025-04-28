@@ -136,15 +136,15 @@ const createComparisonSection = (doc: jsPDF, comparisonData: any, startY: number
   
   // Preparar dados para a tabela de comparação
   const tableData = comparisonData.map((item: any) => {
-    // Determine the status symbol based on values
+    // Determine the status text based on values
     const isPositive = item.actual >= item.ideal;
-    const statusSymbol = isPositive ? "✓" : "✗";
+    const statusText = isPositive ? "BOM" : "RUIM";
     
     return [
       item.name,
       `${item.actual}%`,
       `${item.ideal}%`,
-      statusSymbol
+      statusText
     ];
   });
   
@@ -164,27 +164,27 @@ const createComparisonSection = (doc: jsPDF, comparisonData: any, startY: number
     columnStyles: {
       3: { 
         halign: 'center',
-        cellWidth: 20
+        cellWidth: 30
       }
     },
     margin: { left: SPACING.marginX, right: SPACING.marginX },
     didDrawCell: (data) => {
-      // Adicionar cor aos símbolos de status
+      // Adicionar cor ao texto de status
       if (data.column.index === 3 && data.row.index >= 0 && data.section === 'body') {
         const cell = data.cell;
         const value = tableData[data.row.index][3];
         
-        // Configurar a cor baseada no símbolo
-        if (value === "✓") {
+        // Configurar a cor baseada no texto
+        if (value === "BOM") {
           doc.setTextColor(COLORS.success[0], COLORS.success[1], COLORS.success[2]);
         } else {
           doc.setTextColor(COLORS.error[0], COLORS.error[1], COLORS.error[2]);
         }
         
-        // Calcular posição central da célula e desenhar o símbolo
+        // Calcular posição central da célula e desenhar o texto
         const textPos = {
           x: cell.x + cell.width / 2,
-          y: cell.y + cell.height / 2 + 1
+          y: cell.y + cell.height / 2 + 3
         };
         
         doc.text(value, textPos.x, textPos.y, { align: 'center' });
