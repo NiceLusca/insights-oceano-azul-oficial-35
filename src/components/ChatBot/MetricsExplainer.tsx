@@ -159,9 +159,9 @@ export function MetricsExplainer() {
           </DrawerDescription>
         </DrawerHeader>
         
-        <div className="px-4 pb-4">
+        <div className="px-4 pb-4 flex-1 overflow-y-auto">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 mb-4">
+            <TabsList className="grid grid-cols-3 mb-4 sticky top-0 bg-white z-10">
               <TabsTrigger value="conversao" className={getTabClass("conversao")}>
                 Conversão
               </TabsTrigger>
@@ -173,26 +173,24 @@ export function MetricsExplainer() {
               </TabsTrigger>
             </TabsList>
             
-            <div className="h-[50vh] overflow-hidden">
-              <ScrollArea className="h-full w-full pr-3">
-                {Object.keys(metrics).map((category) => (
-                  <TabsContent key={category} value={category} className="space-y-2 pb-2">
-                    {metrics[category].map((metric, i) => (
-                      <MetricCard
-                        key={i}
-                        title={metric.title}
-                        description={metric.description}
-                        tips={metric.tips}
-                      />
-                    ))}
-                  </TabsContent>
-                ))}
-              </ScrollArea>
+            <div className="overflow-y-auto pr-1 pb-4">
+              {Object.keys(metrics).map((category) => (
+                <TabsContent key={category} value={category} className="space-y-2 mt-0">
+                  {metrics[category].map((metric, i) => (
+                    <MetricCard
+                      key={i}
+                      title={metric.title}
+                      description={metric.description}
+                      tips={metric.tips}
+                    />
+                  ))}
+                </TabsContent>
+              ))}
             </div>
           </Tabs>
         </div>
         
-        <DrawerFooter>
+        <DrawerFooter className="border-t pt-4 mt-0">
           <DrawerClose asChild>
             <Button variant="outline">Fechar</Button>
           </DrawerClose>

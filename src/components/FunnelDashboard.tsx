@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -128,7 +127,7 @@ export function FunnelDashboard({ formData, diagnostics }: FunnelDashboardProps)
             <span className="bg-blue-100 p-1.5 rounded-md">
               <TrendingUp className="h-5 w-5 text-blue-700" />
             </span>
-            Dashboard Inteligente de Funil
+            Análise Detalhada
           </h2>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

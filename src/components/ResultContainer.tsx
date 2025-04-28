@@ -46,13 +46,13 @@ export const ResultContainer = ({
             value="dashboard" 
             className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
-            Dashboard Inteligente
+            Análise Detalhada
           </TabsTrigger>
           <TabsTrigger 
             value="detailed" 
             className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md data-[state=active]:font-medium rounded-lg py-3"
           >
-            Análise Detalhada
+            Dashboard Inteligente
           </TabsTrigger>
         </TabsList>
       

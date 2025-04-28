@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,26 +35,20 @@ const Index = () => {
         const analysis = JSON.parse(selectedAnalysis);
         const formData = analysis.form_data as FormValues;
         
-        // Garantir que as datas sejam objetos Date
         if (formData.startDate) formData.startDate = new Date(formData.startDate);
         if (formData.endDate) formData.endDate = new Date(formData.endDate);
         
-        // Reset the form with the loaded data
         form.reset(formData);
         
-        // If diagnostics exist, use them directly
         if (analysis.diagnostics && Object.keys(analysis.diagnostics).length > 0) {
           setDiagnosticsData(analysis.diagnostics);
         } else {
-          // Otherwise calculate them from the form data
           const calculatedMetrics = calculateMetrics(formData);
           setDiagnosticsData(calculatedMetrics);
         }
         
-        // Limpar do localStorage após usar
         localStorage.removeItem("selectedAnalysis");
         
-        // Mudar para a aba de resultados automaticamente
         setActiveTab("results");
         
         toast.success("Análise carregada com sucesso");
