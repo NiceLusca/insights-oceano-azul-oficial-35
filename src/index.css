@@ -51,6 +51,12 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
+    --button-primary: 221 83% 53%;
+    --button-primary-hover: 221 83% 48%;
+    --button-primary-foreground: 0 0% 100%;
+    --button-secondary: 217.2 32.6% 17.5%;
+    --button-secondary-hover: 217.2 32.6% 22%;
+    --button-secondary-foreground: 210 40% 98%;
   }
 }
 
@@ -103,5 +109,13 @@
   
   .metric-card-gradient {
     @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900;
+  }
+  
+  .dark-button {
+    @apply dark:bg-blue-700 dark:hover:bg-blue-600 dark:border dark:border-blue-500 dark:text-white;
+  }
+  
+  .dark-button-outline {
+    @apply dark:border-blue-500 dark:text-blue-300 dark:bg-blue-950/50 dark:hover:bg-blue-900/30;
   }
 }

@@ -25,7 +25,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="w-9 h-9 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+      className="w-9 h-9 bg-white dark:bg-gray-800 dark:hover:bg-blue-900/30 border border-gray-200 dark:border-blue-500 dark:text-blue-300"
     >
       <Sun className={`h-5 w-5 text-yellow-500 rotate-0 scale-100 transition-all ${theme === "dark" ? "hidden" : "block"}`} />
       <Moon className={`h-5 w-5 text-blue-500 rotate-90 scale-0 transition-all ${theme === "dark" ? "block rotate-0 scale-100" : "hidden"}`} />

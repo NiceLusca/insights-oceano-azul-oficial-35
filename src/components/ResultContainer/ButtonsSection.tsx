@@ -40,7 +40,7 @@ export function ButtonsSection({ onNavigateTo }: ButtonsSectionProps) {
       >
         <Button 
           size="lg"
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white font-medium py-3 px-5 shadow-md"
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 dark:text-white dark:border dark:border-blue-400 text-white font-medium py-3 px-5 shadow-md dark:shadow-blue-900/20"
           onClick={() => handleButtonClick("analysis", "/analise")}
           disabled={isLoading.analysis}
         >
@@ -60,7 +60,7 @@ export function ButtonsSection({ onNavigateTo }: ButtonsSectionProps) {
       >
         <Button 
           size="lg"
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white font-medium py-3 px-5 shadow-md"
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 dark:text-white dark:border dark:border-blue-400 text-white font-medium py-3 px-5 shadow-md dark:shadow-blue-900/20"
           onClick={() => handleButtonClick("financial", "/financas")}
           disabled={isLoading.financial}
         >

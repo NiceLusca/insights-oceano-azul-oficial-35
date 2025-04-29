@@ -86,6 +86,7 @@ export const PdfExportButton = ({
         size="icon"
         variant="ghost"
         title="Exportar como PDF"
+        className="dark:text-blue-300 dark:hover:text-blue-200 dark:hover:bg-blue-900/30"
       >
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -100,7 +101,7 @@ export const PdfExportButton = ({
     <Button
       onClick={handleExportPDF}
       disabled={loading}
-      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 h-auto shadow-sm transition-all hover:shadow-md rounded-xl text-sm font-medium w-full sm:w-auto flex items-center justify-center"
+      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 dark:border dark:border-blue-500 text-white px-6 py-2.5 h-auto shadow-sm transition-all hover:shadow-md dark:shadow-blue-900/20 rounded-xl text-sm font-medium w-full sm:w-auto flex items-center justify-center"
     >
       {loading ? (
         <>

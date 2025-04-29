@@ -88,7 +88,7 @@ export const SaveToHistoryButton = ({
         onClick={saveToHistory}
         variant="outline"
         disabled={saving}
-        className="flex items-center gap-2 border-blue-200 text-blue-700 bg-white hover:bg-blue-50 px-6 py-2 shadow-sm"
+        className="flex items-center gap-2 border-blue-300 dark:border-blue-500 text-blue-700 dark:text-blue-300 bg-white dark:bg-blue-950/50 hover:bg-blue-50 dark:hover:bg-blue-900/30 px-6 py-2 shadow-sm dark:shadow-blue-900/20"
         size="lg"
       >
         {saving ? (
@@ -100,4 +100,4 @@ export const SaveToHistoryButton = ({
       </Button>
     </motion.div>
   );
-};
+}
