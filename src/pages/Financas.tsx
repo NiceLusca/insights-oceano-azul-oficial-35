@@ -50,7 +50,7 @@ const Financas = () => {
           onAction={() => window.location.href = '/'}
           icon={
             <img 
-              src="/lovable-uploads/2da50e89-1402-421c-8c73-60efe5119215.png" 
+              src="/lovable-uploads/7f2461fb-0a54-45e5-bef3-63dd7b5b9971.png" 
               alt="Oceano Azul" 
               className="w-32 h-32 opacity-30 dark:opacity-20" 
             />

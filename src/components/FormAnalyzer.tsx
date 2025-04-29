@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { FormContainer } from "@/components/FormContainer";
@@ -12,6 +11,7 @@ import { UserDataService } from "@/components/FormAnalyzer/UserDataService";
 import { useFormValidation } from "@/components/FormAnalyzer/FormValidation";
 import { MetricsExplainer } from "@/components/ChatBot/MetricsExplainer";
 import { useNavigate } from "react-router-dom";
+import { DateRangeSelector } from "@/components/DateRangeSelector";
 
 interface FormAnalyzerProps {
   form: UseFormReturn<FormValues>;
@@ -102,6 +102,9 @@ export const FormAnalyzer = ({
   return (
     <>
       <TabsContent value="form" className="space-y-6 animate-fade-in">
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-4 rounded-lg shadow-sm mb-4">
+          <DateRangeSelector form={form} />
+        </div>
         <FormContainer 
           form={form} 
           onSubmit={onSubmit} 

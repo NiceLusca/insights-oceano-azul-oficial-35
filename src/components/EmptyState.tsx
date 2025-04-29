@@ -35,7 +35,7 @@ export function EmptyState({
         </motion.div>
       ) : (
         <motion.img
-          src="/lovable-uploads/2da50e89-1402-421c-8c73-60efe5119215.png"
+          src="/lovable-uploads/7f2461fb-0a54-45e5-bef3-63dd7b5b9971.png"
           alt="Oceano Azul"
           className="w-32 h-32 mb-8 opacity-30 dark:opacity-20"
           initial={{ scale: 0.8, opacity: 0 }}
@@ -75,7 +75,7 @@ export function EmptyState({
             onClick={onAction}
             variant="default"
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:from-blue-500 dark:to-blue-600 shadow-md"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 shadow-md"
           >
             {actionLabel}
           </Button>

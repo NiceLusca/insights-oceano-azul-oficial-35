@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -27,22 +26,22 @@ interface DateRangeSelectorProps {
 
 export const DateRangeSelector = ({ form }: DateRangeSelectorProps) => {
   return (
-    <Card className="p-4 shadow-sm">
-      <h3 className="font-medium text-blue-700 mb-3">Período da Análise</h3>
-      <div className="grid grid-cols-2 gap-4">
+    <>
+      <h3 className="font-medium text-blue-700 dark:text-blue-400 mb-3">Período da Análise</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField
           control={form.control}
           name="startDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Data Inicial</FormLabel>
+              <FormLabel className="dark:text-gray-300">Data Inicial</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-full pl-3 text-left font-normal",
+                        "w-full pl-3 text-left font-normal dark:bg-gray-800 dark:border-gray-700",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -75,14 +74,14 @@ export const DateRangeSelector = ({ form }: DateRangeSelectorProps) => {
           name="endDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Data Final</FormLabel>
+              <FormLabel className="dark:text-gray-300">Data Final</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
                       variant="outline"
                       className={cn(
-                        "w-full pl-3 text-left font-normal",
+                        "w-full pl-3 text-left font-normal dark:bg-gray-800 dark:border-gray-700",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -110,6 +109,6 @@ export const DateRangeSelector = ({ form }: DateRangeSelectorProps) => {
           )}
         />
       </div>
-    </Card>
+    </>
   );
 };

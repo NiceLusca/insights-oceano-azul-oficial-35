@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -92,7 +91,6 @@ const Index = () => {
     loadUserData();
   }, [form, isAuthenticated]);
 
-  // Quando os dados do formulário mudam e temos diagnostics, atualizamos os dados de comparação
   useEffect(() => {
     if (diagnosticsData) {
       const formData = form.getValues();
@@ -104,7 +102,7 @@ const Index = () => {
   return (
     <MainLayout>
       {loadingUserData ? (
-        <div className="space-y-4 p-8 bg-white rounded-lg shadow-sm border">
+        <div className="space-y-4 p-8 bg-white dark:bg-gray-900 rounded-lg shadow-sm border dark:border-gray-800">
           <div className="flex items-center space-x-2">
             <Skeleton className="h-6 w-6 rounded-full" />
             <Skeleton className="h-6 w-[200px]" />
@@ -114,17 +112,17 @@ const Index = () => {
       ) : (
         <>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-2 mb-6 w-full bg-slate-100 p-1 rounded-xl shadow-sm">
+            <TabsList className="grid grid-cols-2 mb-6 w-full bg-slate-100 dark:bg-gray-800 p-1 rounded-xl shadow-sm">
               <TabsTrigger 
                 value="form" 
-                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm data-[state=active]:font-medium py-3"
+                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-gray-900 data-[state=active]:text-blue-700 data-[state=active]:dark:text-blue-400 data-[state=active]:shadow-sm data-[state=active]:font-medium py-3"
               >
                 <FileText className="h-4 w-4" />
                 <span>Formulário</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="results" 
-                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-sm data-[state=active]:font-medium py-3"
+                className="flex items-center gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:dark:bg-gray-900 data-[state=active]:text-blue-700 data-[state=active]:dark:text-blue-400 data-[state=active]:shadow-sm data-[state=active]:font-medium py-3"
               >
                 <BarChart3 className="h-4 w-4" />
                 <span>Resultados</span>
