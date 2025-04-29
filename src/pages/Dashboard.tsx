@@ -13,6 +13,7 @@ import { useAuthentication } from "@/hooks/useAuthentication";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -107,6 +108,19 @@ const Dashboard = () => {
           </motion.div>
         </div>
         
+        <Separator className="my-6 bg-blue-100 dark:bg-blue-800" />
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <FunnelDashboard 
+            formData={formData} 
+            diagnostics={diagnostics} 
+          />
+        </motion.div>
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -116,7 +130,7 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex-1">
                 <h3 className="text-xl font-medium text-blue-800 dark:text-blue-300 mb-3">Exportar e Salvar Análise</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4 md:mb-0">
+                <p className="text-gray-600 dark:text-gray-300 mb-4 md:mb-0">
                   Exporte um relatório detalhado em PDF ou salve esta análise no seu histórico para consultas futuras.
                 </p>
               </div>

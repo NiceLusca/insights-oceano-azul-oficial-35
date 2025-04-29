@@ -46,7 +46,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800">
+      <SidebarHeader className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800/80">
         <div className="flex items-center gap-2 px-4 py-2">
           <img
             src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png"
@@ -59,7 +59,7 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800">
+      <SidebarContent className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800/80">
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.path}>
@@ -67,7 +67,7 @@ export function AppSidebar() {
                 tooltip={item.title}
                 asChild
                 isActive={location.pathname === item.path}
-                className="dark:text-gray-300 dark:hover:bg-blue-800/30 dark:data-[active=true]:bg-blue-800 dark:data-[active=true]:text-white"
+                className="dark:text-gray-300 dark:hover:bg-blue-800/30 dark:data-[active=true]:bg-blue-800 dark:data-[active=true]:text-white dark:data-[active=true]:font-medium"
               >
                 <Link to={item.path}>
                   <item.icon className="h-5 w-5" />
@@ -78,7 +78,7 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800">
+      <SidebarFooter className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800/80">
         <div className="p-4 text-xs text-gray-500 dark:text-gray-400 text-center">
           © {new Date().getFullYear()} Oceano Azul
         </div>

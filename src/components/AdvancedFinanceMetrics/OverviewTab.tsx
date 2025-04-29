@@ -45,7 +45,7 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
           additionalContent={
             <Badge 
               variant={metrics.profit >= 0 ? "success" : "destructive"}
-              className="text-xs font-normal mt-1 dark:bg-opacity-90 dark:text-white"
+              className="text-xs font-normal mt-1 dark:bg-opacity-90 dark:text-white shadow-sm"
             >
               Margem: {metrics.profitMargin.toFixed(1)}%
             </Badge>
@@ -67,7 +67,7 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
         />
       </div>
       
-      <Card className="border-dashed border-gray-200 dark:border-gray-700 dark:bg-gray-800/90">
+      <Card className="border-dashed border-gray-200 dark:border-gray-700 dark:bg-gray-800/90 shadow-sm">
         <CardContent className="p-4">
           <div className="flex justify-between items-center mb-2">
             <h3 className="font-medium text-sm text-gray-700 dark:text-white">Projeção Mensal</h3>
@@ -85,8 +85,8 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
           </div>
           
           <div className="flex justify-between mb-1 dark:text-white">
-            <span className="text-sm">Meta: {formatCurrency(metrics.monthlyTarget)}</span>
-            <span className="text-sm">Projeção: {formatCurrency(metrics.monthlyProjection)}</span>
+            <span className="text-sm font-medium">Meta: {formatCurrency(metrics.monthlyTarget)}</span>
+            <span className="text-sm font-medium">Projeção: {formatCurrency(metrics.monthlyProjection)}</span>
           </div>
           <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 mb-1">
             <div 

@@ -45,11 +45,11 @@ export function ButtonsSection({ onNavigateTo }: ButtonsSectionProps) {
           disabled={isLoading.analysis}
         >
           {isLoading.analysis ? (
-            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+            <Loader2 className="h-5 w-5 mr-2 animate-spin text-white" />
           ) : (
-            <FileText className="h-5 w-5 mr-2" />
+            <FileText className="h-5 w-5 mr-2 text-white" />
           )}
-          <span className="text-white">Análise Detalhada</span>
+          <span className="text-white font-medium">Análise Detalhada</span>
         </Button>
       </motion.div>
       
@@ -65,11 +65,11 @@ export function ButtonsSection({ onNavigateTo }: ButtonsSectionProps) {
           disabled={isLoading.financial}
         >
           {isLoading.financial ? (
-            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+            <Loader2 className="h-5 w-5 mr-2 animate-spin text-white" />
           ) : (
-            <BarChart3 className="h-5 w-5 mr-2" />
+            <BarChart3 className="h-5 w-5 mr-2 text-white" />
           )}
-          <span className="text-white">Métricas Financeiras</span>
+          <span className="text-white font-medium">Métricas Financeiras</span>
         </Button>
       </motion.div>
     </div>

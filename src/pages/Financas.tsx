@@ -1,11 +1,13 @@
 
 import { MainLayout } from "@/components/MainLayout";
 import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
+import { FunnelDashboard } from "@/components/FunnelDashboard";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
 const Financas = () => {
   const location = useLocation();
@@ -80,6 +82,16 @@ const Financas = () => {
           formData={formData}
           diagnostics={diagnostics}
         />
+        
+        <Separator className="my-6 bg-blue-100 dark:bg-blue-800" />
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <FunnelDashboard formData={formData} diagnostics={diagnostics} />
+        </motion.div>
       </motion.div>
     </MainLayout>
   );

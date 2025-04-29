@@ -30,9 +30,15 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-3 mb-4 dark:bg-gray-800 dark:text-gray-300">
-            <TabsTrigger value="overview" className="dark:data-[state=active]:bg-blue-700 dark:data-[state=active]:text-white">Visão Geral</TabsTrigger>
-            <TabsTrigger value="efficiency" className="dark:data-[state=active]:bg-blue-700 dark:data-[state=active]:text-white">Eficiência</TabsTrigger>
-            <TabsTrigger value="breakdown" className="dark:data-[state=active]:bg-blue-700 dark:data-[state=active]:text-white">Breakdown</TabsTrigger>
+            <TabsTrigger value="overview" className="dark:data-[state=active]:bg-blue-700 dark:data-[state=active]:text-white dark:data-[state=active]:font-medium">
+              Visão Geral
+            </TabsTrigger>
+            <TabsTrigger value="efficiency" className="dark:data-[state=active]:bg-blue-700 dark:data-[state=active]:text-white dark:data-[state=active]:font-medium">
+              Eficiência
+            </TabsTrigger>
+            <TabsTrigger value="breakdown" className="dark:data-[state=active]:bg-blue-700 dark:data-[state=active]:text-white dark:data-[state=active]:font-medium">
+              Breakdown
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview">
