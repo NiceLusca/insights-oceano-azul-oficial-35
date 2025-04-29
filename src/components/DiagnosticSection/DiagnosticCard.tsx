@@ -30,11 +30,11 @@ export const DiagnosticCard = ({
 }: DiagnosticCardProps) => {
   return (
     <div className={cn(
-      "p-4 bg-white rounded-lg shadow-sm transition-all hover:shadow-md", 
+      "p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm transition-all hover:shadow-md", 
       className
     )}>
       <div className="flex justify-between items-start">
-        <p className="text-sm text-blue-600 flex items-center gap-2">
+        <p className="text-sm text-blue-600 dark:text-blue-300 flex items-center gap-2">
           {icon && <span className="text-lg">{icon}</span>}
           <span className="font-medium">{title}</span>
           {tooltip && (
@@ -56,7 +56,7 @@ export const DiagnosticCard = ({
           </span>
         )}
       </div>
-      <p className={`text-xl sm:text-2xl font-bold flex items-center gap-2 mt-1.5 ${valueColor || ''}`}>
+      <p className={`text-xl sm:text-2xl font-bold flex items-center gap-2 mt-1.5 ${valueColor || 'text-gray-900 dark:text-white'}`}>
         {value}
       </p>
     </div>

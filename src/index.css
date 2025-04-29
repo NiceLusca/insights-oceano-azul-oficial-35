@@ -134,4 +134,25 @@
   .finance-metric-subtitle {
     @apply text-xs text-gray-600 dark:text-gray-200;
   }
+  
+  /* Adição de classes específicas para melhorar a visibilidade no modo escuro */
+  .dark-text-high-contrast {
+    @apply dark:text-white dark:font-medium;
+  }
+  
+  .dark-card-border {
+    @apply dark:border dark:border-blue-600;
+  }
+  
+  .dark-metric-value {
+    @apply dark:text-white dark:text-opacity-100 dark:font-bold;
+  }
+  
+  .dark-metric-card {
+    @apply dark:bg-gray-800 dark:border-blue-600 dark:shadow-lg dark:shadow-black/20;
+  }
+  
+  .dark-badge {
+    @apply dark:bg-blue-800 dark:text-white dark:border-blue-600;
+  }
 }
