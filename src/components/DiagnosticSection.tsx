@@ -31,7 +31,7 @@ interface DiagnosticSectionProps {
 
 export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
   return (
-    <Card className="p-6 metric-card-gradient dark:border-blue-600 dark:shadow-blue-900/10">
+    <Card className="p-6 metric-card-gradient dark:bg-gray-800/95 dark:border-blue-600/80 dark:shadow-blue-900/10">
       <h2 className="text-xl font-semibold text-blue-800 dark:text-white mb-4 flex items-center gap-2">
         <span className="bg-blue-100 dark:bg-blue-800 p-1.5 rounded-md">📊</span>
         Insights
@@ -49,7 +49,7 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
                       <Info className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent className="dark:bg-gray-800 dark:text-white dark:border-blue-600/80">
                     <p className="text-xs">Progresso em relação à sua meta de faturamento mensal</p>
                   </TooltipContent>
                 </Tooltip>
@@ -61,7 +61,7 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
           </div>
           <Progress 
             value={Math.min(diagnostics.monthlyGoalProgress * 100, 100)} 
-            className="h-2 bg-blue-100 dark:bg-blue-900"
+            className="h-2 bg-blue-100 dark:bg-blue-900/50"
           />
           <div className="flex justify-between mt-1">
             <span className="text-xs text-slate-500 dark:text-slate-300">0%</span>
@@ -73,7 +73,7 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
       <div className="space-y-6">
         <MetricsGrid diagnostics={diagnostics} />
         
-        <Separator className="my-6 bg-blue-100 dark:bg-blue-800" />
+        <Separator className="my-6 bg-blue-100 dark:bg-blue-800/50" />
         
         <DiagnosticMessages messages={diagnostics.messages} />
       </div>

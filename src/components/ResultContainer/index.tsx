@@ -10,6 +10,7 @@ import { ButtonsSection } from "./ButtonsSection";
 import { MetricBadges } from "./MetricBadges";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { ActionableInsightsGrid } from "./ActionableInsightsGrid";
+import { FunnelDashboard } from "@/components/FunnelDashboard";
 
 interface ResultContainerProps {
   formData: any;
@@ -62,12 +63,19 @@ export function ResultContainer({
         <div className="grid grid-cols-1 gap-6">
           <DiagnosticSection diagnostics={diagnostics} />
           
-          <AdvancedFinanceMetrics
+          <FunnelDashboard
             formData={formData}
             diagnostics={diagnostics}
           />
           
           <TrendVisualization formData={formData} />
+          
+          <Separator className="my-4 dark:bg-gray-700" />
+          
+          <AdvancedFinanceMetrics
+            formData={formData}
+            diagnostics={diagnostics}
+          />
           
           <ActionableInsightsGrid insights={diagnostics?.actionableInsights} />
           

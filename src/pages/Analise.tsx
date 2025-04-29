@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
+import { Separator } from "@/components/ui/separator";
 
 const Analise = () => {
   const location = useLocation();
@@ -87,6 +89,19 @@ const Analise = () => {
             formData={formData} 
           />
         </div>
+        
+        <Separator className="my-6 bg-blue-100 dark:bg-blue-800/50" />
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <AdvancedFinanceMetrics 
+            formData={formData}
+            diagnostics={diagnostics}
+          />
+        </motion.div>
       </motion.div>
     </MainLayout>
   );

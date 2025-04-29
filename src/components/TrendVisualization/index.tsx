@@ -50,23 +50,23 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
     : 0;
     
   return (
-    <Card className="shadow-sm">
+    <Card className="shadow-sm dark:bg-gray-800/95 dark:border-blue-600/80">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-medium text-gray-800 flex items-center gap-2">
-            <span className="bg-blue-50 p-1 rounded">
-              <TrendingUp className="h-5 w-5 text-blue-600" />
+          <CardTitle className="text-lg font-medium text-gray-800 dark:text-white flex items-center gap-2">
+            <span className="bg-blue-50 dark:bg-blue-900/60 p-1 rounded">
+              <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-300" />
             </span>
             Visualização de Tendências
-            {isLoading && <span className="text-xs text-gray-500 ml-2">(Carregando dados...)</span>}
+            {isLoading && <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">(Carregando dados...)</span>}
           </CardTitle>
           
           <div className="flex gap-2">
             <Select value={selectedMetric} onValueChange={setSelectedMetric}>
-              <SelectTrigger className="w-[160px] h-8 text-sm">
+              <SelectTrigger className="w-[160px] h-8 text-sm dark:bg-gray-700 dark:border-blue-600/60 dark:text-white">
                 <SelectValue placeholder="Métrica" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="dark:bg-gray-800 dark:border-blue-600/80 dark:text-white">
                 <SelectItem value="roi">ROI</SelectItem>
                 <SelectItem value="revenue">Receita</SelectItem>
                 <SelectItem value="cpa">Custo p/ Aquisição</SelectItem>
@@ -75,10 +75,10 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
             </Select>
             
             <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-              <SelectTrigger className="w-[100px] h-8 text-sm">
+              <SelectTrigger className="w-[100px] h-8 text-sm dark:bg-gray-700 dark:border-blue-600/60 dark:text-white">
                 <SelectValue placeholder="Período" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="dark:bg-gray-800 dark:border-blue-600/80 dark:text-white">
                 <SelectItem value="7d">7 dias</SelectItem>
                 <SelectItem value="30d">30 dias</SelectItem>
                 <SelectItem value="90d">90 dias</SelectItem>
@@ -95,8 +95,8 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
           />
           
           {isLoading ? (
-            <div className="h-[300px] w-full flex items-center justify-center bg-slate-50 rounded-md">
-              <div className="animate-pulse text-blue-500">Carregando dados históricos...</div>
+            <div className="h-[300px] w-full flex items-center justify-center bg-slate-50 dark:bg-gray-700/50 rounded-md">
+              <div className="animate-pulse text-blue-500 dark:text-blue-300">Carregando dados históricos...</div>
             </div>
           ) : (
             <TrendChart 
@@ -105,7 +105,7 @@ export function TrendVisualization({ formData, diagnostics }: TrendVisualization
             />
           )}
           
-          <div className="mt-4 px-3 py-2 bg-blue-50 rounded-md text-sm text-blue-700">
+          <div className="mt-4 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 rounded-md text-sm text-blue-700 dark:text-blue-200">
             <p>
               <strong>Nota:</strong> Esta visualização combina dados históricos reais (quando disponíveis) 
               e projeções para períodos sem histórico. Os pontos maiores indicam dados reais de análises anteriores.

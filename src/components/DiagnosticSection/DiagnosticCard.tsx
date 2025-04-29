@@ -30,7 +30,7 @@ export const DiagnosticCard = ({
 }: DiagnosticCardProps) => {
   return (
     <div className={cn(
-      "p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm transition-all hover:shadow-md dark:shadow-blue-900/10 border dark:border-blue-700", 
+      "p-4 bg-white dark:bg-gray-800/95 rounded-lg shadow-sm transition-all hover:shadow-md dark:shadow-blue-900/10 border dark:border-blue-700/80", 
       className
     )}>
       <div className="flex justify-between items-start">
