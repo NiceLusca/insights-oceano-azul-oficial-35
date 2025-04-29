@@ -16,12 +16,12 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
   const metrics = useFinanceCalculations(formData, diagnostics);
 
   return (
-    <Card className="shadow-sm border-blue-100">
+    <Card className="shadow-sm border-blue-100 dark:border-blue-700/50 dark:bg-gray-900/90">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-medium text-gray-800 flex items-center gap-2">
-            <span className="bg-blue-50 p-1 rounded">
-              <CircleDollarSign className="h-5 w-5 text-blue-600" />
+          <CardTitle className="text-lg font-medium text-gray-800 dark:text-blue-200 flex items-center gap-2">
+            <span className="bg-blue-50 dark:bg-blue-900/70 p-1 rounded">
+              <CircleDollarSign className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             </span>
             Métricas Financeiras Avançadas
           </CardTitle>
@@ -29,10 +29,10 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-3 mb-4">
-            <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-            <TabsTrigger value="efficiency">Eficiência</TabsTrigger>
-            <TabsTrigger value="breakdown">Breakdown</TabsTrigger>
+          <TabsList className="grid grid-cols-3 mb-4 dark:bg-gray-800/70">
+            <TabsTrigger value="overview" className="dark:data-[state=active]:bg-blue-900/60 dark:data-[state=active]:text-blue-200">Visão Geral</TabsTrigger>
+            <TabsTrigger value="efficiency" className="dark:data-[state=active]:bg-blue-900/60 dark:data-[state=active]:text-blue-200">Eficiência</TabsTrigger>
+            <TabsTrigger value="breakdown" className="dark:data-[state=active]:bg-blue-900/60 dark:data-[state=active]:text-blue-200">Breakdown</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview">

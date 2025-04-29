@@ -96,26 +96,43 @@
   }
   
   .dark-content-area {
-    @apply dark:bg-gray-900/80;
+    @apply dark:bg-gray-900/90;
   }
   
   .dark-border {
-    @apply dark:border-gray-700;
+    @apply dark:border-blue-700;
   }
   
   .metric-card {
-    @apply bg-white dark:bg-gray-800/90 border dark:border-gray-700 rounded-lg shadow-sm;
+    @apply bg-white dark:bg-gray-800/90 border dark:border-blue-700 rounded-lg shadow-sm;
   }
   
   .metric-card-gradient {
-    @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900;
+    @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/90 dark:to-gray-900;
   }
   
   .dark-button {
-    @apply dark:bg-blue-700 dark:hover:bg-blue-600 dark:border dark:border-blue-500 dark:text-white;
+    @apply dark:bg-blue-600 dark:hover:bg-blue-700 dark:border dark:border-blue-500 dark:text-white;
   }
   
   .dark-button-outline {
     @apply dark:border-blue-500 dark:text-blue-300 dark:bg-blue-950/50 dark:hover:bg-blue-900/30;
   }
+  
+  .finance-metric-card {
+    @apply bg-white dark:bg-gray-800/90 border border-gray-200 dark:border-blue-700/50 p-4 rounded-lg shadow-sm;
+  }
+  
+  .finance-metric-value {
+    @apply text-2xl font-semibold text-gray-900 dark:text-blue-100;
+  }
+  
+  .finance-metric-label {
+    @apply text-sm text-gray-500 dark:text-blue-200/80;
+  }
+  
+  .finance-metric-subtitle {
+    @apply text-xs text-gray-500 dark:text-blue-300/70;
+  }
 }
+

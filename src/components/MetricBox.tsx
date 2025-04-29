@@ -12,11 +12,11 @@ export function MetricBox({ title, value, idealValue, status }: MetricBoxProps) 
   return (
     <div className={`p-4 rounded-lg border ${
       status === "success" 
-        ? "border-l-4 border-l-green-500 bg-white dark:bg-gray-800" 
+        ? "border-l-4 border-l-green-500 bg-white dark:bg-gray-800/90 dark:border-green-600" 
         : status === "warning" 
-          ? "border-l-4 border-l-amber-500 bg-white dark:bg-gray-800" 
-          : "border-l-4 border-l-red-500 bg-white dark:bg-gray-800"
-    } shadow-sm dark:border-gray-700`}>
+          ? "border-l-4 border-l-amber-500 bg-white dark:bg-gray-800/90 dark:border-amber-600" 
+          : "border-l-4 border-l-red-500 bg-white dark:bg-gray-800/90 dark:border-red-600"
+    } shadow-sm dark:shadow-black/10`}>
       <div className="flex justify-between items-start">
         <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{title}</p>
         {status === "success" ? (
