@@ -124,11 +124,11 @@ export function ResultContainer({
             diagnostics={diagnostics}
           />
           
-          <Separator className="my-4" />
+          <Separator className="my-4 dark:bg-gray-700" />
           
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="px-2 py-1 dark:border-gray-700 dark:bg-gray-800">
+              <Badge variant="outline" className="px-2 py-1 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                 {formData.startDate && formData.endDate ? (
                   <>
                     {new Date(formData.startDate).toLocaleDateString()} - {new Date(formData.endDate).toLocaleDateString()}
@@ -137,7 +137,7 @@ export function ResultContainer({
                   "Período não especificado"
                 )}
               </Badge>
-              <Badge variant="outline" className="px-2 py-1 dark:border-gray-700 dark:bg-gray-800">
+              <Badge variant="outline" className="px-2 py-1 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                 ROI: {diagnostics?.currentROI?.toFixed(2) || 0}x
               </Badge>
             </div>

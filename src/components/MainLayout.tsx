@@ -17,17 +17,17 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <div className="flex min-h-screen w-full">
         <AppSidebar />
         <SidebarRail />
-        <SidebarInset className="bg-gradient-to-br from-blue-50/30 to-white dark:from-blue-950/20 dark:to-gray-950">
+        <SidebarInset className="bg-gradient-to-br from-blue-50/30 to-white dark:from-gray-900/95 dark:to-gray-950">
           <div className="container mx-auto px-4 py-6 space-y-6 max-w-6xl">
-            <header className="flex justify-between items-center bg-white dark:bg-gray-900 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+            <header className="flex justify-between items-center bg-white dark:bg-gray-800/95 p-3 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-3">
                 <SidebarTrigger className="md:hidden" />
                 <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
                   <NotebookPen className="h-5 w-5" />
                   <span className="font-medium hidden sm:block">Diagnóstico de Funil</span>
                 </div>
-                <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block" />
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hidden sm:flex">
+                <Separator orientation="vertical" className="h-6 mx-2 hidden sm:block dark:bg-gray-700" />
+                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hidden sm:flex">
                   <Calendar className="h-4 w-4" />
                   <span className="text-sm">{new Date().toLocaleDateString('pt-BR')}</span>
                 </div>

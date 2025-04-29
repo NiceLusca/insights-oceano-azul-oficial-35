@@ -30,26 +30,26 @@
   }
 
   .dark {
-    --background: 224 71% 4%;
+    --background: 222 47% 11%;
     --foreground: 213 31% 91%;
-    --card: 224 71% 4%;
+    --card: 222 47% 11%;
     --card-foreground: 213 31% 91%;
-    --popover: 224 71% 4%;
+    --popover: 222 47% 11%;
     --popover-foreground: 213 31% 91%;
-    --primary: 221 83% 53%;
+    --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 216 34% 17%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --success: 142 72% 29%;
-    --success-foreground: 142 72% 96%;
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
+    --success: 142 69% 58%;
+    --success-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
   }
 }
@@ -83,5 +83,25 @@
   
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .dark-card-gradient {
+    @apply dark:bg-gradient-to-br from-gray-900 to-gray-800;
+  }
+  
+  .dark-content-area {
+    @apply dark:bg-gray-900/80;
+  }
+  
+  .dark-border {
+    @apply dark:border-gray-700;
+  }
+  
+  .metric-card {
+    @apply bg-white dark:bg-gray-800/90 border dark:border-gray-700 rounded-lg shadow-sm;
+  }
+  
+  .metric-card-gradient {
+    @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900;
   }
 }

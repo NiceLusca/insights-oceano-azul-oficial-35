@@ -67,13 +67,13 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
         />
       </div>
       
-      <Card className="border-dashed border-gray-200">
+      <Card className="border-dashed border-gray-200 dark:border-gray-700">
         <CardContent className="p-4">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="font-medium text-sm text-gray-700">Projeção Mensal</h3>
+            <h3 className="font-medium text-sm text-gray-700 dark:text-gray-200">Projeção Mensal</h3>
             
             {!isLoadingHistorical && historicalMetrics && (
-              <div className="flex items-center text-xs text-gray-500">
+              <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 3v18h18" />
                   <path d="M3 9h18" />
@@ -85,10 +85,10 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
           </div>
           
           <div className="flex justify-between mb-1">
-            <span className="text-sm">Meta: {formatCurrency(metrics.monthlyTarget)}</span>
-            <span className="text-sm">Projeção: {formatCurrency(metrics.monthlyProjection)}</span>
+            <span className="text-sm dark:text-gray-300">Meta: {formatCurrency(metrics.monthlyTarget)}</span>
+            <span className="text-sm dark:text-gray-300">Projeção: {formatCurrency(metrics.monthlyProjection)}</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2.5 mb-1">
+          <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 mb-1">
             <div 
               className={`h-2.5 rounded-full ${
                 metrics.targetProgress >= 100 ? 'bg-green-500' : 
@@ -97,7 +97,7 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
               style={{ width: `${Math.min(metrics.targetProgress, 100)}%` }}
             ></div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 dark:text-gray-400">
             {metrics.targetProgress.toFixed(1)}% da meta mensal
           </div>
         </CardContent>

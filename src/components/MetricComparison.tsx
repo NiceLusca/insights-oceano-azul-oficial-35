@@ -52,25 +52,25 @@ export function MetricComparison({ metrics }: MetricComparisonProps) {
   };
 
   return (
-    <div className="bg-white p-5 rounded-lg border">
-      <h3 className="text-lg font-medium mb-4">Comparação com Métricas Ideais</h3>
+    <div className="bg-white dark:bg-gray-800/90 p-5 rounded-lg border border-gray-200 dark:border-gray-700">
+      <h3 className="text-lg font-medium mb-4 dark:text-gray-100">Comparação com Métricas Ideais</h3>
       <div className="space-y-4">
         {metrics.map((metric, index) => (
           <div key={index} className="space-y-1">
             <div className={`flex ${isMobile ? 'flex-col gap-1' : 'justify-between'} text-sm`}>
-              <span className="font-medium">{metric.name}</span>
+              <span className="font-medium dark:text-gray-200">{metric.name}</span>
               <div className={`flex ${isMobile ? 'justify-between' : 'items-center gap-3'}`}>
-                <span className="text-gray-500">
+                <span className="text-gray-500 dark:text-gray-400">
                   Atual: {formatValue(metric.actual, metric.format)}
                 </span>
-                <span className="text-blue-600">
+                <span className="text-blue-600 dark:text-blue-400">
                   Ideal: {formatValue(metric.ideal, metric.format)}
                 </span>
               </div>
             </div>
             <div className="relative pt-1">
               <div className="flex items-center">
-                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                   <div
                     className={`h-2 rounded-full ${getProgressColor(metric.actual, metric.ideal, metric.isHigherBetter)}`}
                     style={{

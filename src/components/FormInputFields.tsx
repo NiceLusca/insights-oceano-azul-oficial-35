@@ -37,15 +37,15 @@ export function FormInputFields({ form, formSchema }: FormInputFieldsProps) {
           <GoalsInvestmentsSection form={form} />
         </div>
         
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+        <div className="bg-gray-50 dark:bg-gray-800/70 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
           <FormField
             control={form.control}
             name="hasUpsell"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between space-y-0 rounded-lg p-3">
                 <div className="space-y-0.5">
-                  <FormLabel>Incluir Upsell</FormLabel>
-                  <FormDescription>
+                  <FormLabel className="dark:text-gray-200">Incluir Upsell</FormLabel>
+                  <FormDescription className="dark:text-gray-400">
                     Ative se seu funil possui upsell/downsell
                   </FormDescription>
                 </div>
