@@ -67,7 +67,7 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
         />
       </div>
       
-      <Card className="border-dashed border-gray-200 dark:border-gray-700 dark:bg-gray-800/90 shadow-sm">
+      <Card className="border-dashed border-gray-200 dark:border-gray-600 dark:bg-gray-700/90 shadow-sm">
         <CardContent className="p-4">
           <div className="flex justify-between items-center mb-2">
             <h3 className="font-medium text-sm text-gray-700 dark:text-white">Projeção Mensal</h3>
@@ -88,7 +88,7 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
             <span className="text-sm font-medium">Meta: {formatCurrency(metrics.monthlyTarget)}</span>
             <span className="text-sm font-medium">Projeção: {formatCurrency(metrics.monthlyProjection)}</span>
           </div>
-          <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2.5 mb-1">
+          <div className="w-full bg-gray-100 dark:bg-gray-600 rounded-full h-2.5 mb-1">
             <div 
               className={`h-2.5 rounded-full ${
                 metrics.targetProgress >= 100 ? 'bg-green-500' : 

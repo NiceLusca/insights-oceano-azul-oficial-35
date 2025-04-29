@@ -98,31 +98,31 @@ export function FunnelIssues({ formData, diagnostics }: FunnelIssuesProps) {
             variant={issue.severity === "error" ? "destructive" : "default"}
             className={`border-l-4 ${
               issue.severity === "error" 
-                ? "border-l-red-500 bg-red-50" 
+                ? "border-l-red-500 bg-red-50 dark:bg-red-900/20 dark:text-white" 
                 : issue.severity === "warning" 
-                  ? "border-l-amber-500 bg-amber-50" 
-                  : "border-l-green-500 bg-green-50"
+                  ? "border-l-amber-500 bg-amber-50 dark:bg-amber-900/20 dark:text-white" 
+                  : "border-l-green-500 bg-green-50 dark:bg-green-900/20 dark:text-white"
             }`}
           >
             <div className="flex items-start">
               {issue.severity === "error" ? (
-                <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
+                <AlertTriangle className="h-5 w-5 text-red-500 dark:text-red-400 mr-2" />
               ) : issue.severity === "warning" ? (
-                <HelpCircle className="h-5 w-5 text-amber-500 mr-2" />
+                <HelpCircle className="h-5 w-5 text-amber-500 dark:text-amber-400 mr-2" />
               ) : (
-                <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-2" />
               )}
               <div>
                 <AlertTitle className={`text-base ${
                   issue.severity === "error" 
-                    ? "text-red-700" 
+                    ? "text-red-700 dark:text-red-300" 
                     : issue.severity === "warning" 
-                      ? "text-amber-700" 
-                      : "text-green-700"
+                      ? "text-amber-700 dark:text-amber-300" 
+                      : "text-green-700 dark:text-green-300"
                 }`}>
                   {issue.title}
                 </AlertTitle>
-                <AlertDescription className="text-sm mt-1">
+                <AlertDescription className="text-sm mt-1 dark:text-gray-200">
                   <p className="mb-1">{issue.description}</p>
                   <p className="font-medium">Recomendação: {issue.recommendation}</p>
                 </AlertDescription>
@@ -131,10 +131,10 @@ export function FunnelIssues({ formData, diagnostics }: FunnelIssuesProps) {
           </Alert>
         ))
       ) : (
-        <div className="text-center py-12">
+        <div className="text-center py-12 dark:bg-gray-700/60 rounded-lg border dark:border-blue-500/40">
           <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
-          <h3 className="text-xl font-medium text-green-700">Parabéns!</h3>
-          <p className="text-gray-600 mt-2">Não encontramos problemas críticos no seu funil.</p>
+          <h3 className="text-xl font-medium text-green-700 dark:text-green-400">Parabéns!</h3>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Não encontramos problemas críticos no seu funil.</p>
         </div>
       )}
     </>

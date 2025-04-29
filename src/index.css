@@ -30,32 +30,32 @@
   }
 
   .dark {
-    --background: 222 47% 11%;
+    --background: 222 30% 16%;
     --foreground: 213 31% 91%;
-    --card: 222 47% 11%;
+    --card: 222 30% 18%;
     --card-foreground: 213 31% 91%;
-    --popover: 222 47% 11%;
+    --popover: 222 30% 18%;
     --popover-foreground: 213 31% 91%;
     --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 217.2 32.6% 20%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --muted: 217.2 32.6% 20%;
+    --muted-foreground: 215 20.2% 75%;
+    --accent: 217.2 32.6% 20%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --success: 142 69% 58%;
     --success-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 25%;
+    --input: 217.2 32.6% 25%;
     --ring: 224.3 76.3% 48%;
     --button-primary: 221 83% 53%;
     --button-primary-hover: 221 83% 48%;
     --button-primary-foreground: 0 0% 100%;
-    --button-secondary: 217.2 32.6% 17.5%;
-    --button-secondary-hover: 217.2 32.6% 22%;
+    --button-secondary: 217.2 32.6% 25%;
+    --button-secondary-hover: 217.2 32.6% 30%;
     --button-secondary-foreground: 210 40% 98%;
   }
 }
@@ -92,23 +92,23 @@
   }
   
   .dark-card-gradient {
-    @apply dark:bg-gradient-to-br from-gray-900 to-gray-800;
+    @apply dark:bg-gradient-to-br from-gray-800 to-gray-700;
   }
   
   .dark-content-area {
-    @apply dark:bg-gray-900;
+    @apply dark:bg-gray-800;
   }
   
   .dark-border {
-    @apply dark:border-blue-600/80;
+    @apply dark:border-blue-500/80;
   }
   
   .metric-card {
-    @apply bg-white dark:bg-gray-800/95 border dark:border-blue-600/80 rounded-lg shadow-sm;
+    @apply bg-white dark:bg-gray-800/95 border dark:border-blue-500/80 rounded-lg shadow-sm;
   }
   
   .metric-card-gradient {
-    @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/95 dark:to-gray-900/90;
+    @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-700 dark:to-gray-800/90;
   }
   
   .dark-button {
@@ -116,11 +116,11 @@
   }
   
   .dark-button-outline {
-    @apply dark:border-blue-500 dark:text-blue-300 dark:bg-blue-900/50 dark:hover:bg-blue-800/30;
+    @apply dark:border-blue-500 dark:text-blue-300 dark:bg-blue-800/50 dark:hover:bg-blue-700/30;
   }
   
   .finance-metric-card {
-    @apply bg-white dark:bg-gray-800/95 border border-gray-200 dark:border-blue-600/80 p-4 rounded-lg shadow-sm;
+    @apply bg-white dark:bg-gray-700/95 border border-gray-200 dark:border-blue-500/80 p-4 rounded-lg shadow-sm;
   }
   
   .finance-metric-value {
@@ -141,7 +141,7 @@
   }
   
   .dark-card-border {
-    @apply dark:border dark:border-blue-600/80;
+    @apply dark:border dark:border-blue-500/80;
   }
   
   .dark-metric-value {
@@ -149,24 +149,24 @@
   }
   
   .dark-metric-card {
-    @apply dark:bg-gray-800/95 dark:border-blue-600/80 dark:shadow-lg dark:shadow-black/20;
+    @apply dark:bg-gray-700/95 dark:border-blue-500/80 dark:shadow-lg dark:shadow-black/20;
   }
   
   .dark-badge {
-    @apply dark:bg-blue-800/90 dark:text-white dark:border-blue-600/80;
+    @apply dark:bg-blue-700/90 dark:text-white dark:border-blue-500/80;
   }
   
   /* Correções específicas para a página de histórico */
   .history-card {
-    @apply dark:bg-gray-800/95 dark:border-blue-700;
+    @apply dark:bg-gray-700/95 dark:border-blue-600;
   }
   
   .history-table-header {
-    @apply dark:bg-gray-900/90 dark:text-white dark:border-blue-700;
+    @apply dark:bg-gray-800/90 dark:text-white dark:border-blue-600;
   }
   
   .history-table-row {
-    @apply dark:border-gray-700 dark:hover:bg-gray-700/80;
+    @apply dark:border-gray-600 dark:hover:bg-gray-600/80;
   }
   
   .history-table-cell {
@@ -174,41 +174,41 @@
   }
   
   .history-badge {
-    @apply dark:bg-blue-800/90 dark:border-blue-600/80 dark:text-white;
+    @apply dark:bg-blue-700/90 dark:border-blue-500/80 dark:text-white;
   }
   
   /* Correções para componentes específicos */ 
   .accordion-content {
-    @apply dark:bg-gray-800/90 dark:border-blue-700;
+    @apply dark:bg-gray-700/90 dark:border-blue-600;
   }
   
   .dropdown-menu {
-    @apply dark:bg-gray-800/95 dark:border-blue-700 dark:shadow-blue-900/20;
+    @apply dark:bg-gray-700/95 dark:border-blue-600 dark:shadow-blue-900/20;
   }
 
   /* Nova classe para campos de formulário e select boxes no modo escuro */
   .dark-form-field {
-    @apply dark:bg-gray-800/90 dark:border-blue-600/70 dark:text-white;
+    @apply dark:bg-gray-700/90 dark:border-blue-500/70 dark:text-white;
   }
   
   /* Classe para tooltips no modo escuro */
   .dark-tooltip {
-    @apply dark:bg-gray-800/95 dark:border-blue-600/80 dark:text-white;
+    @apply dark:bg-gray-700/95 dark:border-blue-500/80 dark:text-white;
   }
   
   /* Classe para dropdown e select contents no modo escuro */
   .dark-dropdown-content {
-    @apply dark:bg-gray-800 dark:border-blue-600/80 dark:text-white;
+    @apply dark:bg-gray-700 dark:border-blue-500/80 dark:text-white;
   }
   
   /* Classe para tabs no modo escuro */
   .dark-tabs {
-    @apply dark:bg-gray-800/90 dark:text-gray-300 dark:border-blue-600/60;
+    @apply dark:bg-gray-700/90 dark:text-gray-300 dark:border-blue-500/60;
   }
   
   /* Classe para data pickers no modo escuro */
   .dark-date-picker {
-    @apply dark:bg-gray-800/95 dark:border-blue-600/80 dark:text-white;
+    @apply dark:bg-gray-700/95 dark:border-blue-500/80 dark:text-white;
   }
 }
 
@@ -248,24 +248,24 @@
 
 /* Melhorar visualização de conteúdo em cards transparentes */
 .dark .card-content {
-  @apply dark:bg-gray-800/95;
+  @apply dark:bg-gray-700/95;
 }
 
 /* Garantir que popups e menus sejam sólidos no modo escuro */
 .dark [role="menu"],
 .dark [role="dialog"],
 .dark [role="tooltip"] {
-  @apply bg-gray-800 border-blue-600/80 text-white shadow-lg shadow-black/30;
+  @apply bg-gray-700 border-blue-500/80 text-white shadow-lg shadow-black/30;
 }
 
 /* Melhorar a visibilidade dos select dropdowns no modo escuro */
 .dark [data-radix-select-content] {
-  @apply bg-gray-800 border-blue-600/80 text-white;
+  @apply bg-gray-700 border-blue-500/80 text-white;
 }
 
 /* Melhorar campos de input no modo escuro */
 .dark input, 
 .dark select, 
 .dark textarea {
-  @apply bg-gray-800/70 border-blue-600/70 text-white;
+  @apply bg-gray-700/70 border-blue-500/70 text-white;
 }

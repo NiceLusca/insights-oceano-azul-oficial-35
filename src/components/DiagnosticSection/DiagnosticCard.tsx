@@ -30,7 +30,7 @@ export const DiagnosticCard = ({
 }: DiagnosticCardProps) => {
   return (
     <div className={cn(
-      "p-4 bg-white dark:bg-gray-800/95 rounded-lg shadow-sm transition-all hover:shadow-md dark:shadow-blue-900/10 border dark:border-blue-700/80", 
+      "p-4 bg-white dark:bg-gray-700/95 rounded-lg shadow-sm transition-all hover:shadow-md dark:shadow-blue-900/10 border dark:border-blue-500/80", 
       className
     )}>
       <div className="flex justify-between items-start">
@@ -43,7 +43,7 @@ export const DiagnosticCard = ({
                 <TooltipTrigger>
                   <Info className="h-3.5 w-3.5 text-blue-400 dark:text-blue-300" />
                 </TooltipTrigger>
-                <TooltipContent className="dark:bg-gray-800 dark:text-white dark:border-blue-600">
+                <TooltipContent className="dark:bg-gray-700 dark:text-white dark:border-blue-500">
                   <p className="text-xs max-w-52">{tooltip}</p>
                 </TooltipContent>
               </Tooltip>

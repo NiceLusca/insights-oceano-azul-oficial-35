@@ -70,16 +70,16 @@ export function ResultContainer({
           
           <TrendVisualization formData={formData} />
           
-          <Separator className="my-4 dark:bg-gray-700" />
+          <ActionableInsightsGrid insights={diagnostics?.actionableInsights} />
+          
+          <Separator className="my-4 dark:bg-gray-600" />
           
           <AdvancedFinanceMetrics
             formData={formData}
             diagnostics={diagnostics}
           />
           
-          <ActionableInsightsGrid insights={diagnostics?.actionableInsights} />
-          
-          <Separator className="my-4 dark:bg-gray-700" />
+          <Separator className="my-4 dark:bg-gray-600" />
           
           <div className="flex justify-between items-center flex-wrap gap-4">
             <MetricBadges formData={formData} diagnostics={diagnostics} />

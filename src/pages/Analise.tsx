@@ -90,7 +90,7 @@ const Analise = () => {
           />
         </div>
         
-        <Separator className="my-6 bg-blue-100 dark:bg-blue-800/50" />
+        <Separator className="my-6 bg-blue-100 dark:bg-blue-700/50" />
         
         <motion.div
           initial={{ opacity: 0, y: 20 }}
