@@ -23,24 +23,24 @@ export function BreakdownTab({ metrics, historicalMetrics, isLoadingHistorical }
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 gap-4">
-        <div className="bg-white p-4 rounded-lg border shadow-sm">
-          <h3 className="font-medium text-sm mb-3 text-gray-700">Distribuição de Receita</h3>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border shadow-sm dark:border-blue-600">
+          <h3 className="font-medium text-sm mb-3 text-gray-700 dark:text-white">Distribuição de Receita</h3>
           
           <div className="space-y-3">
             {metrics.revenueBreakdown.map((item, index) => (
               <div key={index}>
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between text-sm mb-1 dark:text-white">
                   <span>{item.name}</span>
                   <span>{formatCurrency(item.value)}</span>
                 </div>
-                <div className="w-full bg-gray-100 rounded-full h-2">
+                <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
                   <div 
                     className={`h-2 rounded-full ${breakdownColors[index % breakdownColors.length]}`}
                     style={{ width: `${item.percentage}%` }}
                   ></div>
                 </div>
-                <div className="text-xs text-right text-gray-500 mt-1">{item.percentage.toFixed(1)}% da receita</div>
-                {index < metrics.revenueBreakdown.length - 1 && <Separator className="my-3" />}
+                <div className="text-xs text-right text-gray-500 dark:text-gray-300 mt-1">{item.percentage.toFixed(1)}% da receita</div>
+                {index < metrics.revenueBreakdown.length - 1 && <Separator className="my-3 dark:bg-gray-700" />}
               </div>
             ))}
           </div>
@@ -62,7 +62,7 @@ export function BreakdownTab({ metrics, historicalMetrics, isLoadingHistorical }
             format="currency"
             subtitle="Order Bumps + Upsells"
             additionalContent={
-              <span className="text-sm font-normal text-gray-500 inline-block mt-1">
+              <span className="text-sm font-normal text-gray-600 dark:text-gray-300 inline-block mt-1">
                 ({((metrics.orderBumpRevenue + metrics.upsellRevenue) / metrics.totalRevenue * 100).toFixed(1)}% da receita)
               </span>
             }

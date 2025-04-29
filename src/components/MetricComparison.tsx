@@ -52,18 +52,18 @@ export function MetricComparison({ metrics }: MetricComparisonProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800/90 p-5 rounded-lg border border-gray-200 dark:border-blue-700/50 shadow-sm">
-      <h3 className="text-lg font-medium mb-4 dark:text-blue-200">Comparação com Métricas Ideais</h3>
+    <div className="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-blue-600 shadow-sm">
+      <h3 className="text-lg font-medium mb-4 dark:text-white">Comparação com Métricas Ideais</h3>
       <div className="space-y-4">
         {metrics.map((metric, index) => (
           <div key={index} className="space-y-1">
             <div className={`flex ${isMobile ? 'flex-col gap-1' : 'justify-between'} text-sm`}>
-              <span className="font-medium dark:text-blue-200">{metric.name}</span>
+              <span className="font-medium dark:text-white">{metric.name}</span>
               <div className={`flex ${isMobile ? 'justify-between' : 'items-center gap-3'}`}>
-                <span className="text-gray-500 dark:text-blue-300/80">
+                <span className="text-gray-500 dark:text-gray-300">
                   Atual: {formatValue(metric.actual, metric.format)}
                 </span>
-                <span className="text-blue-600 dark:text-blue-400">
+                <span className="text-blue-600 dark:text-blue-300">
                   Ideal: {formatValue(metric.ideal, metric.format)}
                 </span>
               </div>

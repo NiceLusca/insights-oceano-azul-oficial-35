@@ -31,9 +31,9 @@ interface DiagnosticSectionProps {
 
 export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
   return (
-    <Card className="p-6 metric-card-gradient dark:border-gray-700">
-      <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-4 flex items-center gap-2">
-        <span className="bg-blue-100 dark:bg-blue-900/30 p-1.5 rounded-md">📊</span>
+    <Card className="p-6 metric-card-gradient dark:border-blue-600">
+      <h2 className="text-xl font-semibold text-blue-800 dark:text-white mb-4 flex items-center gap-2">
+        <span className="bg-blue-100 dark:bg-blue-800 p-1.5 rounded-md">📊</span>
         Insights
       </h2>
       
@@ -41,7 +41,7 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
         <div className="mb-6 animate-fade-in">
           <div className="flex justify-between items-center mb-1">
             <div className="flex items-center">
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Progresso da Meta Mensal</span>
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Progresso da Meta Mensal</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -55,17 +55,17 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <span className="text-xs font-semibold dark:text-gray-300">
+            <span className="text-xs font-semibold dark:text-white">
               {formatCurrency(diagnostics.totalRevenue)} de {formatPercentage(diagnostics.monthlyGoalProgress)}
             </span>
           </div>
           <Progress 
             value={Math.min(diagnostics.monthlyGoalProgress * 100, 100)} 
-            className="h-2 bg-blue-100 dark:bg-blue-950"
+            className="h-2 bg-blue-100 dark:bg-blue-900"
           />
           <div className="flex justify-between mt-1">
-            <span className="text-xs text-slate-500 dark:text-slate-400">0%</span>
-            <span className="text-xs text-slate-500 dark:text-slate-400">100%</span>
+            <span className="text-xs text-slate-500 dark:text-slate-300">0%</span>
+            <span className="text-xs text-slate-500 dark:text-slate-300">100%</span>
           </div>
         </div>
       )}
@@ -73,7 +73,7 @@ export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
       <div className="space-y-6">
         <MetricsGrid diagnostics={diagnostics} />
         
-        <Separator className="my-6 bg-blue-100 dark:bg-blue-900/50" />
+        <Separator className="my-6 bg-blue-100 dark:bg-blue-800" />
         
         <DiagnosticMessages messages={diagnostics.messages} />
       </div>

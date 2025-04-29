@@ -48,8 +48,8 @@ export function MetricCard({
 
   return (
     <div className="finance-metric-card">
-      <div className="finance-metric-label mb-1">{title}</div>
-      <div className="finance-metric-value flex items-center gap-2">
+      <div className="finance-metric-label mb-1 text-gray-700 dark:text-gray-100">{title}</div>
+      <div className="finance-metric-value flex items-center gap-2 text-gray-900 dark:text-white">
         {formattedValue()}
         {badge && (
           <Badge variant={badge.variant} className="dark:text-white">

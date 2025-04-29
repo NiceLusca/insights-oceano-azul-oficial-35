@@ -80,7 +80,7 @@
   }
   
   .glass-card {
-    @apply bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700;
+    @apply bg-white/80 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-blue-600;
   }
   
   .hover-scale {
@@ -96,19 +96,19 @@
   }
   
   .dark-content-area {
-    @apply dark:bg-gray-900/90;
+    @apply dark:bg-gray-900;
   }
   
   .dark-border {
-    @apply dark:border-blue-700;
+    @apply dark:border-blue-600;
   }
   
   .metric-card {
-    @apply bg-white dark:bg-gray-800/90 border dark:border-blue-700 rounded-lg shadow-sm;
+    @apply bg-white dark:bg-gray-800 border dark:border-blue-600 rounded-lg shadow-sm;
   }
   
   .metric-card-gradient {
-    @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/90 dark:to-gray-900;
+    @apply bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900;
   }
   
   .dark-button {
@@ -116,23 +116,22 @@
   }
   
   .dark-button-outline {
-    @apply dark:border-blue-500 dark:text-blue-300 dark:bg-blue-950/50 dark:hover:bg-blue-900/30;
+    @apply dark:border-blue-500 dark:text-blue-300 dark:bg-blue-900/50 dark:hover:bg-blue-800/30;
   }
   
   .finance-metric-card {
-    @apply bg-white dark:bg-gray-800/90 border border-gray-200 dark:border-blue-700/50 p-4 rounded-lg shadow-sm;
+    @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-blue-600 p-4 rounded-lg shadow-sm;
   }
   
   .finance-metric-value {
-    @apply text-2xl font-semibold text-gray-900 dark:text-blue-100;
+    @apply text-2xl font-semibold text-gray-900 dark:text-white;
   }
   
   .finance-metric-label {
-    @apply text-sm text-gray-500 dark:text-blue-200/80;
+    @apply text-sm text-gray-700 dark:text-gray-100;
   }
   
   .finance-metric-subtitle {
-    @apply text-xs text-gray-500 dark:text-blue-300/70;
+    @apply text-xs text-gray-600 dark:text-gray-200;
   }
 }
-
