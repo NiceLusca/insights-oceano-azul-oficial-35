@@ -47,9 +47,9 @@ export function MetricCard({
   const comparisonVariant = percentageChange > 0 ? "success" : "destructive";
 
   return (
-    <div className="finance-metric-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-blue-600">
+    <div className="finance-metric-card bg-white dark:bg-gray-800 border border-gray-200 dark:border-blue-600 shadow-sm dark:shadow-blue-900/10">
       <div className="finance-metric-label mb-1 text-gray-700 dark:text-gray-100">{title}</div>
-      <div className="finance-metric-value flex items-center gap-2 text-gray-900 dark:text-white">
+      <div className="finance-metric-value flex items-center gap-2 text-gray-900 dark:text-white font-semibold">
         {formattedValue()}
         {badge && (
           <Badge variant={badge.variant} className="dark:text-white">

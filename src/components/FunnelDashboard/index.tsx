@@ -23,11 +23,11 @@ export function FunnelDashboard({ formData, diagnostics }: FunnelDashboardProps)
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="overflow-hidden border-blue-200 dark:border-blue-600 shadow-sm bg-white dark:bg-gray-900">
+      <Card className="overflow-hidden border-blue-200 dark:border-blue-600 shadow-sm bg-white dark:bg-gray-900 dark:shadow-blue-900/10">
         <div className="bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-600 dark:to-blue-500 h-1.5"></div>
         <CardContent className="p-4 md:p-6">
           <motion.h2 
-            className="text-xl font-semibold text-blue-800 dark:text-white mb-4 flex items-center gap-2"
+            className="text-xl font-semibold text-blue-800 dark:text-blue-300 mb-4 flex items-center gap-2"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -45,19 +45,19 @@ export function FunnelDashboard({ formData, diagnostics }: FunnelDashboardProps)
             <TabsList className="grid grid-cols-3 mb-6 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
               <TabsTrigger 
                 value="overview"
-                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-blue-700 data-[state=active]:text-blue-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm"
+                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-blue-700 data-[state=active]:text-blue-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm dark:text-gray-300"
               >
                 Visão Geral
               </TabsTrigger>
               <TabsTrigger 
                 value="issues"
-                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-blue-700 data-[state=active]:text-blue-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm"
+                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-blue-700 data-[state=active]:text-blue-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm dark:text-gray-300"
               >
                 Problemas
               </TabsTrigger>
               <TabsTrigger 
                 value="actions"
-                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-blue-700 data-[state=active]:text-blue-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm"
+                className="rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-blue-700 data-[state=active]:text-blue-700 dark:data-[state=active]:text-white data-[state=active]:shadow-sm dark:text-gray-300"
               >
                 Ações Recomendadas
               </TabsTrigger>

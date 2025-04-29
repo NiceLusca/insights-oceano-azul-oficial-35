@@ -5,7 +5,6 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
-import { IdealMetricsCompact } from "@/components/IdealMetricsCompact";
 import { useToast } from "@/hooks/use-toast";
 
 const Financas = () => {
@@ -76,8 +75,6 @@ const Financas = () => {
         >
           Métricas Financeiras
         </motion.h1>
-        
-        <IdealMetricsCompact hasUpsell={formData.hasUpsell} />
         
         <AdvancedFinanceMetrics 
           formData={formData}

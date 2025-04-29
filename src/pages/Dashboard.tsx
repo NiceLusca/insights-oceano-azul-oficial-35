@@ -12,7 +12,6 @@ import { Card } from "@/components/ui/card";
 import { useAuthentication } from "@/hooks/useAuthentication";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
-import { IdealMetricsCompact } from "@/components/IdealMetricsCompact";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
@@ -90,8 +89,6 @@ const Dashboard = () => {
         >
           Dashboard Inteligente
         </motion.h1>
-        
-        <IdealMetricsCompact hasUpsell={formData.hasUpsell} />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <motion.div

@@ -128,14 +128,14 @@
   }
   
   .finance-metric-label {
-    @apply text-sm text-gray-700 dark:text-gray-100;
+    @apply text-sm text-gray-700 dark:text-gray-100 font-medium;
   }
   
   .finance-metric-subtitle {
     @apply text-xs text-gray-600 dark:text-gray-200;
   }
   
-  /* Adição de classes específicas para melhorar a visibilidade no modo escuro */
+  /* Classes específicas para melhorar a visibilidade no modo escuro */
   .dark-text-high-contrast {
     @apply dark:text-white dark:font-medium;
   }
@@ -155,4 +155,68 @@
   .dark-badge {
     @apply dark:bg-blue-800 dark:text-white dark:border-blue-600;
   }
+  
+  /* Correções específicas para a página de histórico */
+  .history-card {
+    @apply dark:bg-gray-800 dark:border-blue-700;
+  }
+  
+  .history-table-header {
+    @apply dark:bg-gray-900 dark:text-white dark:border-blue-700;
+  }
+  
+  .history-table-row {
+    @apply dark:border-gray-700 dark:hover:bg-gray-700;
+  }
+  
+  .history-table-cell {
+    @apply dark:text-gray-300;
+  }
+  
+  .history-badge {
+    @apply dark:bg-blue-800 dark:border-blue-600 dark:text-white;
+  }
+  
+  /* Correções para componentes específicos */ 
+  .accordion-content {
+    @apply dark:bg-gray-800/80 dark:border-blue-700;
+  }
+  
+  .dropdown-menu {
+    @apply dark:bg-gray-800 dark:border-blue-700 dark:shadow-blue-900/20;
+  }
+}
+
+/* Adicionar regras para garantir visibilidade de texto em geral no modo escuro */
+.dark .text-gray-700,
+.dark .text-gray-800, 
+.dark .text-gray-900 {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.dark .text-blue-700,
+.dark .text-blue-800 {
+  color: rgb(147, 197, 253);
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Adicionar sombra para elementos no modo escuro para melhor contraste */
+.dark .shadow-for-dark {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Garantir que as badges sejam sempre legíveis */
+.dark .badge-text {
+  color: white !important;
+  font-weight: 500;
 }

@@ -31,7 +31,7 @@ interface DiagnosticSectionProps {
 
 export const DiagnosticSection = ({ diagnostics }: DiagnosticSectionProps) => {
   return (
-    <Card className="p-6 metric-card-gradient dark:border-blue-600">
+    <Card className="p-6 metric-card-gradient dark:border-blue-600 dark:shadow-blue-900/10">
       <h2 className="text-xl font-semibold text-blue-800 dark:text-white mb-4 flex items-center gap-2">
         <span className="bg-blue-100 dark:bg-blue-800 p-1.5 rounded-md">📊</span>
         Insights

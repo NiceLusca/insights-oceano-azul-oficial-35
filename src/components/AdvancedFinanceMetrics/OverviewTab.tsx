@@ -45,7 +45,7 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
           additionalContent={
             <Badge 
               variant={metrics.profit >= 0 ? "success" : "destructive"}
-              className="text-xs font-normal mt-1"
+              className="text-xs font-normal mt-1 dark:bg-opacity-90 dark:text-white"
             >
               Margem: {metrics.profitMargin.toFixed(1)}%
             </Badge>
@@ -67,7 +67,7 @@ export function OverviewTab({ metrics, historicalMetrics, isLoadingHistorical }:
         />
       </div>
       
-      <Card className="border-dashed border-gray-200 dark:border-gray-700">
+      <Card className="border-dashed border-gray-200 dark:border-gray-700 dark:bg-gray-800/90">
         <CardContent className="p-4">
           <div className="flex justify-between items-center mb-2">
             <h3 className="font-medium text-sm text-gray-700 dark:text-white">Projeção Mensal</h3>

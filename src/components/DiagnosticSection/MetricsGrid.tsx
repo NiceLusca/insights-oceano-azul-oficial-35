@@ -29,9 +29,9 @@ export const MetricsGrid = ({ diagnostics }: MetricsGridProps) => {
     if (value === undefined) return null;
     
     return value >= target ? (
-      <TrendingUp className="h-4 w-4 text-green-500" />
+      <TrendingUp className="h-4 w-4 text-green-500 dark:text-green-400" />
     ) : (
-      <TrendingDown className="h-4 w-4 text-amber-500" />
+      <TrendingDown className="h-4 w-4 text-amber-500 dark:text-amber-400" />
     );
   };
 
@@ -78,9 +78,9 @@ export const MetricsGrid = ({ diagnostics }: MetricsGridProps) => {
             diagnostics.currentCPC <= (diagnostics.maxCPC || 0) ? "border-l-green-500 dark:border-l-green-400" : "border-l-red-500 dark:border-l-red-400"
           )}
           statusIcon={diagnostics.currentCPC > (diagnostics.maxCPC || 0) ? (
-            <AlertCircle className="h-4 w-4 text-red-500" />
+            <AlertCircle className="h-4 w-4 text-red-500 dark:text-red-300" />
           ) : (
-            <TrendingUp className="h-4 w-4 text-green-500" />
+            <TrendingUp className="h-4 w-4 text-green-500 dark:text-green-400" />
           )}
         />
       )}

@@ -3,7 +3,6 @@ import { Separator } from "@/components/ui/separator";
 import { DiagnosticSection } from "@/components/DiagnosticSection";
 import { AdvancedFinanceMetrics } from "@/components/AdvancedFinanceMetrics";
 import { TrendVisualization } from "@/components/TrendVisualization";
-import { IdealMetricsCompact } from "@/components/IdealMetricsCompact";
 import { SaveToHistoryButton } from "@/components/FormAnalyzer/SaveToHistoryButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { EmptyState } from "@/components/EmptyState";
@@ -60,19 +59,17 @@ export function ResultContainer({
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <IdealMetricsCompact hasUpsell={formData.hasUpsell} />
-        
         <div className="grid grid-cols-1 gap-6">
           <DiagnosticSection diagnostics={diagnostics} />
-          
-          <TrendVisualization formData={formData} />
-          
-          <ActionableInsightsGrid insights={diagnostics?.actionableInsights} />
           
           <AdvancedFinanceMetrics
             formData={formData}
             diagnostics={diagnostics}
           />
+          
+          <TrendVisualization formData={formData} />
+          
+          <ActionableInsightsGrid insights={diagnostics?.actionableInsights} />
           
           <Separator className="my-4 dark:bg-gray-700" />
           

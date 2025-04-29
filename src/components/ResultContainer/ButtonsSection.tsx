@@ -49,7 +49,7 @@ export function ButtonsSection({ onNavigateTo }: ButtonsSectionProps) {
           ) : (
             <FileText className="h-5 w-5 mr-2" />
           )}
-          Análise Detalhada
+          <span className="text-white">Análise Detalhada</span>
         </Button>
       </motion.div>
       
@@ -69,7 +69,7 @@ export function ButtonsSection({ onNavigateTo }: ButtonsSectionProps) {
           ) : (
             <BarChart3 className="h-5 w-5 mr-2" />
           )}
-          Métricas Financeiras
+          <span className="text-white">Métricas Financeiras</span>
         </Button>
       </motion.div>
     </div>

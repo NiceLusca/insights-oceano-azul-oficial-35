@@ -46,7 +46,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="bg-white">
+      <SidebarHeader className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800">
         <div className="flex items-center gap-2 px-4 py-2">
           <img
             src="/lovable-uploads/72cd2286-ac0e-4d70-a2ad-c43412ffe8e7.png"
@@ -54,12 +54,12 @@ export function AppSidebar() {
             className="h-8 w-auto"
           />
           <div>
-            <h2 className="text-base font-bold text-blue-800">Insights Oceano Azul</h2>
-            <p className="text-xs text-blue-500">Diagnóstico de Funil</p>
+            <h2 className="text-base font-bold text-blue-800 dark:text-blue-300">Insights Oceano Azul</h2>
+            <p className="text-xs text-blue-500 dark:text-blue-400">Diagnóstico de Funil</p>
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="bg-white">
+      <SidebarContent className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800">
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.path}>
@@ -67,6 +67,7 @@ export function AppSidebar() {
                 tooltip={item.title}
                 asChild
                 isActive={location.pathname === item.path}
+                className="dark:text-gray-300 dark:hover:bg-blue-800/30 dark:data-[active=true]:bg-blue-800 dark:data-[active=true]:text-white"
               >
                 <Link to={item.path}>
                   <item.icon className="h-5 w-5" />
@@ -77,8 +78,8 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="bg-white">
-        <div className="p-4 text-xs text-gray-500 text-center">
+      <SidebarFooter className="bg-white dark:bg-gray-900 dark:border-r dark:border-blue-800">
+        <div className="p-4 text-xs text-gray-500 dark:text-gray-400 text-center">
           © {new Date().getFullYear()} Oceano Azul
         </div>
       </SidebarFooter>
