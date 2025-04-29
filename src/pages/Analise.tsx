@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { EmptyState } from "@/components/EmptyState";
 import { motion } from "framer-motion";
-import { IdealMetricsCompact } from "@/components/IdealMetricsCompact";
 import { useToast } from "@/hooks/use-toast";
 
 const Analise = () => {
@@ -77,8 +76,6 @@ const Analise = () => {
         >
           Análise Detalhada
         </motion.h1>
-        
-        <IdealMetricsCompact hasUpsell={formData.hasUpsell} />
         
         <FunnelDashboard 
           formData={formData}
