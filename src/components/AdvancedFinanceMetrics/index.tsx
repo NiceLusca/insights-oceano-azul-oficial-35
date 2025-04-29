@@ -16,7 +16,7 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
   const metrics = useFinanceCalculations(formData, diagnostics);
 
   return (
-    <Card className="shadow-sm border-blue-100 dark:border-blue-600 dark:bg-gray-900 dark:shadow-blue-900/10">
+    <Card className="shadow-sm border-blue-100 dark:border-blue-600 dark:bg-gray-600/95 dark:shadow-blue-900/10">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-medium text-gray-800 dark:text-white flex items-center gap-2">
@@ -29,7 +29,7 @@ export function AdvancedFinanceMetrics({ formData, diagnostics }: AdvancedFinanc
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-3 mb-4 dark:bg-gray-800 dark:text-gray-300">
+          <TabsList className="grid grid-cols-3 mb-4 dark:bg-gray-700 dark:text-gray-300">
             <TabsTrigger value="overview" className="dark:data-[state=active]:bg-blue-700 dark:data-[state=active]:text-white dark:data-[state=active]:font-medium">
               Visão Geral
             </TabsTrigger>

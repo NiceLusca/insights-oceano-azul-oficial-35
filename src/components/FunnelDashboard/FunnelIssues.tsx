@@ -98,10 +98,10 @@ export function FunnelIssues({ formData, diagnostics }: FunnelIssuesProps) {
             variant={issue.severity === "error" ? "destructive" : "default"}
             className={`border-l-4 ${
               issue.severity === "error" 
-                ? "border-l-red-500 bg-red-50 dark:bg-red-900/20 dark:text-white" 
+                ? "border-l-red-500 bg-red-50 dark:bg-red-900/20 dark:border-red-500/80 dark:text-white" 
                 : issue.severity === "warning" 
-                  ? "border-l-amber-500 bg-amber-50 dark:bg-amber-900/20 dark:text-white" 
-                  : "border-l-green-500 bg-green-50 dark:bg-green-900/20 dark:text-white"
+                  ? "border-l-amber-500 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-500/80 dark:text-white" 
+                  : "border-l-green-500 bg-green-50 dark:bg-green-900/20 dark:border-green-500/80 dark:text-white"
             }`}
           >
             <div className="flex items-start">
@@ -124,7 +124,7 @@ export function FunnelIssues({ formData, diagnostics }: FunnelIssuesProps) {
                 </AlertTitle>
                 <AlertDescription className="text-sm mt-1 dark:text-gray-200">
                   <p className="mb-1">{issue.description}</p>
-                  <p className="font-medium">Recomendação: {issue.recommendation}</p>
+                  <p className="font-medium dark:text-white">Recomendação: {issue.recommendation}</p>
                 </AlertDescription>
               </div>
             </div>

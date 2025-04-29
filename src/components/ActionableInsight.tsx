@@ -17,7 +17,7 @@ export function ActionableInsight({ title, insight, action, status }: Actionable
         : status === "warning" 
           ? "border-l-amber-500 dark:border-amber-600" 
           : "border-l-red-500 dark:border-red-600"
-    } dark:bg-gray-800/90 dark:border-gray-700`}>
+    } dark:bg-gray-600/90 dark:border-gray-700`}>
       <CardContent className="p-5">
         <div className="flex items-start gap-3">
           <div className={`mt-1 p-1.5 rounded-full ${

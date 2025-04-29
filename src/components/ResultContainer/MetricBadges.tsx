@@ -9,7 +9,7 @@ interface MetricBadgesProps {
 export function MetricBadges({ formData, diagnostics }: MetricBadgesProps) {
   return (
     <div className="flex items-center gap-2">
-      <Badge variant="outline" className="px-2 py-1 border-gray-300 dark:border-blue-500 bg-white dark:bg-blue-700/80 text-gray-700 dark:text-white shadow-sm">
+      <Badge variant="outline" className="px-2 py-1 border-gray-300 dark:border-blue-500/80 bg-white dark:bg-blue-700/80 text-gray-700 dark:text-white shadow-sm">
         {formData.startDate && formData.endDate ? (
           <>
             {new Date(formData.startDate).toLocaleDateString()} - {new Date(formData.endDate).toLocaleDateString()}
@@ -18,7 +18,7 @@ export function MetricBadges({ formData, diagnostics }: MetricBadgesProps) {
           "Período não especificado"
         )}
       </Badge>
-      <Badge variant="outline" className="px-2 py-1 border-gray-300 dark:border-blue-500 bg-white dark:bg-blue-700/80 text-gray-700 dark:text-white shadow-sm">
+      <Badge variant="outline" className="px-2 py-1 border-gray-300 dark:border-blue-500/80 bg-white dark:bg-blue-700/80 text-gray-700 dark:text-white shadow-sm">
         ROI: {diagnostics?.currentROI?.toFixed(2) || 0}x
       </Badge>
     </div>
